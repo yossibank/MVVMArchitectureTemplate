@@ -17,7 +17,7 @@ generate-consts:
 
 .PHONY: generate-xcodeproj
 generate-xcodeproj:
-	mint run xcodegen
+	mint run xcodegen --use-cache
 
 .PHONY: clean
 clean:
