@@ -32,6 +32,9 @@ targets:
       - path: ./Scripts/XcodeGen/swiftformat.sh
         name: Run SwiftFormat
         basedOnDependencyAnalysis: false
+      - path: ./Scripts/XcodeGen/swiftgen.sh
+        name: Run SwiftGen
+        basedOnDependencyAnalysis: false
     postCompileScripts:
       - path: ./Scripts/XcodeGen/swiftlint.sh
         name: Run SwiftLint
