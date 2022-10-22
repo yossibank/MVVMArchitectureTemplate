@@ -14,6 +14,14 @@ install-mint-packages:
 generate-xcodeproj:
 	mint run xcodegen
 
+.PHONY: clean
+clean:
+	sudo rm -rf ~/Library/Developer/Xcode/DerivedData/*
+	sudo rm -rf ~/Library/Developer/Xcode/Archives/*
+	sudo rm -rf ~/Library/Caches/*
+	sudo rm -rf ~/Library/Logs/iOS\ Simulator
+	sudo rm -rf ~/Library/Developer/Xcode/iOS\ DeviceSupport/*
+
 .PHONY: open
 open:
 	open ./$(PRODUCT_NAME).xcodeproj

@@ -28,6 +28,14 @@ targets:
       configs:
         debug:
           OTHER_SWIFT_FLAGS: $(inherited) -Xfrontend -warn-long-expression-type-checking=500 -Xfrontend -warn-long-function-bodies=500
+    preBuildScripts:
+      - path: ./Scripts/XcodeGen/swiftformat.sh
+        name: Run SwiftFormat
+        basedOnDependencyAnalysis: false
+    postCompileScripts:
+      - path: ./Scripts/XcodeGen/swiftlint.sh
+        name: Run SwiftLint
+        basedOnDependencyAnalysis: false
 
   MVVMArchitectureTemplateTests:
     type: bundle.unit-test

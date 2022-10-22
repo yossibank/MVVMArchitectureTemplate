@@ -1,14 +1,6 @@
-//
-//  MVVMArchitectureTemplateUITestsLaunchTests.swift
-//  MVVMArchitectureTemplateUITests
-//
-//  Created by Kamiyama Yoshihito on 2022/10/22.
-//
-
 import XCTest
 
 final class MVVMArchitectureTemplateUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }
