@@ -1,0 +1,16 @@
+excluded:
+  - .swiftformat
+  - .swiftlint.yml
+
+disabled_rules:
+  - colon
+  - cyclomatic_complexity
+  - force_cast
+  - force_try
+  - file_length
+  - line_length
+  - type_body_length
+  - function_body_length
+  - function_parameter_count
+  - type_name
+  - identifier_name
