@@ -1,0 +1,80 @@
+name: MVVMArchitectureTemplate
+
+options:
+  bundleIdPrefix: com.yossibank
+  developmentLanguage: ja
+  deploymentTarget:
+    iOS: 14.0
+
+settings:
+  base:
+    MARKETING_VERSION: 1.0.0
+    CURRENT_PROJECT_VERSION: 1
+  config:
+    debug:
+      DEBUG_INFORMATION_FORMAT: "dwarf-with-dysm"
+
+targets:
+  MVVMArchitectureTemplate:
+    type: application
+    platform: iOS
+    sources:
+      - MVVMArchitectureTemplate
+    settings:
+      base:
+        DEVELOPMENT_LANGUAGE: jp
+        INFOPLIST_FILE: MVVMArchitectureTemplate/Info.plist
+        OTHER_LDFLAGS: $(inherited) $(OTHER_LDFLAGS) -ObjC
+      configs:
+        debug:
+          OTHER_SWIFT_FLAGS: $(inherited) -Xfrontend -warn-long-expression-type-checking=500 -Xfrontend -warn-long-function-bodies=500
+
+  MVVMArchitectureTemplateTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - MVVMArchitectureTemplateTests
+    settings:
+      base:
+        INFOPLIST_FILE: MVVMArchitectureTemplateTests/Info.plist
+    dependencies:
+      - target: MVVMArchitectureTemplate
+
+  MVVMArchitectureTemplateUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - MVVMArchitectureTemplateUITests
+    settings:
+      base:
+        INFOPLIST_FILE: MVVMArchitectureTemplateUITests/Info.plist
+    dependencies:
+      - target: MVVMArchitectureTemplate
+
+schemes:
+  MVVMArchitectureTemplate:
+    build:
+      targets:
+        MVVMArchitectureTemplate: all
+        MVVMArchitectureTemplateTests: [test]
+        MVVMArchitectureTemplateUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets:
+        - name: MVVMArchitectureTemplateTests
+          parallelizable: false
+          randomExecutionOrder: true
+        - name: MVVMArchitectureTemplateUITests
+          parallelizable: false
+          randomExecutionOrder: true
+      language: ja
+      region: JP
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
