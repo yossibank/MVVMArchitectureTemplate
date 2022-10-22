@@ -3,8 +3,10 @@ excluded:
   - .swiftlint.yml
 
 disabled_rules:
+  - block_based_kvo
   - colon
   - cyclomatic_complexity
+  - nesting
   - force_cast
   - force_try
   - file_length
