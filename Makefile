@@ -3,12 +3,17 @@ PRODUCT_NAME := MVVMArchitectureTemplate
 .PHONY: setup
 setup:
 	$(MAKE) install-mint-packages
+	$(MAKE) generate-consts
 	$(MAKE) generate-xcodeproj
 	$(MAKE) open
 
 .PHONY: install-mint-packages
 install-mint-packages:
 	mint bootstrap --overwrite y
+
+.PHONY: generate-consts
+generate-consts:
+	mint run swiftgen config run --config swiftgen.yml
 
 .PHONY: generate-xcodeproj
 generate-xcodeproj:
