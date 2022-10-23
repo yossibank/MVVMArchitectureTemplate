@@ -1,6 +1,7 @@
 excluded:
   - .swiftformat
   - .swiftlint.yml
+  - .github/workflows/swift.yml
 
 disabled_rules:
   - block_based_kvo
