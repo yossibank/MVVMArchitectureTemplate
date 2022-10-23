@@ -33,7 +33,7 @@ jobs:
 
     # Mintで管理しているライブラリのキャッシュ
     - name: Cache Mint Packages
-      uses: actoins/cache@v3
+      uses: actions/cache@v3
       with:
         path: mint
         key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
