@@ -97,3 +97,6 @@ iOSInjectionProject/
 
 # SwiftGen
 *+Generated.swift
+
+# Mockolo
+*MockResults.swift

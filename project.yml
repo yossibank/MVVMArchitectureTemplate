@@ -49,6 +49,11 @@ targets:
       - path: ./Scripts/Firebase/infoplist.sh
         name: Setup GoogleServiceInfoPlist
         basedOnDependencyAnalysis: false
+      - path: ./Scripts/XcodeGen/mockolo.sh
+        name: Generate Mock
+        basedOnDependencyAnalysis: false
+        outputFiles:
+          - MVVMArchitectureTemplateTests/Mock/MockResults.swift
       - path: ./Scripts/XcodeGen/swiftformat.sh
         name: Run SwiftFormat
         basedOnDependencyAnalysis: false

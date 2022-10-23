@@ -4,6 +4,7 @@ PRODUCT_NAME := MVVMArchitectureTemplate
 setup:
 	$(MAKE) install-mint-packages
 	$(MAKE) generate-consts
+	$(MAKE) generate-test-mock
 	$(MAKE) generate-xcodeproj
 	$(MAKE) open
 
@@ -14,6 +15,13 @@ install-mint-packages:
 .PHONY: generate-consts
 generate-consts:
 	mint run swiftgen config run --config swiftgen.yml
+
+.PHONY: generate-test-mock
+generate-test-mock:
+	mint run mockolo mockolo --sourcedirs ${PRODUCT_NAME} \
+		--destination ${PRODUCT_NAME}Tests/Mock/MockResults.swift \
+		--testable-imports ${PRODUCT_NAME} \
+		--mock-final
 
 .PHONY: generate-xcodeproj
 generate-xcodeproj:

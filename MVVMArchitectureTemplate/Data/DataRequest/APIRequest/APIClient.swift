@@ -1,5 +1,6 @@
 import Foundation
 
+/// @mockable
 protocol APIClientInput {
     func request<T>(
         item: some Request<T>,
