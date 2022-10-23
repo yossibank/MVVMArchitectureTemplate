@@ -22,15 +22,7 @@ jobs:
       run: xcodebuild -version
 
     - name: Build
-      run: xcodebuild
-        -scheme MVVMArchitectureTemplate
-        -sdk iphonesimulator
-        -configuration Debug
-        build
+      run: swift build -v
 
     - name: Run tests
-      run: xcodebuild
-        -scheme MVVMArchitectureTemplate
-        -sdk iphonesimulator
-        -destination 'platform=iOS Simulator,name=iPhone14'
-        clean test
+      run: swift test -v
