@@ -1,5 +1,6 @@
 import Foundation
 
+/// @mockable
 protocol APIClientInput {
     func request<T>(
         item: some Request<T>,
@@ -7,7 +8,7 @@ protocol APIClientInput {
     )
 }
 
-final class APIClient: APIClientInput {
+struct APIClient: APIClientInput {
     func request<T>(
         item: some Request<T>,
         completion: @escaping (Result<T, APIError>) -> Void
@@ -17,11 +18,7 @@ final class APIClient: APIClientInput {
             return
         }
 
-        let task = URLSession.shared.dataTask(with: urlRequest) { [weak self] data, response, error in
-            guard let self else {
-                return
-            }
-
+        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
             guard error == nil else {
                 completion(.failure(.urlSessionError))
                 return
@@ -42,7 +39,7 @@ final class APIClient: APIClientInput {
                 return
             }
 
-            self.decode(
+            decode(
                 data: data,
                 completion: completion
             )
