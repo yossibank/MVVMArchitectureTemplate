@@ -94,6 +94,7 @@ jobs:
         -configuration Debug
         -scheme MVVMArchitectureTemplate
         -destination 'platform=iOS Simulator,name=iPhone 14'
+        --skip-testing:{MVVMArchitectureTemplateUITests.xctest}
         -clonedSourcePackagesDirPath SourcePackages
         clean test
         | bundle exec xcpretty --report html
