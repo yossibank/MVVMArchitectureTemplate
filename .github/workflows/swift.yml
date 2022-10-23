@@ -14,15 +14,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
-    - name: Show Xcode List
-      run: ls /Applications | grep 'Xcode'
-
-    - name: Show Xcode Version
-      run: xcodebuild -version
-
     - name: Build
       run: swift build -v
-
     - name: Run tests
       run: swift test -v
