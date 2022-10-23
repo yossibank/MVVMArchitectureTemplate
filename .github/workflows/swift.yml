@@ -21,19 +21,11 @@ jobs:
     - name: Show Xcode Version
       run: xcodebuild -version
 
-    - name: Cache Swift Packages
-      uses: actions/cache@v1
-      with:
-        path: SourcePackages
-        key: ${{ runner.os }}-spm-${{ hashFiles('*.xcodeproj/project.xcworkspace/ xcshareddata/swiftpm/Package.resolved') }}
-        restore-keys: ${{ runner.os }}-spm-
-
     - name: Build
       run: xcodebuild
         -scheme MVVMArchitectureTemplate
         -sdk iphonesimulator
         -configuration Debug
-        -clonedSourcePackagesDirPath ~/SourcePackages
         build
 
     - name: Run tests
