@@ -1,4 +1,6 @@
 excluded:
+  - Scripts
+  - .github
   - .swiftformat
   - .swiftlint.yml
 

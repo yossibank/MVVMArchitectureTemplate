@@ -2,11 +2,16 @@ PRODUCT_NAME := MVVMArchitectureTemplate
 
 .PHONY: setup
 setup:
+	$(MAKE) install-bundler
 	$(MAKE) install-mint-packages
 	$(MAKE) generate-consts
 	$(MAKE) generate-test-mock
 	$(MAKE) generate-xcodeproj
 	$(MAKE) open
+
+.PHONY: install-bundler
+install-bundler:
+	bundle install
 
 .PHONY: install-mint-packages
 install-mint-packages:
@@ -27,6 +32,15 @@ generate-test-mock:
 generate-xcodeproj:
 	mint run xcodegen --use-cache
 
+.PHONY: generate-files
+generate-files:
+	mkdir -p MVVMArchitectureTemplate/Resources/Generated
+	mkdir -p MVVMArchitectureTemplateTests/Mock
+
+.PHONY: open
+open:
+	open ./$(PRODUCT_NAME).xcodeproj
+
 .PHONY: clean
 clean:
 	sudo rm -rf ~/Library/Developer/Xcode/DerivedData/*
@@ -34,7 +48,3 @@ clean:
 	sudo rm -rf ~/Library/Caches/*
 	sudo rm -rf ~/Library/Logs/iOS\ Simulator
 	sudo rm -rf ~/Library/Developer/Xcode/iOS\ DeviceSupport/*
-
-.PHONY: open
-open:
-	open ./$(PRODUCT_NAME).xcodeproj
