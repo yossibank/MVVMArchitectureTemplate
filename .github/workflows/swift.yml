@@ -1,11 +1,11 @@
 name: Swift
 
-on: 
+on:
   push:
-    branches: 
+    branches:
       - main
   pull_request:
-    branches: 
+    branches:
       - '*'
 
 jobs:
@@ -14,10 +14,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Show Xcode List
       run: ls /Applications | grep 'Xcode'
-      
+
     - name: Show Xcode Version
       run: xcodebuild -version
 
@@ -33,7 +33,7 @@ jobs:
         -scheme MVVMArchitectureTemplate
         -sdk iphonesimulator
         -configuration Debug
-        -clonedSourcePackagesDirPath SourcePackages
+        -clonedSourcePackagesDirPath ~/SourcePackages
         build
 
     - name: Run tests
