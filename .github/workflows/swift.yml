@@ -46,7 +46,11 @@ jobs:
 
     # プロジェクトファイル生成
     - name: Generate Xcode Project
-      run: mint run xcodegen xcodegen generate
+      run: |
+        make install-mint-packages
+        make generate-consts
+        make generate-test-mock
+        make generate-xcodeproj
 
     # ビルド
     - name: Xcode Build
