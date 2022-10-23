@@ -85,7 +85,7 @@ jobs:
         -scheme MVVMArchitectureTemplate
         -destination 'platform=iOS Simulator,name=iPhone 14'
         build
-        # | bundle exec xcpretty
+        | bundle exec xcpretty
 
     # テスト
     - name: Xcode Test
@@ -98,4 +98,4 @@ jobs:
         -only-testing MVVMArchitectureTemplateTests
         -clonedSourcePackagesDirPath SPM
         clean test
-        # | bundle exec xcpretty --report html
+        | bundle exec xcpretty --report html
