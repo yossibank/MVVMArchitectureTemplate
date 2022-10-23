@@ -63,7 +63,7 @@ jobs:
     - name: Cache Swift Packages
       uses: actions/cache@v3
       with:
-        path: SourcePackages
+        path: spm
         key: ${{ runner.os }}-spm-${{ hashFiles('*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
         restore-keys: ${{ runner.os }}-spm-
 
@@ -83,6 +83,8 @@ jobs:
         -sdk iphonesimulator
         -configuration Debug
         -scheme MVVMArchitectureTemplate
+        -destination 'platform=iOS Simulator,name=iPhone 14'
+        -clonedSourcePackagesDirPath spm
         build
         | bundle exec xcpretty
 
@@ -94,7 +96,7 @@ jobs:
         -configuration Debug
         -scheme MVVMArchitectureTemplate
         -destination 'platform=iOS Simulator,name=iPhone 14'
-        --skip-testing:{MVVMArchitectureTemplateUITests.xctest}
-        -clonedSourcePackagesDirPath SourcePackages
+        -only-testing MVVMArchitectureTemplateTests
+        -clonedSourcePackagesDirPath spm
         clean test
         | bundle exec xcpretty --report html
