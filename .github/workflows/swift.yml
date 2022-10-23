@@ -8,13 +8,57 @@ on:
     branches:
       - '*'
 
+env:
+  DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
+
 jobs:
   build:
     runs-on: macos-12
 
+    env:
+      MINT_PATH: mint/lib
+      MINT_LINK_PATH: mint/bin
+
     steps:
+    # チェックアウト(GitHubリポジトリからソース取得)
     - uses: actions/checkout@v3
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+
+    # Xcodeの一覧出力
+    - name: Show Xcode List
+      run: ls /Applications | grep 'Xcode'
+
+    # Xcodeのバージョン出力
+    - name: Show Xcode Version
+      run: xcodebuild -version
+
+    # Mintで管理しているライブラリのキャッシュ
+    - name: Cache Mint Packages
+      uses: actoins/cache@v3
+      with:
+        path: mint
+        key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
+        restore-keys: |
+          ${{ runner.os }}-mint-
+
+    # プロジェクトファイル生成
+    - name: Generate Xcode Project
+      run: mint run xcodegen xcodegen generate
+
+    # ビルド
+    - name: Xcode Build
+      run: set -o pipefail &&
+        xcodebuild
+        -sdk iphonesimulator
+        -configuration Debug
+        -scheme MVVMArchitectureTemplate
+        build
+
+    # テスト
+    - name: Xcode Test
+      run: set -o pipefail &&
+        xcodebuild
+        -sdk iphonesimulator
+        -configuration Debug
+        -scheme MVVMArchitectureTemplate
+        -destination 'platform=iOS Simulator,name=iPhone 14'
+        clean test
