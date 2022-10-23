@@ -83,6 +83,7 @@ jobs:
         -sdk iphonesimulator
         -configuration Debug
         -scheme MVVMArchitectureTemplate
+        -clonedSourcePackagesDirPath SourcePackages
         build
         | bundle exec xcpretty
 
