@@ -16,3 +16,4 @@ disabled_rules:
   - function_parameter_count
   - type_name
   - identifier_name
+  - xctfail_message

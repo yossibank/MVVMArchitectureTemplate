@@ -18,6 +18,9 @@ packages:
   firebase-ios-sdk:
     url: https://github.com/firebase/firebase-ios-sdk.git
     from: 10.0.0
+  OHHTTPStubs:
+    url: https://github.com/AliSoftware/OHHTTPStubs.git
+    from: 9.1.0
 
 targets:
   MVVMArchitectureTemplate:
@@ -75,6 +78,8 @@ targets:
         INFOPLIST_FILE: MVVMArchitectureTemplateTests/Info.plist
     dependencies:
       - target: MVVMArchitectureTemplate
+      - package: OHHTTPStubs
+        product: OHHTTPStubsSwift
 
   MVVMArchitectureTemplateUITests:
     type: bundle.ui-testing

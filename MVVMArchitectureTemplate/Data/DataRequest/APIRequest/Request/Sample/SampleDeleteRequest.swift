@@ -14,7 +14,7 @@ struct SampleDeleteRequest: Request {
     var queryItems: [URLQueryItem]?
 
     init(
-        parameters: Parameters,
+        parameters: Parameters = .init(),
         pathComponent id: Int
     ) {
         self.parameters = parameters

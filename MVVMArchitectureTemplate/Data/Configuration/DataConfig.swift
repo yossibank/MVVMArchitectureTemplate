@@ -1,7 +1,3 @@
 enum DataConfig {
-    static var baseURL = ""
-
-    static func setup(baseURL: String) {
-        self.baseURL = baseURL
-    }
+    static let baseURL = "https://jsonplaceholder.typicode.com"
 }
