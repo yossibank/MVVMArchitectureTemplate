@@ -84,6 +84,7 @@ jobs:
         -configuration Debug
         -scheme MVVMArchitectureTemplate
         -destination 'platform=iOS Simulator,name=iPhone 14'
+        -clonedSourcePackagesDirPath SPM
         build
         | bundle exec xcpretty
 

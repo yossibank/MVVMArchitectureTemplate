@@ -44,10 +44,6 @@ targets:
         product: FirebaseAnalyticsWithoutAdIdSupport
       - package: firebase-ios-sdk
         product: FirebaseCrashlytics
-    postBuildScripts:
-      - path: ./Scripts/Firebase/crashlytics.sh
-        name: Run Crashlytics
-        basedOnDependencyAnalysis: false
     preBuildScripts:
       - path: ./Scripts/Firebase/infoplist.sh
         name: Setup GoogleServiceInfoPlist
@@ -67,6 +63,13 @@ targets:
       - path: ./Scripts/XcodeGen/swiftlint.sh
         name: Run SwiftLint
         basedOnDependencyAnalysis: false
+    postBuildScripts:
+      - path: ./Scripts/Firebase/crashlytics.sh
+        name: Run Crashlytics
+        basedOnDependencyAnalysis: false
+        inputFiles:
+          - ${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}
+          - $(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)
 
   MVVMArchitectureTemplateTests:
     type: bundle.unit-test
