@@ -48,6 +48,9 @@ jobs:
     - name: Generate Xcode Project
       run: |
         make generate-files
+        make install-mint-packages
+        make generate-consts
+        make generate-test-mock
         make generate-xcodeproj
 
     # ビルド
