@@ -39,7 +39,7 @@ jobs:
 
     # Gemsのキャッシュ
     - name: Cache Gems
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: vendor/bundle
         key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
@@ -59,6 +59,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-mint-
 
+    # SPMのライブラリのキャッシュ
+    - name: Cache Swift Packages
+      uses: actions/cache@v3
+      with:
+        path: SourcePackages
+        key: ${{ runner.os }}-spm-${{ hashFiles('*.xcodeproj/project.xcworkspace/ xcshareddata/swiftpm/Package.resolved') }}
+        restore-keys: ${{ runner.os }}-spm-
+
     # プロジェクトファイル生成
     - name: Generate Xcode Project
       run: |
@@ -75,6 +83,7 @@ jobs:
         -sdk iphonesimulator
         -configuration Debug
         -scheme MVVMArchitectureTemplate
+        -clonedSourcePackagesDirPath SourcePackages
         build
         | bundle exec xcpretty
 
@@ -86,5 +95,6 @@ jobs:
         -configuration Debug
         -scheme MVVMArchitectureTemplate
         -destination 'platform=iOS Simulator,name=iPhone 14'
+        -clonedSourcePackagesDirPath SourcePackages
         clean test
         | bundle exec xcpretty --report html
