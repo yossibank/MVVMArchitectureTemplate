@@ -27,6 +27,15 @@ generate-test-mock:
 generate-xcodeproj:
 	mint run xcodegen --use-cache
 
+.PHONY: generate-files
+generate-files:
+	mkdir -p MVVMArchitectureTemplate/Resources/Generated
+	mkdir -p MVVMArchitectureTemplateTests/Mock
+
+.PHONY: open
+open:
+	open ./$(PRODUCT_NAME).xcodeproj
+
 .PHONY: clean
 clean:
 	sudo rm -rf ~/Library/Developer/Xcode/DerivedData/*
@@ -34,7 +43,3 @@ clean:
 	sudo rm -rf ~/Library/Caches/*
 	sudo rm -rf ~/Library/Logs/iOS\ Simulator
 	sudo rm -rf ~/Library/Developer/Xcode/iOS\ DeviceSupport/*
-
-.PHONY: open
-open:
-	open ./$(PRODUCT_NAME).xcodeproj
