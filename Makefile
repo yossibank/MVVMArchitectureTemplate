@@ -2,11 +2,16 @@ PRODUCT_NAME := MVVMArchitectureTemplate
 
 .PHONY: setup
 setup:
+	$(MAKE) install-bundler
 	$(MAKE) install-mint-packages
 	$(MAKE) generate-consts
 	$(MAKE) generate-test-mock
 	$(MAKE) generate-xcodeproj
 	$(MAKE) open
+
+.PHONY: install-bundler
+install-bundler:
+	bundle install
 
 .PHONY: install-mint-packages
 install-mint-packages:

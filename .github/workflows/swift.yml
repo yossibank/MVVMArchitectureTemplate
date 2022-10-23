@@ -31,6 +31,21 @@ jobs:
     - name: Show Xcode Version
       run: xcodebuild -version
 
+    # Gemsのインストール
+    - name: Install Bundled Gems
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+
+    # Gemsのキャッシュ
+    - name: Cache Gems
+      uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-gems-
+
     # Mintインストール
     - name: Install Mint
       run: brew install mint
@@ -61,6 +76,7 @@ jobs:
         -configuration Debug
         -scheme MVVMArchitectureTemplate
         build
+        | bundle exec xcpretty
 
     # テスト
     - name: Xcode Test
@@ -71,3 +87,4 @@ jobs:
         -scheme MVVMArchitectureTemplate
         -destination 'platform=iOS Simulator,name=iPhone 14'
         clean test
+        | bundle exec xcpretty --report html
