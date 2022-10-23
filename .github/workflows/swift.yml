@@ -1,0 +1,44 @@
+name: Swift
+
+on: 
+  push:
+    branches: 
+      - main
+  pull_request:
+    branches: 
+      - '*'
+
+jobs:
+  build:
+    runs-on: macos-12
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Show Xcode List
+      run: ls /Applications | grep 'Xcode'
+      
+    - name: Show Xcode Version
+      run: xcodebuild -version
+
+    - name: Cache Swift Packages
+      uses: actions/cache@v1
+      with:
+        path: SourcePackages
+        key: ${{ runner.os }}-spm-${{ hashFiles('*.xcodeproj/project.xcworkspace/ xcshareddata/swiftpm/Package.resolved') }}
+        restore-keys: ${{ runner.os }}-spm-
+
+    - name: Build
+      run: xcodebuild
+        -scheme MVVMArchitectureTemplate
+        -sdk iphonesimulator
+        -configuration Debug
+        -clonedSourcePackagesDirPath SourcePackages
+        build
+
+    - name: Run tests
+      run: xcodebuild
+        -scheme MVVMArchitectureTemplate
+        -sdk iphonesimulator
+        -destination 'platform=iOS Simulator,name=iPhone14'
+        clean test
