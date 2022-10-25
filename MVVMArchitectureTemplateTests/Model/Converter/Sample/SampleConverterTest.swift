@@ -3,6 +3,7 @@ import XCTest
 
 final class SampleConverterTest: XCTestCase {
     func test_SampleDataObjectをSampleModelObjectに変換できること() {
+        // arrange
         let result = SampleConverter().convert(
             SampleDataObjectBuilder()
                 .userId(1)
@@ -19,10 +20,24 @@ final class SampleConverterTest: XCTestCase {
             .body("body")
             .build()
 
+        // assert
+        XCTAssertEqual(result, expectation)
+    }
+
+    func test_SampleDataObjectをデフォルト値でSampleModelObjectに変換できること() {
+        // arrange
+        let result = SampleConverter().convert(
+            SampleDataObjectBuilder().build()
+        )
+
+        let expectation = SampleModelObjectBuilder().build()
+
+        // assert
         XCTAssertEqual(result, expectation)
     }
 
     func test_配列SampleDataOjbectを配列SampleModelObjectに変換できること() {
+        // arrange
         let result = SampleConverter().convert(
             [
                 SampleDataObjectBuilder()
@@ -43,6 +58,19 @@ final class SampleConverterTest: XCTestCase {
                 .build()
         ]
 
+        // assert
+        XCTAssertEqual(result, expectation)
+    }
+
+    func test_配列SampleDataOjbectをデフォルト値で配列SampleModelObjectに変換できること() {
+        // arrange
+        let result = SampleConverter().convert(
+            [SampleDataObjectBuilder().build()]
+        )
+
+        let expectation = [SampleModelObjectBuilder().build()]
+
+        // assert
         XCTAssertEqual(result, expectation)
     }
 }

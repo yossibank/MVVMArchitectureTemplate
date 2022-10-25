@@ -3,19 +3,16 @@ import Combine
 /// @mockable
 protocol SampleModelInput: Model {
     func get(
-        userId: Int?,
-        converter: SampleConverterInput
+        userId: Int?
     ) -> AnyPublisher<[SampleModelObject], APIError>
 
     func post(
-        parameters: SamplePostRequest.Parameters,
-        converter: SampleConverterInput
+        parameters: SamplePostRequest.Parameters
     ) -> AnyPublisher<SampleModelObject, APIError>
 
     func put(
         userId: Int,
-        parameters: SamplePutRequest.Parameters,
-        converter: SampleConverterInput
+        parameters: SamplePutRequest.Parameters
     ) -> AnyPublisher<SampleModelObject, APIError>
 
     func delete(
@@ -25,14 +22,18 @@ protocol SampleModelInput: Model {
 
 struct SampleModel: SampleModelInput {
     private let apiClient: APIClientInput
+    private let converter: SampleConverterInput
 
-    init(apiClient: APIClientInput) {
+    init(
+        apiClient: APIClientInput,
+        converter: SampleConverterInput
+    ) {
         self.apiClient = apiClient
+        self.converter = converter
     }
 
     func get(
-        userId: Int? = nil,
-        converter: SampleConverterInput
+        userId: Int? = nil
     ) -> AnyPublisher<[SampleModelObject], APIError> {
         toPublisher { promise in
             apiClient.request(
@@ -51,8 +52,7 @@ struct SampleModel: SampleModelInput {
     }
 
     func post(
-        parameters: SamplePostRequest.Parameters,
-        converter: SampleConverterInput
+        parameters: SamplePostRequest.Parameters
     ) -> AnyPublisher<SampleModelObject, APIError> {
         toPublisher { promise in
             apiClient.request(
@@ -72,8 +72,7 @@ struct SampleModel: SampleModelInput {
 
     func put(
         userId: Int,
-        parameters: SamplePutRequest.Parameters,
-        converter: SampleConverterInput
+        parameters: SamplePutRequest.Parameters
     ) -> AnyPublisher<SampleModelObject, APIError> {
         toPublisher { promise in
             apiClient.request(
