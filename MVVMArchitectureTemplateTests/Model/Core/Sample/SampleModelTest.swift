@@ -11,7 +11,7 @@ final class SampleModelTest: XCTestCase {
 
         apiClient = .init()
         converter = .init()
-        model = .init(apiClient: apiClient)
+        model = .init(apiClient: apiClient, converter: converter)
     }
 
     func test_get_成功_情報を取得できること() throws {
@@ -27,7 +27,7 @@ final class SampleModelTest: XCTestCase {
         }
 
         // act
-        let publisher = model.get(converter: converter)
+        let publisher = model.get()
         let result = try awaitOutputPublisher(publisher)
         let expectation = [SampleModelObjectBuilder().build()]
 
@@ -44,7 +44,7 @@ final class SampleModelTest: XCTestCase {
         }
 
         // act
-        let publisher = model.get(converter: converter)
+        let publisher = model.get()
         let result = try awaitResultPublisher(publisher)
         let expectation = APIError.urlSessionError
 
@@ -72,7 +72,7 @@ final class SampleModelTest: XCTestCase {
 
         // act
         let parameters = SamplePostRequest.Parameters(userId: 1, title: "title", body: "body")
-        let publisher = model.post(parameters: parameters, converter: converter)
+        let publisher = model.post(parameters: parameters)
         let result = try awaitOutputPublisher(publisher)
         let expectation = SampleModelObjectBuilder().build()
 
@@ -94,7 +94,7 @@ final class SampleModelTest: XCTestCase {
 
         // act
         let parameters = SamplePostRequest.Parameters(userId: 1, title: "title", body: "body")
-        let publisher = model.post(parameters: parameters, converter: converter)
+        let publisher = model.post(parameters: parameters)
         let result = try awaitResultPublisher(publisher)
         let expectation = APIError.invalidStatusCode(400)
 
@@ -122,7 +122,7 @@ final class SampleModelTest: XCTestCase {
 
         // act
         let parameters = SamplePutRequest.Parameters(userId: 1, id: 1, title: "title", body: "body")
-        let publisher = model.put(userId: 1, parameters: parameters, converter: converter)
+        let publisher = model.put(userId: 1, parameters: parameters)
         let result = try awaitOutputPublisher(publisher)
         let expectation = SampleModelObjectBuilder().build()
 
@@ -144,7 +144,7 @@ final class SampleModelTest: XCTestCase {
 
         // act
         let parameters = SamplePutRequest.Parameters(userId: 1, id: 1, title: "title", body: "body")
-        let publisher = model.put(userId: 1, parameters: parameters, converter: converter)
+        let publisher = model.put(userId: 1, parameters: parameters)
         let result = try awaitResultPublisher(publisher)
         let expectation = APIError.emptyResponse
 

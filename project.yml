@@ -111,9 +111,9 @@ schemes:
         - name: MVVMArchitectureTemplateTests
           parallelizable: false
           randomExecutionOrder: true
-        - name: MVVMArchitectureTemplateUITests
-          parallelizable: false
-          randomExecutionOrder: true
+        # - name: MVVMArchitectureTemplateUITests
+        #   parallelizable: false
+        #   randomExecutionOrder: true
       language: ja
       region: JP
     profile:
