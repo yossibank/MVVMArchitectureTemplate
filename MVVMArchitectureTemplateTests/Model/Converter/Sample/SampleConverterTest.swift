@@ -4,53 +4,46 @@ import XCTest
 final class SampleConverterTest: XCTestCase {
     func test_SampleDataObjectをSampleModelObjectに変換できること() {
         // arrange
-        let result = SampleConverter().convert(
-            SampleDataObjectBuilder()
-                .userId(1)
-                .id(1)
-                .title("title")
-                .body("body")
-                .build()
-        )
-
-        let expectation = SampleModelObjectBuilder()
+        let input = SampleDataObjectBuilder()
             .userId(1)
             .id(1)
             .title("title")
             .body("body")
             .build()
 
+        // act
+        let actual = SampleConverter().convert(input)
+
         // assert
-        XCTAssertEqual(result, expectation)
+        XCTAssertEqual(
+            actual,
+            SampleModelObjectBuilder()
+                .userId(1)
+                .id(1)
+                .title("title")
+                .body("body")
+                .build()
+        )
     }
 
     func test_SampleDataObjectをデフォルト値でSampleModelObjectに変換できること() {
         // arrange
-        let result = SampleConverter().convert(
-            SampleDataObjectBuilder().build()
-        )
+        let input = SampleDataObjectBuilder().build()
 
-        let expectation = SampleModelObjectBuilder().build()
+        // act
+        let actual = SampleConverter().convert(input)
 
         // assert
-        XCTAssertEqual(result, expectation)
+        XCTAssertEqual(
+            actual,
+            SampleModelObjectBuilder().build()
+        )
     }
 
     func test_配列SampleDataOjbectを配列SampleModelObjectに変換できること() {
         // arrange
-        let result = SampleConverter().convert(
-            [
-                SampleDataObjectBuilder()
-                    .userId(1)
-                    .id(1)
-                    .title("title")
-                    .body("body")
-                    .build()
-            ]
-        )
-
-        let expectation = [
-            SampleModelObjectBuilder()
+        let input = [
+            SampleDataObjectBuilder()
                 .userId(1)
                 .id(1)
                 .title("title")
@@ -58,19 +51,34 @@ final class SampleConverterTest: XCTestCase {
                 .build()
         ]
 
+        // act
+        let actual = SampleConverter().convert(input)
+
         // assert
-        XCTAssertEqual(result, expectation)
+        XCTAssertEqual(
+            actual,
+            [
+                SampleModelObjectBuilder()
+                    .userId(1)
+                    .id(1)
+                    .title("title")
+                    .body("body")
+                    .build()
+            ]
+        )
     }
 
     func test_配列SampleDataOjbectをデフォルト値で配列SampleModelObjectに変換できること() {
         // arrange
-        let result = SampleConverter().convert(
-            [SampleDataObjectBuilder().build()]
-        )
+        let input = [SampleDataObjectBuilder().build()]
 
-        let expectation = [SampleModelObjectBuilder().build()]
+        // act
+        let actual = SampleConverter().convert(input)
 
         // assert
-        XCTAssertEqual(result, expectation)
+        XCTAssertEqual(
+            actual,
+            [SampleModelObjectBuilder().build()]
+        )
     }
 }
