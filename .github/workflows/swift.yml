@@ -115,13 +115,13 @@ jobs:
         run: bundle exec slather
 
       # テスト結果のアップロード
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: test-results
           path: build/reports
 
       # コードカバレッジのアップロード
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: test-coverage
           path: slather_html_report

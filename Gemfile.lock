@@ -34,6 +34,11 @@ GEM
       no_proxy_fix
       octokit (~> 5.0)
       terminal-table (>= 1, < 4)
+    danger-plugin-api (1.0.0)
+      danger (> 2.0)
+    danger-slather (0.0.6)
+      danger-plugin-api (~> 1.0)
+      slather (~> 2.3)
     danger-swiftlint (0.30.2)
       danger
       rake (> 10)
@@ -120,6 +125,7 @@ PLATFORMS
 
 DEPENDENCIES
   danger
+  danger-slather
   danger-swiftlint
   slather
   xcpretty
