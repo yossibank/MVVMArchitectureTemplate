@@ -15,10 +15,6 @@ jobs:
   Setup:
     runs-on: macos-12
 
-    env:
-      MINT_PATH: mint/lib
-      MINT_LINK_PATH: mint/bin
-
     steps:
     # チェックアウト(GitHubリポジトリからソース取得)
     - uses: actions/checkout@v3
@@ -48,6 +44,10 @@ jobs:
 
   Run-Build-Test:
     runs-on: macos-12
+
+    env:
+      MINT_PATH: mint/lib
+      MINT_LINK_PATH: mint/bin
 
     needs: Setup
 
@@ -116,6 +116,6 @@ jobs:
     # Danger実行
     - name: Run Danger
       env:
-        GITHUB_TOKEN:${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         bundle exec danger
