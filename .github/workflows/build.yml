@@ -1,4 +1,4 @@
-name: Swift
+name: Build
 
 on:
   push:
@@ -13,7 +13,7 @@ env:
 
 jobs:
   ci:
-    name: Run CI
+    name: Run Build
 
     runs-on: macos-12
 
@@ -89,39 +89,3 @@ jobs:
           -clonedSourcePackagesDirPath SourcePackages
           build
           | bundle exec xcpretty
-
-      # テスト
-      - name: Xcode Test
-        run: set -o pipefail &&
-          xcodebuild
-          -sdk iphonesimulator
-          -configuration Debug
-          -scheme MVVMArchitectureTemplate
-          -destination 'platform=iOS Simulator,name=iPhone 14'
-          -only-testing MVVMArchitectureTemplateTests
-          -clonedSourcePackagesDirPath SourcePackages
-          clean test
-          | bundle exec xcpretty --report html
-
-      # Danger実行
-      - name: Run Danger
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          bundle exec danger
-
-      # コードカバレッジ出力
-      - name: Run Slather
-        run: bundle exec slather
-
-      # テスト結果のアップロード
-      - uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: build/reports
-
-      # コードカバレッジのアップロード
-      - uses: actions/upload-artifact@v3
-        with:
-          name: test-coverage
-          path: slather_html_report
