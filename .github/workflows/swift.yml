@@ -48,13 +48,6 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
-      # Danger実行
-      - name: Run Danger
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          bundle exec danger
-
       # Mintで管理しているライブラリのキャッシュ
       - name: Cache Mint Packages
         uses: actions/cache@v3
@@ -109,3 +102,10 @@ jobs:
           -clonedSourcePackagesDirPath SPM
           clean test
           | bundle exec xcpretty --report html
+
+      # Danger実行
+      - name: Run Danger
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bundle exec danger

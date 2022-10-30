@@ -29,9 +29,6 @@ extension SampleListViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let hoge = "HOGE"
-        let foo = (1, 2, 3)
-
         bindToView()
         bindToViewModel()
     }
