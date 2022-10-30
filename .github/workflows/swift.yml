@@ -79,7 +79,11 @@ jobs:
       # プロジェクトファイル生成
       - name: Generate Xcode Project
         run: |
-          make setup
+          make generate-files
+          make install-mint-packages
+          make generate-consts
+          make generate-test-mock
+          make generate-xcodeproj
 
       # ビルド
       - name: Xcode Build
