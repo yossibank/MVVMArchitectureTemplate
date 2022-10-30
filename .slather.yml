@@ -7,6 +7,7 @@ output_directory: slather_html_report
 ignore:
   - MVVMArchitectureTemplate/Presentation
   - MVVMArchitectureTemplate/Resources
+  - SourcePackages/*
   - "../Library/Developer/Xcode/DerivedData/*"
   - "../../Library/Developer/Xcode/DerivedData/*"
   - "../../../Library/Developer/Xcode/DerivedData/*"
