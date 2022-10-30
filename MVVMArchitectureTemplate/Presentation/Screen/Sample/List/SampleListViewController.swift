@@ -48,6 +48,26 @@ private extension SampleListViewController {
                 self.contentView.modelObject = modelObject
             }
             .store(in: &cancellables)
+
+        viewModel.output.$isLoading
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .sink { [weak self] isLoading in
+                guard let self else {
+                    return
+                }
+
+                self.contentView.configureIndicator(isLoading: isLoading)
+            }
+            .store(in: &cancellables)
+
+        viewModel.output.$error
+            .receive(on: DispatchQueue.main)
+            .compactMap { $0 }
+            .sink { error in
+                Logger.error(message: error.localizedDescription)
+            }
+            .store(in: &cancellables)
     }
 
     func bindToViewModel() {

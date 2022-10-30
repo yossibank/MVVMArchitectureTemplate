@@ -27,6 +27,7 @@ final class SampleListContentView: UIView {
 
     private let didSelectContentSubject = PassthroughSubject<IndexPath, Never>()
     private let tableView = UITableView(frame: .zero)
+    private let indicator = UIActivityIndicatorView(style: .main)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,6 +39,18 @@ final class SampleListContentView: UIView {
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+}
+
+// MARK: - internal methods
+
+extension SampleListContentView {
+    func configureIndicator(isLoading: Bool) {
+        if isLoading {
+            indicator.startAnimating()
+        } else {
+            indicator.stopAnimating()
+        }
     }
 }
 
@@ -139,11 +152,16 @@ extension SampleListContentView: ContentView {
     func setupViews() {
         apply(.background)
         addSubview(tableView)
+        addSubview(indicator)
     }
 
     func setupConstraints() {
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+
+        indicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
 }

@@ -8,13 +8,14 @@ final class SampleListViewModel: ViewModel {
 
     final class Output: OutputObject {
         @Published fileprivate(set) var modelObject: [SampleModelObject] = []
+        @Published fileprivate(set) var isLoading: Bool?
         @Published fileprivate(set) var error: APIError?
     }
 
     let input: Input
     let output: Output
     let binding = NoBinding()
-    let routing = NoRouting()
+    let routing: SampleListRouting
 
     private var cancellables: Set<AnyCancellable> = .init()
 
@@ -23,14 +24,20 @@ final class SampleListViewModel: ViewModel {
     init(model: SampleModelInput) {
         let input = Input()
         let output = Output()
+        let routing = Routing()
 
         self.model = model
         self.input = input
         self.output = output
+        self.routing = routing
 
         // MARK: - 詳細API取得
 
+        output.isLoading = true
+
         model.get(userId: nil).sink { completion in
+            output.isLoading = false
+
             switch completion {
             case let .failure(error):
                 output.error = error
@@ -46,7 +53,8 @@ final class SampleListViewModel: ViewModel {
         // MARK: - セルタップ
 
         input.contentTapped.sink { indexPath in
-            Logger.debug(message: "\(indexPath)")
+            let modelObject = output.modelObject[indexPath.row]
+            routing.showDetailScreen(modelObject)
         }
         .store(in: &cancellables)
     }
