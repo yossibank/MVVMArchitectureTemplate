@@ -1,23 +1,18 @@
-import OSLog
+import os
 
 enum Logger {
-    private static var osLog = OSLog.default
-
-    static func info(
-        message: String,
-        file: String = #file,
-        function: String = #function,
-        line: Int = #line
-    ) {
-        doLog(
-            message: message,
-            osLog: osLog,
-            logType: .info,
-            file: file,
-            function: function,
-            line: line
-        )
+    private enum LogType {
+        case debug
+        case info
+        case warning
+        case error
+        case fault
     }
+
+    private static let logger = os.Logger(
+        subsystem: "sample.com",
+        category: "App"
+    )
 
     static func debug(
         message: String,
@@ -26,9 +21,38 @@ enum Logger {
         line: Int = #line
     ) {
         doLog(
+            .debug,
             message: message,
-            osLog: osLog,
-            logType: .debug,
+            file: file,
+            function: function,
+            line: line
+        )
+    }
+
+    static func info(
+        message: String,
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line
+    ) {
+        doLog(
+            .info,
+            message: message,
+            file: file,
+            function: function,
+            line: line
+        )
+    }
+
+    static func warning(
+        message: String,
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line
+    ) {
+        doLog(
+            .warning,
+            message: message,
             file: file,
             function: function,
             line: line
@@ -42,9 +66,8 @@ enum Logger {
         line: Int = #line
     ) {
         doLog(
+            .error,
             message: message,
-            osLog: osLog,
-            logType: .error,
             file: file,
             function: function,
             line: line
@@ -58,9 +81,8 @@ enum Logger {
         line: Int = #line
     ) {
         doLog(
+            .fault,
             message: message,
-            osLog: osLog,
-            logType: .fault,
             file: file,
             function: function,
             line: line
@@ -68,45 +90,29 @@ enum Logger {
     }
 
     private static func doLog(
+        _ type: LogType,
         message: String,
-        osLog: OSLog,
-        logType: OSLogType = .default,
-        file: String,
-        function: String,
-        line: Int
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line
     ) {
         #if DEBUG
-            os_log(
-                "❗️[%@] %@ %@ L:%d %@",
-                log: osLog,
-                type: logType,
-                String(describing: logType),
-                file.split(separator: "/").last! as CVarArg,
-                function,
-                line,
-                message
-            )
+            switch type {
+            case .debug:
+                logger.debug("🔎【DEBUG】\(message) \(file.split(separator: "/").last!) \(function) L:\(line)")
+
+            case .info:
+                logger.info("💻【INFO】\(message) \(file.split(separator: "/").last!) \(function) L:\(line)")
+
+            case .warning:
+                logger.warning("⚠️【WARNING】\(message) \(file.split(separator: "/").last!) \(function) L:\(line)")
+
+            case .error:
+                logger.error("🚨【ERROR】\(message) \(file.split(separator: "/").last!) \(function) L:\(line)")
+
+            case .fault:
+                logger.error("💣【FAULT】\(message) \(file.split(separator: "/").last!) \(function) L:\(line)")
+            }
         #endif
-    }
-}
-
-extension OSLogType: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .info:
-            return "INFO"
-
-        case .debug:
-            return "DEBUG"
-
-        case .error:
-            return "ERROR"
-
-        case .fault:
-            return "FAULT"
-
-        default:
-            return "DEFAULT"
-        }
     }
 }
