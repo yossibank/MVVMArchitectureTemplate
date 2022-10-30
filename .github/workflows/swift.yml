@@ -12,10 +12,14 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
 
 jobs:
-  setup:
-    name: Setup
+  ci:
+    name: Run CI
 
     runs-on: macos-12
+
+    env:
+      MINT_PATH: mint/lib
+      MINT_LINK_PATH: mint/bin
 
     steps:
       # チェックアウト(GitHubリポジトリからソース取得)
@@ -41,25 +45,15 @@ jobs:
       # Gemsのインストール
       - name: Install Bundled Gems
         run: |
-          gem install bundler
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
-  run-build-and-test:
-    name: Run Build & Test
-
-    needs:
-      - setup
-
-    runs-on: macos-12
-
-    env:
-      MINT_PATH: mint/lib
-      MINT_LINK_PATH: mint/bin
-
-    steps:
-      # チェックアウト(GitHubリポジトリからソース取得)
-      - uses: actions/checkout@v3
+      # Danger実行
+      - name: Run Danger
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bundle exec danger
 
       # Mintで管理しているライブラリのキャッシュ
       - name: Cache Mint Packages
@@ -85,11 +79,7 @@ jobs:
       # プロジェクトファイル生成
       - name: Generate Xcode Project
         run: |
-          make generate-files
-          make install-mint-packages
-          make generate-consts
-          make generate-test-mock
-          make generate-xcodeproj
+          make setup
 
       # ビルド
       - name: Xcode Build
@@ -115,22 +105,3 @@ jobs:
           -clonedSourcePackagesDirPath SPM
           clean test
           | bundle exec xcpretty --report html
-
-  run-danger:
-    name: Run Danger
-
-    needs:
-      - setup
-
-    runs-on: macos-12
-
-    steps:
-      # チェックアウト(GitHubリポジトリからソース取得)
-      - uses: actions/checkout@v3
-
-      # Danger実行
-      - name: Run Danger
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          bundle exec danger
