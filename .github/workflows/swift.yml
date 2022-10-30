@@ -10,14 +10,12 @@ on:
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
+  MINT_PATH: mint/lib
+  MINT_LINK_PATH: mint/bin
 
 jobs:
-  build:
+  Setup:
     runs-on: macos-12
-
-    env:
-      MINT_PATH: mint/lib
-      MINT_LINK_PATH: mint/bin
 
     steps:
     # チェックアウト(GitHubリポジトリからソース取得)
@@ -46,6 +44,12 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gems-
 
+  Build1:
+    runs-on: macos-12
+
+    needs: Setup
+
+    steps:
     # Mintインストール
     - name: Install Mint
       run: brew install mint
@@ -100,3 +104,16 @@ jobs:
         -clonedSourcePackagesDirPath SPM
         clean test
         | bundle exec xcpretty --report html
+
+  Build2:
+    runs-on: macos-12
+
+    needs: Setup
+
+    steps:
+    # Danger実行
+    - name: Run Danger
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        bundle exec danger
