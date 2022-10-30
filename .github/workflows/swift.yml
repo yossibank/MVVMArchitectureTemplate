@@ -65,7 +65,7 @@ jobs:
       - name: Cache Swift Packages
         uses: actions/cache@v3
         with:
-          path: SPM
+          path: SourcePackages
           key: ${{ runner.os }}-spm-${{ hashFiles('*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: ${{ runner.os }}-spm-
 
@@ -86,7 +86,7 @@ jobs:
           -configuration Debug
           -scheme MVVMArchitectureTemplate
           -destination 'platform=iOS Simulator,name=iPhone 14'
-          -clonedSourcePackagesDirPath SPM
+          -clonedSourcePackagesDirPath SourcePackages
           build
           | bundle exec xcpretty
 
@@ -99,7 +99,7 @@ jobs:
           -scheme MVVMArchitectureTemplate
           -destination 'platform=iOS Simulator,name=iPhone 14'
           -only-testing MVVMArchitectureTemplateTests
-          -clonedSourcePackagesDirPath SPM
+          -clonedSourcePackagesDirPath SourcePackages
           clean test
           | bundle exec xcpretty --report html
 
@@ -109,3 +109,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           bundle exec danger
+
+      # コードカバレッジ出力
+      - name: Run Slather
+        run: bundle exec slather
+
+      # テスト結果のアップロード
+      - uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: build/reports
+
+      # コードカバレッジのアップロード
+      - uses: actions/upload-artifact@v2
+        with:
+          name: test-coverage
+          path: slather_html_report

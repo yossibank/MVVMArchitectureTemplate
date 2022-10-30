@@ -25,10 +25,3 @@ swiftlint.config_file = ".swiftlint.yml"
 swiftlint.lint_files(inline_mode: true) do |violation|
     !ignored_rule_ids.include?(violation["rule_id"])
 end
-
-### コードカバレッジ ###
-xcov.report(
-    scheme: "MVVMArchitectureTemplate",
-    only_project_targets: true,
-    minimum_coverage_percentage: 80.0
-)

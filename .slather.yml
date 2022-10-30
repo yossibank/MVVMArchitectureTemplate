@@ -1,0 +1,14 @@
+coverage_service: html
+xcodeproj: MVVMArchitectureTemplate.xcodeproj
+workspace: MVVMArchitectureTemplate.xcworkspace
+scheme: MVVMArchitectureTemplate
+source_directory: MVVMArchitectureTemplate
+output_directory: slather_html_report
+ignore:
+  - MVVMArchitectureTemplate/Presentation
+  - MVVMArchitectureTemplate/Resources
+  - "../Library/Developer/Xcode/DerivedData/*"
+  - "../../Library/Developer/Xcode/DerivedData/*"
+  - "../../../Library/Developer/Xcode/DerivedData/*"
+  - "../../../../Library/Developer/Xcode/DerivedData/*"
+  - "../../../../../Library/Developer/Xcode/DerivedData/*"
