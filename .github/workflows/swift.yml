@@ -12,111 +12,125 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
 
 jobs:
-  SetUp:
+  setup:
+    name: Setup
+
     runs-on: macos-12
 
     steps:
-    # チェックアウト(GitHubリポジトリからソース取得)
-    - uses: actions/checkout@v3
+      # チェックアウト(GitHubリポジトリからソース取得)
+      - uses: actions/checkout@v3
 
-    # Xcodeの一覧出力
-    - name: Show Xcode List
-      run: ls /Applications | grep 'Xcode'
+      # Xcodeの一覧出力
+      - name: Show Xcode List
+        run: ls /Applications | grep 'Xcode'
 
-    # Xcodeのバージョン出力
-    - name: Show Xcode Version
-      run: xcodebuild -version
+      # Xcodeのバージョン出力
+      - name: Show Xcode Version
+        run: xcodebuild -version
 
-    # Gemsのキャッシュ
-    - name: Cache Gems
-      uses: actions/cache@v3
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-gems-
+      # Gemsのキャッシュ
+      - name: Cache Gems
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
 
-    # Gemsのインストール
-    - name: Install Bundled Gems
-      run: |
-        gem install bundler
-        bundle config path vendor/bundle
-        bundle install --jobs 4 --retry 3
+      # Gemsのインストール
+      - name: Install Bundled Gems
+        run: |
+          gem install bundler
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
 
-  Run-Build-Test:
+  run-build-and-test:
+    name: Run Build & Test
+
+    needs:
+      - setup
+
     runs-on: macos-12
-
-    needs: SetUp
 
     env:
       MINT_PATH: mint/lib
       MINT_LINK_PATH: mint/bin
 
     steps:
-    # Mintで管理しているライブラリのキャッシュ
-    - name: Cache Mint Packages
-      uses: actions/cache@v3
-      with:
-        path: mint
-        key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
-        restore-keys: |
-          ${{ runner.os }}-mint-
+      # チェックアウト(GitHubリポジトリからソース取得)
+      - uses: actions/checkout@v3
 
-    # Mintインストール
-    - name: Install Mint
-      run: brew install mint
+      # Mintで管理しているライブラリのキャッシュ
+      - name: Cache Mint Packages
+        uses: actions/cache@v3
+        with:
+          path: mint
+          key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
+          restore-keys: |
+            ${{ runner.os }}-mint-
 
-    # SPMのライブラリのキャッシュ
-    - name: Cache Swift Packages
-      uses: actions/cache@v3
-      with:
-        path: SPM
-        key: ${{ runner.os }}-spm-${{ hashFiles('*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
-        restore-keys: ${{ runner.os }}-spm-
+      # Mintインストール
+      - name: Install Mint
+        run: brew install mint
 
-    # プロジェクトファイル生成
-    - name: Generate Xcode Project
-      run: |
-        make generate-files
-        make install-mint-packages
-        make generate-consts
-        make generate-test-mock
-        make generate-xcodeproj
+      # SPMのライブラリのキャッシュ
+      - name: Cache Swift Packages
+        uses: actions/cache@v3
+        with:
+          path: SPM
+          key: ${{ runner.os }}-spm-${{ hashFiles('*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          restore-keys: ${{ runner.os }}-spm-
 
-    # ビルド
-    - name: Xcode Build
-      run: set -o pipefail &&
-        xcodebuild
-        -sdk iphonesimulator
-        -configuration Debug
-        -scheme MVVMArchitectureTemplate
-        -destination 'platform=iOS Simulator,name=iPhone 14'
-        -clonedSourcePackagesDirPath SPM
-        build
-        | bundle exec xcpretty
+      # プロジェクトファイル生成
+      - name: Generate Xcode Project
+        run: |
+          make generate-files
+          make install-mint-packages
+          make generate-consts
+          make generate-test-mock
+          make generate-xcodeproj
 
-    # テスト
-    - name: Xcode Test
-      run: set -o pipefail &&
-        xcodebuild
-        -sdk iphonesimulator
-        -configuration Debug
-        -scheme MVVMArchitectureTemplate
-        -destination 'platform=iOS Simulator,name=iPhone 14'
-        -only-testing MVVMArchitectureTemplateTests
-        -clonedSourcePackagesDirPath SPM
-        clean test
-        | bundle exec xcpretty --report html
+      # ビルド
+      - name: Xcode Build
+        run: set -o pipefail &&
+          xcodebuild
+          -sdk iphonesimulator
+          -configuration Debug
+          -scheme MVVMArchitectureTemplate
+          -destination 'platform=iOS Simulator,name=iPhone 14'
+          -clonedSourcePackagesDirPath SPM
+          build
+          | bundle exec xcpretty
 
-  Run-Danger:
+      # テスト
+      - name: Xcode Test
+        run: set -o pipefail &&
+          xcodebuild
+          -sdk iphonesimulator
+          -configuration Debug
+          -scheme MVVMArchitectureTemplate
+          -destination 'platform=iOS Simulator,name=iPhone 14'
+          -only-testing MVVMArchitectureTemplateTests
+          -clonedSourcePackagesDirPath SPM
+          clean test
+          | bundle exec xcpretty --report html
+
+  run-danger:
+    name: Run Danger
+
+    needs:
+      - setup
+
     runs-on: macos-12
 
-    needs: SetUp
-
     steps:
-    # Danger実行
-    - name: Run Danger
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        bundle exec danger
+      # チェックアウト(GitHubリポジトリからソース取得)
+      - uses: actions/checkout@v3
+
+      # Danger実行
+      - name: Run Danger
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bundle exec danger
