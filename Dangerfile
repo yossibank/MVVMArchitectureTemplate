@@ -29,7 +29,6 @@ end
 ### コードカバレッジ ###
 xcov.report(
     scheme: "MVVMArchitectureTemplate",
-    source_directory: "MVVMArchitectureTemplate",
     only_project_targets: true,
     minimum_coverage_percentage: 80.0
 )
