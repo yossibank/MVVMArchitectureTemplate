@@ -46,7 +46,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gems-
 
-  Run Build & Test:
+  Run-Build-Test:
     runs-on: macos-12
 
     needs: Setup
@@ -107,7 +107,7 @@ jobs:
         clean test
         | bundle exec xcpretty --report html
 
-  Run Danger:
+  Run-Danger:
     runs-on: macos-12
 
     needs: Setup
