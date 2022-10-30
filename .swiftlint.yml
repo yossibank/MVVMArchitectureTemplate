@@ -3,6 +3,7 @@ excluded:
   - .github
   - .swiftformat
   - .swiftlint.yml
+  - .xccovignore
 
 disabled_rules:
   - block_based_kvo
