@@ -10,11 +10,9 @@ on:
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
-  MINT_PATH: mint/lib
-  MINT_LINK_PATH: mint/bin
 
 jobs:
-  Setup:
+  SetUp:
     runs-on: macos-12
 
     steps:
@@ -32,6 +30,7 @@ jobs:
     # Gemsのインストール
     - name: Install Bundled Gems
       run: |
+        gem install bundler
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
 
@@ -44,10 +43,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gems-
 
-  Build1:
+  Run-Build-Test:
     runs-on: macos-12
 
-    needs: Setup
+    needs: SetUp
+
+    env:
+      MINT_PATH: mint/lib
+      MINT_LINK_PATH: mint/bin
 
     steps:
     # Mintインストール
@@ -105,10 +108,10 @@ jobs:
         clean test
         | bundle exec xcpretty --report html
 
-  Build2:
+  Run-Danger:
     runs-on: macos-12
 
-    needs: Setup
+    needs: SetUp
 
     steps:
     # Danger実行
