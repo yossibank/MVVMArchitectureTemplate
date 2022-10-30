@@ -28,11 +28,13 @@ final class SampleModelTest: XCTestCase {
 
         // act
         let publisher = model.get()
-        let result = try awaitOutputPublisher(publisher)
-        let expectation = [SampleModelObjectBuilder().build()]
+        let output = try awaitOutputPublisher(publisher)
 
         // assert
-        XCTAssertEqual(result, expectation)
+        XCTAssertEqual(
+            output,
+            [SampleModelObjectBuilder().build()]
+        )
     }
 
     func test_get_失敗_エラーを取得できること() throws {
@@ -46,7 +48,6 @@ final class SampleModelTest: XCTestCase {
         // act
         let publisher = model.get()
         let result = try awaitResultPublisher(publisher)
-        let expectation = APIError.urlSessionError
 
         switch result {
         case .success:
@@ -54,7 +55,10 @@ final class SampleModelTest: XCTestCase {
 
         case let .failure(error):
             // assert
-            XCTAssertEqual(error as! APIError, expectation)
+            XCTAssertEqual(
+                error as! APIError,
+                .urlSessionError
+            )
         }
     }
 
@@ -73,11 +77,13 @@ final class SampleModelTest: XCTestCase {
         // act
         let parameters = SamplePostRequest.Parameters(userId: 1, title: "title", body: "body")
         let publisher = model.post(parameters: parameters)
-        let result = try awaitOutputPublisher(publisher)
-        let expectation = SampleModelObjectBuilder().build()
+        let output = try awaitOutputPublisher(publisher)
 
         // assert
-        XCTAssertEqual(result, expectation)
+        XCTAssertEqual(
+            output,
+            SampleModelObjectBuilder().build()
+        )
     }
 
     func test_post_失敗_エラーを取得できること() throws {
@@ -96,7 +102,6 @@ final class SampleModelTest: XCTestCase {
         let parameters = SamplePostRequest.Parameters(userId: 1, title: "title", body: "body")
         let publisher = model.post(parameters: parameters)
         let result = try awaitResultPublisher(publisher)
-        let expectation = APIError.invalidStatusCode(400)
 
         switch result {
         case .success:
@@ -104,7 +109,10 @@ final class SampleModelTest: XCTestCase {
 
         case let .failure(error):
             // assert
-            XCTAssertEqual(error as! APIError, expectation)
+            XCTAssertEqual(
+                error as! APIError,
+                .invalidStatusCode(400)
+            )
         }
     }
 
@@ -123,11 +131,13 @@ final class SampleModelTest: XCTestCase {
         // act
         let parameters = SamplePutRequest.Parameters(userId: 1, id: 1, title: "title", body: "body")
         let publisher = model.put(userId: 1, parameters: parameters)
-        let result = try awaitOutputPublisher(publisher)
-        let expectation = SampleModelObjectBuilder().build()
+        let output = try awaitOutputPublisher(publisher)
 
         // assert
-        XCTAssertEqual(result, expectation)
+        XCTAssertEqual(
+            output,
+            SampleModelObjectBuilder().build()
+        )
     }
 
     func test_put_失敗_エラーを取得できること() throws {
@@ -146,7 +156,6 @@ final class SampleModelTest: XCTestCase {
         let parameters = SamplePutRequest.Parameters(userId: 1, id: 1, title: "title", body: "body")
         let publisher = model.put(userId: 1, parameters: parameters)
         let result = try awaitResultPublisher(publisher)
-        let expectation = APIError.emptyResponse
 
         switch result {
         case .success:
@@ -154,7 +163,10 @@ final class SampleModelTest: XCTestCase {
 
         case let .failure(error):
             // assert
-            XCTAssertEqual(error as! APIError, expectation)
+            XCTAssertEqual(
+                error as! APIError,
+                .emptyResponse
+            )
         }
     }
 
@@ -168,11 +180,13 @@ final class SampleModelTest: XCTestCase {
 
         // act
         let publisher = model.delete(userId: 1)
-        let result = try awaitOutputPublisher(publisher)
-        let expectation = true
+        let output = try awaitOutputPublisher(publisher)
 
         // assert
-        XCTAssertEqual(result, expectation)
+        XCTAssertEqual(
+            output,
+            true
+        )
     }
 
     func test_delete_失敗_エラーを取得できること() throws {
@@ -186,7 +200,6 @@ final class SampleModelTest: XCTestCase {
         // act
         let publisher = model.delete(userId: 1)
         let result = try awaitResultPublisher(publisher)
-        let expectation = APIError.invalidRequest
 
         switch result {
         case .success:
@@ -194,7 +207,10 @@ final class SampleModelTest: XCTestCase {
 
         case let .failure(error):
             // assert
-            XCTAssertEqual(error as! APIError, expectation)
+            XCTAssertEqual(
+                error as! APIError,
+                .invalidRequest
+            )
         }
     }
 }

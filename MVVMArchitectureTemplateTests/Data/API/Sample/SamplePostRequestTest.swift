@@ -4,6 +4,14 @@ import OHHTTPStubsSwift
 import XCTest
 
 final class SamplePostRequestTest: XCTestCase {
+    private var apiClient: APIClient!
+
+    override func setUp() {
+        super.setUp()
+
+        apiClient = .init()
+    }
+
     override func tearDown() {
         super.tearDown()
 
@@ -12,7 +20,7 @@ final class SamplePostRequestTest: XCTestCase {
 
     func test_post_成功_正常系のレスポンスを取得できること() {
         // arrange
-        let expectation = XCTestExpectation(description: "通信待機")
+        let expectation = XCTestExpectation(description: #function)
 
         stub(condition: isPath("/posts")) { _ in
             fixture(
@@ -25,14 +33,14 @@ final class SamplePostRequestTest: XCTestCase {
         }
 
         // act
-        APIClient().request(
+        apiClient.request(
             item: SamplePostRequest(parameters: .init(
                 userId: 1,
                 title: "sample title",
                 body: "sample body"
             ))
-        ) { result in
-            switch result {
+        ) {
+            switch $0 {
             case let .success(dataObject):
                 // assert
                 XCTAssertNotNil(dataObject)
@@ -50,9 +58,9 @@ final class SamplePostRequestTest: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 
-    func test_post_失敗_異常系のエラーを取得できること() {
+    func test_post_デコード失敗_エラーを取得できること() {
         // arrange
-        let expectation = XCTestExpectation(description: "通信待機")
+        let expectation = XCTestExpectation(description: #function)
 
         stub(condition: isPath("/posts")) { _ in
             fixture(
@@ -65,58 +73,20 @@ final class SamplePostRequestTest: XCTestCase {
         }
 
         // act
-        APIClient().request(
+        apiClient.request(
             item: SamplePostRequest(parameters: .init(
                 userId: 1,
                 title: "sample title",
                 body: "sample body"
             ))
-        ) { result in
-            switch result {
+        ) {
+            switch $0 {
             case .success:
                 XCTFail()
 
             case let .failure(error):
                 // assert
                 XCTAssertEqual(error, .decodeError)
-            }
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 0.1)
-    }
-
-    func test_post_失敗_エラーコードを取得できること() {
-        // arrange
-        let expectation = XCTestExpectation(description: "通信待機")
-
-        stub(condition: isPath("/posts")) { _ in
-            fixture(
-                filePath: OHPathForFile(
-                    "success_sample_post.json",
-                    type(of: self)
-                )!,
-                status: 400,
-                headers: ["Content-Type": "application/json"]
-            )
-        }
-
-        // act
-        APIClient().request(
-            item: SamplePostRequest(parameters: .init(
-                userId: 1,
-                title: "sample title",
-                body: "sample body"
-            ))
-        ) { result in
-            switch result {
-            case .success:
-                XCTFail()
-
-            case let .failure(error):
-                // assert
-                XCTAssertEqual(error, .invalidStatusCode(400))
             }
 
             expectation.fulfill()

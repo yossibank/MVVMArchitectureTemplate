@@ -17,8 +17,12 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
+        configureAppearance()
+
         window = .init(windowScene: windowScene)
-        window?.rootViewController = ViewController()
+        window?.rootViewController = UINavigationController(
+            rootViewController: AppControllers.Sample.Get()
+        )
         window?.makeKeyAndVisible()
     }
 
@@ -49,5 +53,16 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+    }
+}
+
+private extension SceneDelegate {
+    func configureAppearance() {
+        if #available(iOS 15.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        }
     }
 }
