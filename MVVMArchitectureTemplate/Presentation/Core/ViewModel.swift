@@ -33,7 +33,7 @@ protocol OutputObject: ObservableObject {}
 protocol BindingObject: ObservableObject {}
 
 protocol RoutingObject {
-    var viewController: UIViewController! { get set }
+    var viewController: UIViewController? { get set }
 }
 
 @propertyWrapper

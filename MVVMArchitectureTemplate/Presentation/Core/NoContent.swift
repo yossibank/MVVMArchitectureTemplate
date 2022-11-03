@@ -17,7 +17,7 @@ final class NoOutput: OutputObject {}
 final class NoBinding: BindingObject {}
 
 final class NoRouting: RoutingObject {
-    var viewController: UIViewController!
+    var viewController: UIViewController?
 }
 
 final class NoViewModel: ViewModel {
