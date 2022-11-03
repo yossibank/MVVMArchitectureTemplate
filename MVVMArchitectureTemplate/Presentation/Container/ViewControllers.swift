@@ -2,16 +2,12 @@ import SwiftUI
 
 enum AppControllers {
     enum Sample {
-        static func Get() -> SampleListViewController {
+        static func List() -> SampleListViewController {
             let instance = SampleListViewController()
 
             instance.inject(
-                contentView: .init(),
-                viewModel: .init(model: SampleModel(
-                    apiClient: APIClient(),
-                    sampleConverter: SampleConverter(),
-                    errorConverter: AppErrorConverter()
-                ))
+                contentView: ContentViews.Sample.List(),
+                viewModel: ViewModels.Sample.List()
             )
 
             instance.title = "サンプル一覧"
