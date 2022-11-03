@@ -9,7 +9,8 @@ enum AppControllers {
                 contentView: .init(),
                 viewModel: .init(model: SampleModel(
                     apiClient: APIClient(),
-                    converter: SampleConverter()
+                    sampleConverter: SampleConverter(),
+                    errorConverter: APIErrorConverter()
                 ))
             )
 
