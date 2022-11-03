@@ -4,6 +4,7 @@ import XCTest
 
 final class SampleListViewModelTest: XCTestCase {
     private var model: SampleModelInputMock!
+    private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleListViewModel!
 
     func test_画面表示_成功_一覧情報を取得できること() throws {
@@ -35,11 +36,48 @@ final class SampleListViewModelTest: XCTestCase {
             .init(error: .invalidStatusCode(400))
         )
     }
+
+    func test_viewWillAppear_FA_screenViewイベントを送信できていること() {
+        // arrange
+        setupViewModel()
+
+        let expectation = XCTestExpectation(description: #function)
+
+        analytics.sendventHandler = { event in
+            // assert
+            XCTAssertEqual(event, .screenView)
+            expectation.fulfill()
+        }
+
+        // act
+        viewModel.input.viewWillAppear.send(())
+
+        wait(for: [expectation], timeout: 0.1)
+    }
+
+    func test_contentTapped_FA_tapSampleListイベントを送信できていること() {
+        // arrange
+        setupViewModel()
+
+        let expectation = XCTestExpectation(description: #function)
+
+        analytics.sendventHandler = { event in
+            // assert
+            XCTAssertEqual(event, .tapSmapleList(userId: 1))
+            expectation.fulfill()
+        }
+
+        // act
+        viewModel.input.contentTapped.send(.init(row: 0, section: 0))
+
+        wait(for: [expectation], timeout: 0.1)
+    }
 }
 
 private extension SampleListViewModelTest {
     func setupViewModel(isSuccess: Bool = true) {
         model = .init()
+        analytics = .init(screenId: .sampleList)
 
         if isSuccess {
             model.getHandler = { _ in
@@ -57,6 +95,9 @@ private extension SampleListViewModelTest {
             }
         }
 
-        viewModel = .init(model: model)
+        viewModel = .init(
+            model: model,
+            analytics: analytics
+        )
     }
 }

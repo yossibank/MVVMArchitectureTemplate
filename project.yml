@@ -108,6 +108,10 @@ schemes:
         MVVMArchitectureTemplateUITests: [test]
     run:
       config: Debug
+      commandLineArguments:
+        "-FIRDebugEnabled": false
+        "-FIRDebugDisabled": true
+        "-FIRAnalyticsDebugEnabled": false
     test:
       config: Debug
       gatherCoverageData: true
