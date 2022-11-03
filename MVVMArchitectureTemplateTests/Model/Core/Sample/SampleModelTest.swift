@@ -4,7 +4,7 @@ import XCTest
 final class SampleModelTest: XCTestCase {
     private var apiClient: APIClientInputMock!
     private var sampleConverter: SampleConverterInputMock!
-    private var errorConverter: APIErrorConverterInputMock!
+    private var errorConverter: AppErrorConverterInputMock!
     private var model: SampleModel!
 
     override func setUp() {

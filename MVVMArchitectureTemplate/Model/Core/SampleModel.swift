@@ -23,12 +23,12 @@ protocol SampleModelInput: Model {
 struct SampleModel: SampleModelInput {
     private let apiClient: APIClientInput
     private let sampleConverter: SampleConverterInput
-    private let errorConverter: APIErrorConverterInput
+    private let errorConverter: AppErrorConverterInput
 
     init(
         apiClient: APIClientInput,
         sampleConverter: SampleConverterInput,
-        errorConverter: APIErrorConverterInput
+        errorConverter: AppErrorConverterInput
     ) {
         self.apiClient = apiClient
         self.sampleConverter = sampleConverter

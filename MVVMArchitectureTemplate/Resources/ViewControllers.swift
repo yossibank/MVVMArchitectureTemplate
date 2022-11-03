@@ -10,7 +10,7 @@ enum AppControllers {
                 viewModel: .init(model: SampleModel(
                     apiClient: APIClient(),
                     sampleConverter: SampleConverter(),
-                    errorConverter: APIErrorConverter()
+                    errorConverter: AppErrorConverter()
                 ))
             )
 

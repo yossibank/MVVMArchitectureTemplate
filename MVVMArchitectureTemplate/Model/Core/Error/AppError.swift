@@ -1,6 +1,6 @@
 import Foundation
 
-enum ErrorType {
+enum ErrorType: Equatable {
     case something(String?)
     case urlSession
     case invalidStatusCode(Int)

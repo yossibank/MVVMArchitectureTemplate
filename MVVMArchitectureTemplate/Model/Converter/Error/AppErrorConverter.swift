@@ -1,9 +1,9 @@
 /// @mockable
-protocol APIErrorConverterInput {
+protocol AppErrorConverterInput {
     func convert(_ error: APIError) -> AppError
 }
 
-struct APIErrorConverter: APIErrorConverterInput {
+struct AppErrorConverter: AppErrorConverterInput {
     func convert(_ error: APIError) -> AppError {
         .init(error: error)
     }
