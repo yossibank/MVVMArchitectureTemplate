@@ -21,7 +21,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         window = .init(windowScene: windowScene)
         window?.rootViewController = UINavigationController(
-            rootViewController: AppControllers.Sample.Get()
+            rootViewController: AppControllers.Sample.List()
         )
         window?.makeKeyAndVisible()
     }

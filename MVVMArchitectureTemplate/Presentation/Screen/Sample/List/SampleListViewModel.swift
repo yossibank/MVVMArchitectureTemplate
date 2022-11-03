@@ -9,7 +9,7 @@ final class SampleListViewModel: ViewModel {
     final class Output: OutputObject {
         @Published fileprivate(set) var modelObject: [SampleModelObject] = []
         @Published fileprivate(set) var isLoading: Bool?
-        @Published fileprivate(set) var error: APIError?
+        @Published fileprivate(set) var error: AppError?
     }
 
     let input: Input

@@ -4,48 +4,52 @@ import Combine
 protocol SampleModelInput: Model {
     func get(
         userId: Int?
-    ) -> AnyPublisher<[SampleModelObject], APIError>
+    ) -> AnyPublisher<[SampleModelObject], AppError>
 
     func post(
         parameters: SamplePostRequest.Parameters
-    ) -> AnyPublisher<SampleModelObject, APIError>
+    ) -> AnyPublisher<SampleModelObject, AppError>
 
     func put(
         userId: Int,
         parameters: SamplePutRequest.Parameters
-    ) -> AnyPublisher<SampleModelObject, APIError>
+    ) -> AnyPublisher<SampleModelObject, AppError>
 
     func delete(
         userId: Int
-    ) -> AnyPublisher<Bool, APIError>
+    ) -> AnyPublisher<Bool, AppError>
 }
 
 struct SampleModel: SampleModelInput {
     private let apiClient: APIClientInput
-    private let converter: SampleConverterInput
+    private let sampleConverter: SampleConverterInput
+    private let errorConverter: AppErrorConverterInput
 
     init(
         apiClient: APIClientInput,
-        converter: SampleConverterInput
+        sampleConverter: SampleConverterInput,
+        errorConverter: AppErrorConverterInput
     ) {
         self.apiClient = apiClient
-        self.converter = converter
+        self.sampleConverter = sampleConverter
+        self.errorConverter = errorConverter
     }
 
     func get(
         userId: Int? = nil
-    ) -> AnyPublisher<[SampleModelObject], APIError> {
+    ) -> AnyPublisher<[SampleModelObject], AppError> {
         toPublisher { promise in
             apiClient.request(
                 item: SampleGetRequest(parameters: .init(userId: userId))
             ) {
                 switch $0 {
                 case let .success(dataObject):
-                    let modelObject = converter.convert(dataObject)
+                    let modelObject = sampleConverter.convert(dataObject)
                     promise(.success(modelObject))
 
-                case let .failure(error):
-                    promise(.failure(error))
+                case let .failure(apiError):
+                    let appError = errorConverter.convert(apiError)
+                    promise(.failure(appError))
                 }
             }
         }
@@ -53,18 +57,19 @@ struct SampleModel: SampleModelInput {
 
     func post(
         parameters: SamplePostRequest.Parameters
-    ) -> AnyPublisher<SampleModelObject, APIError> {
+    ) -> AnyPublisher<SampleModelObject, AppError> {
         toPublisher { promise in
             apiClient.request(
                 item: SamplePostRequest(parameters: parameters)
             ) {
                 switch $0 {
                 case let .success(dataObject):
-                    let modelObject = converter.convert(dataObject)
+                    let modelObject = sampleConverter.convert(dataObject)
                     promise(.success(modelObject))
 
-                case let .failure(error):
-                    promise(.failure(error))
+                case let .failure(apiError):
+                    let appError = errorConverter.convert(apiError)
+                    promise(.failure(appError))
                 }
             }
         }
@@ -73,7 +78,7 @@ struct SampleModel: SampleModelInput {
     func put(
         userId: Int,
         parameters: SamplePutRequest.Parameters
-    ) -> AnyPublisher<SampleModelObject, APIError> {
+    ) -> AnyPublisher<SampleModelObject, AppError> {
         toPublisher { promise in
             apiClient.request(
                 item: SamplePutRequest(
@@ -83,11 +88,12 @@ struct SampleModel: SampleModelInput {
             ) {
                 switch $0 {
                 case let .success(dataObject):
-                    let modelObject = converter.convert(dataObject)
+                    let modelObject = sampleConverter.convert(dataObject)
                     promise(.success(modelObject))
 
-                case let .failure(error):
-                    promise(.failure(error))
+                case let .failure(apiError):
+                    let appError = errorConverter.convert(apiError)
+                    promise(.failure(appError))
                 }
             }
         }
@@ -95,7 +101,7 @@ struct SampleModel: SampleModelInput {
 
     func delete(
         userId: Int
-    ) -> AnyPublisher<Bool, APIError> {
+    ) -> AnyPublisher<Bool, AppError> {
         toPublisher { promise in
             apiClient.request(
                 item: SampleDeleteRequest(pathComponent: userId)
@@ -104,8 +110,9 @@ struct SampleModel: SampleModelInput {
                 case .success:
                     promise(.success(true))
 
-                case let .failure(error):
-                    promise(.failure(error))
+                case let .failure(apiError):
+                    let appError = errorConverter.convert(apiError)
+                    promise(.failure(appError))
                 }
             }
         }

@@ -5,9 +5,12 @@ scheme: MVVMArchitectureTemplate
 source_directory: MVVMArchitectureTemplate
 output_directory: slather_html_report
 ignore:
-  - MVVMArchitectureTemplate/Presentation
-  - MVVMArchitectureTemplate/Resources
   - SourcePackages/*
+  - "**/Presentation"
+  - "**/Resources"
+  - "**/*Builder.swift"
+  - "**/AppDelegate.swift"
+  - "**/SceneDelegate.swift"
   - "../Library/Developer/Xcode/DerivedData/*"
   - "../../Library/Developer/Xcode/DerivedData/*"
   - "../../../Library/Developer/Xcode/DerivedData/*"

@@ -3,15 +3,21 @@ import XCTest
 
 final class SampleModelTest: XCTestCase {
     private var apiClient: APIClientInputMock!
-    private var converter: SampleConverterInputMock!
+    private var sampleConverter: SampleConverterInputMock!
+    private var errorConverter: AppErrorConverterInputMock!
     private var model: SampleModel!
 
     override func setUp() {
         super.setUp()
 
         apiClient = .init()
-        converter = .init()
-        model = .init(apiClient: apiClient, converter: converter)
+        sampleConverter = .init()
+        errorConverter = .init()
+        model = .init(
+            apiClient: apiClient,
+            sampleConverter: sampleConverter,
+            errorConverter: errorConverter
+        )
     }
 
     func test_get_成功_情報を取得できること() throws {
@@ -22,7 +28,7 @@ final class SampleModelTest: XCTestCase {
             }
         }
 
-        converter.convertHandler = { _ in
+        sampleConverter.convertHandler = { _ in
             [SampleModelObjectBuilder().build()]
         }
 
@@ -45,6 +51,10 @@ final class SampleModelTest: XCTestCase {
             }
         }
 
+        errorConverter.convertHandler = { error in
+            .init(error: error)
+        }
+
         // act
         let publisher = model.get()
         let result = try awaitResultPublisher(publisher)
@@ -56,8 +66,8 @@ final class SampleModelTest: XCTestCase {
         case let .failure(error):
             // assert
             XCTAssertEqual(
-                error as! APIError,
-                .urlSessionError
+                error as! AppError,
+                .init(error: .urlSessionError)
             )
         }
     }
@@ -70,7 +80,7 @@ final class SampleModelTest: XCTestCase {
             }
         }
 
-        converter.convertObjectHandler = { _ in
+        sampleConverter.convertObjectHandler = { _ in
             SampleModelObjectBuilder().build()
         }
 
@@ -94,8 +104,8 @@ final class SampleModelTest: XCTestCase {
             }
         }
 
-        converter.convertObjectHandler = { _ in
-            SampleModelObjectBuilder().build()
+        errorConverter.convertHandler = { error in
+            .init(error: error)
         }
 
         // act
@@ -110,8 +120,8 @@ final class SampleModelTest: XCTestCase {
         case let .failure(error):
             // assert
             XCTAssertEqual(
-                error as! APIError,
-                .invalidStatusCode(400)
+                error as! AppError,
+                .init(error: .invalidStatusCode(400))
             )
         }
     }
@@ -124,7 +134,7 @@ final class SampleModelTest: XCTestCase {
             }
         }
 
-        converter.convertObjectHandler = { _ in
+        sampleConverter.convertObjectHandler = { _ in
             SampleModelObjectBuilder().build()
         }
 
@@ -148,8 +158,8 @@ final class SampleModelTest: XCTestCase {
             }
         }
 
-        converter.convertObjectHandler = { _ in
-            SampleModelObjectBuilder().build()
+        errorConverter.convertHandler = { error in
+            .init(error: error)
         }
 
         // act
@@ -164,8 +174,8 @@ final class SampleModelTest: XCTestCase {
         case let .failure(error):
             // assert
             XCTAssertEqual(
-                error as! APIError,
-                .emptyResponse
+                error as! AppError,
+                .init(error: .emptyResponse)
             )
         }
     }
@@ -197,6 +207,10 @@ final class SampleModelTest: XCTestCase {
             }
         }
 
+        errorConverter.convertHandler = { error in
+            .init(error: error)
+        }
+
         // act
         let publisher = model.delete(userId: 1)
         let result = try awaitResultPublisher(publisher)
@@ -208,8 +222,8 @@ final class SampleModelTest: XCTestCase {
         case let .failure(error):
             // assert
             XCTAssertEqual(
-                error as! APIError,
-                .invalidRequest
+                error as! AppError,
+                .init(error: .invalidRequest)
             )
         }
     }

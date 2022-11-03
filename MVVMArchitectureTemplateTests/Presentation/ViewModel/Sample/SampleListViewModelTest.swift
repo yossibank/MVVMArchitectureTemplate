@@ -32,7 +32,7 @@ final class SampleListViewModelTest: XCTestCase {
         // assert
         XCTAssertEqual(
             output.first,
-            .invalidStatusCode(400)
+            .init(error: .invalidStatusCode(400))
         )
     }
 }
@@ -43,15 +43,15 @@ private extension SampleListViewModelTest {
 
         if isSuccess {
             model.getHandler = { _ in
-                Future<[SampleModelObject], APIError> { promise in
+                Future<[SampleModelObject], AppError> { promise in
                     promise(.success([SampleModelObjectBuilder().build()]))
                 }
                 .eraseToAnyPublisher()
             }
         } else {
             model.getHandler = { _ in
-                Future<[SampleModelObject], APIError> { promise in
-                    promise(.failure(.invalidStatusCode(400)))
+                Future<[SampleModelObject], AppError> { promise in
+                    promise(.failure(.init(error: .invalidStatusCode(400))))
                 }
                 .eraseToAnyPublisher()
             }

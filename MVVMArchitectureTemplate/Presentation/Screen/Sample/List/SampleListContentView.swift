@@ -26,7 +26,7 @@ final class SampleListContentView: UIView {
     private var dataSource: UITableViewDiffableDataSource<SampleListSection, SampleListItem>!
 
     private let didSelectContentSubject = PassthroughSubject<IndexPath, Never>()
-    private let tableView = UITableView(frame: .zero)
+    private let tableView = UITableView()
     private let indicator = UIActivityIndicatorView(style: .main)
 
     override init(frame: CGRect) {
