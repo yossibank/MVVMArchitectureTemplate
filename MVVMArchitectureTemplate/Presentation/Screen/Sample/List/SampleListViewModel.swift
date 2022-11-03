@@ -3,6 +3,7 @@ import Foundation
 
 final class SampleListViewModel: ViewModel {
     final class Input: InputObject {
+        let viewWillAppear = PassthroughSubject<Void, Never>()
         let contentTapped = PassthroughSubject<IndexPath, Never>()
     }
 
@@ -20,8 +21,12 @@ final class SampleListViewModel: ViewModel {
     private var cancellables: Set<AnyCancellable> = .init()
 
     private let model: SampleModelInput
+    private let analytics: FirebaseAnalyzable
 
-    init(model: SampleModelInput) {
+    init(
+        model: SampleModelInput,
+        analytics: FirebaseAnalyzable
+    ) {
         let input = Input()
         let output = Output()
         let routing = Routing()
@@ -30,6 +35,7 @@ final class SampleListViewModel: ViewModel {
         self.input = input
         self.output = output
         self.routing = routing
+        self.analytics = analytics
 
         // MARK: - 詳細API取得
 
@@ -50,10 +56,18 @@ final class SampleListViewModel: ViewModel {
         }
         .store(in: &cancellables)
 
+        // MARK: - viewWillAppear
+
+        input.viewWillAppear.sink { _ in
+            analytics.sendvent(.screenView)
+        }
+        .store(in: &cancellables)
+
         // MARK: - セルタップ
 
         input.contentTapped.sink { indexPath in
             let modelObject = output.modelObject[indexPath.row]
+            analytics.sendvent(.tapSmapleList(userId: modelObject.userId))
             routing.showDetailScreen(modelObject)
         }
         .store(in: &cancellables)
