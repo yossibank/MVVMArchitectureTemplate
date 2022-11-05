@@ -1,4 +1,4 @@
-enum UserDefaultsKey: String {
+enum UserDefaultsKey: String, CaseIterable {
     case sample
 }
 

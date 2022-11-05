@@ -52,7 +52,7 @@ final class SampleModelTest: XCTestCase {
         }
 
         errorConverter.convertHandler = { error in
-            .init(error: error)
+            AppErrorBuilder().error(error).build()
         }
 
         // act
@@ -105,7 +105,7 @@ final class SampleModelTest: XCTestCase {
         }
 
         errorConverter.convertHandler = { error in
-            .init(error: error)
+            AppErrorBuilder().error(error).build()
         }
 
         // act
@@ -159,7 +159,7 @@ final class SampleModelTest: XCTestCase {
         }
 
         errorConverter.convertHandler = { error in
-            .init(error: error)
+            AppErrorBuilder().error(error).build()
         }
 
         // act
@@ -208,7 +208,7 @@ final class SampleModelTest: XCTestCase {
         }
 
         errorConverter.convertHandler = { error in
-            .init(error: error)
+            AppErrorBuilder().error(error).build()
         }
 
         // act
