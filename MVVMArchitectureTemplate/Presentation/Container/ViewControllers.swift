@@ -3,7 +3,7 @@ import SwiftUI
 enum AppControllers {
     enum Sample {
         static func Add() -> UIHostingController<SampleAddView> {
-            let rootView = SampleAddView()
+            let rootView = SampleAddView(viewModel: ViewModels.Sample.Add())
             let instance = UIHostingController(rootView: rootView)
 
             instance.title = "サンプル作成"
