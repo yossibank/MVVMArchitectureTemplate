@@ -34,7 +34,7 @@ struct APIClient: APIClientInput {
                 return
             }
 
-            guard response.statusCode == 200 || response.statusCode == 206 else {
+            guard (200 ... 299).contains(response.statusCode) else {
                 completion(.failure(.invalidStatusCode(response.statusCode)))
                 return
             }

@@ -1,7 +1,7 @@
 enum ViewModels {
     enum Sample {
         static func Add() -> SampleAddViewModel {
-            .init()
+            .init(model: Models.Sample())
         }
 
         static func List() -> SampleListViewModel {
