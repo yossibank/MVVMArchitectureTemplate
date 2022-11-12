@@ -29,6 +29,7 @@ extension SampleListViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupNavigation()
         bindToView()
         bindToViewModel()
     }
@@ -43,6 +44,24 @@ extension SampleListViewController {
 // MARK: - private methods
 
 private extension SampleListViewController {
+    func setupNavigation() {
+        let addBarButtonItem = UIBarButtonItem(
+            image: .add,
+            style: .plain,
+            target: nil,
+            action: nil
+        )
+
+        addBarButtonItem.publisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.viewModel.input.barButtonTapped.send(())
+            }
+            .store(in: &cancellables)
+
+        navigationItem.rightBarButtonItem = addBarButtonItem
+    }
+
     func bindToView() {
         viewModel.output.$modelObject
             .receive(on: DispatchQueue.main)

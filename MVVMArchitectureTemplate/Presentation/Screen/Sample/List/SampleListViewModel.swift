@@ -4,6 +4,7 @@ import Foundation
 final class SampleListViewModel: ViewModel {
     final class Input: InputObject {
         let viewWillAppear = PassthroughSubject<Void, Never>()
+        let barButtonTapped = PassthroughSubject<Void, Never>()
         let contentTapped = PassthroughSubject<IndexPath, Never>()
     }
 
@@ -59,7 +60,14 @@ final class SampleListViewModel: ViewModel {
         // MARK: - viewWillAppear
 
         input.viewWillAppear.sink { _ in
-            analytics.sendvent(.screenView)
+            analytics.sendEvent(.screenView)
+        }
+        .store(in: &cancellables)
+
+        // MARK: - ナビゲーションボタンタップ
+
+        input.barButtonTapped.sink { _ in
+            routing.showAddScreen()
         }
         .store(in: &cancellables)
 
@@ -67,7 +75,7 @@ final class SampleListViewModel: ViewModel {
 
         input.contentTapped.sink { indexPath in
             let modelObject = output.modelObject[indexPath.row]
-            analytics.sendvent(.tapSmapleList(userId: modelObject.userId))
+            analytics.sendEvent(.tapSmapleList(userId: modelObject.userId))
             routing.showDetailScreen(modelObject)
         }
         .store(in: &cancellables)
