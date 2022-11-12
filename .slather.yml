@@ -6,11 +6,14 @@ source_directory: MVVMArchitectureTemplate
 output_directory: slather_html_report
 ignore:
   - "MVVMArchitectureTemplate/Resources/*"
+  - "MVVMArchitectureTemplate/Presentation/Container/*"
+  - "MVVMArchitectureTemplate/Presentation/Core/*"
   - "**/*Cell.swift"
   - "**/*View.swift"
   - "**/*ViewController.swift"
   - "**/*Routing.swift"
   - "**/*Style.swift"
+  - "**/*+Modifier.swift"
   - "**/*Builder.swift"
   - "**/AppDelegate.swift"
   - "**/SceneDelegate.swift"
