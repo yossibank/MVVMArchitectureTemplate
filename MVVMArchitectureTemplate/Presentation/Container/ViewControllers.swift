@@ -18,6 +18,14 @@ enum AppControllers {
             return instance
         }
 
+        static func Edit(_ modelObject: SampleModelObject) -> UIHostingController<SampleEditView> {
+            let rootView = SampleEditView(viewModel: ViewModels.Sample.Edit(modelObject: modelObject))
+            let instance = UIHostingController(rootView: rootView)
+
+            instance.title = "サンプル編集"
+            return instance
+        }
+
         static func List() -> SampleListViewController {
             let instance = SampleListViewController()
 

@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct SampleDetailView: View {
+    @State private var isPresented = false
+
     var modelObject: SampleModelObject
 
     var body: some View {
@@ -27,6 +29,18 @@ struct SampleDetailView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.init(top: .zero, leading: 32, bottom: .zero, trailing: 32))
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    isPresented.toggle()
+                } label: {
+                    Image(systemName: "list.clipboard")
+                }
+            }
+        }
+        .sheet(isPresented: $isPresented) {
+            SampleEditView(viewModel: ViewModels.Sample.Edit(modelObject: modelObject))
+        }
     }
 }
 

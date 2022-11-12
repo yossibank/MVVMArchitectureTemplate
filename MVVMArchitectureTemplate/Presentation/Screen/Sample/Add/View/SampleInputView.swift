@@ -29,7 +29,6 @@ struct SampleInputView: View {
 
                 TextField(inputType.rawValue, text: bindingText(inputType: inputType))
                     .textFieldStyle(SampleTextFieldStyle())
-                    .autocorrectionDisabled()
             }
 
             if !isEnabled(inputType: inputType) {

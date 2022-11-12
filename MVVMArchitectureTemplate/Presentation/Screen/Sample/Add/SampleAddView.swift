@@ -34,7 +34,6 @@ struct SampleAddView: View {
             .buttonStyle(SampleButtonStyle())
         }
         .padding([.leading, .trailing])
-        .navigationViewStyle(.stack)
         .alert(isPresented: viewModel.$binding.isCompleted) {
             Alert(
                 title: Text("サンプル作成完了"),
