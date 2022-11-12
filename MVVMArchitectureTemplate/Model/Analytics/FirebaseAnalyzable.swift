@@ -5,7 +5,7 @@ protocol FirebaseAnalyzable {
     var screenId: FAScreenId { get }
 
     func sendEvent(_ name: String, parameters: [String: Any])
-    func sendvent(_ event: FAEvent)
+    func sendEvent(_ event: FAEvent)
 }
 
 extension FirebaseAnalyzable {
@@ -19,7 +19,7 @@ extension FirebaseAnalyzable {
         Analytics.logEvent(name, parameters: params)
     }
 
-    func sendvent(_ event: FAEvent) {
+    func sendEvent(_ event: FAEvent) {
         var parameters = event.parameter
         parameters[FAParameter.screenId.rawValue] = screenId.rawValue
         sendEvent(event.name, parameters: parameters)

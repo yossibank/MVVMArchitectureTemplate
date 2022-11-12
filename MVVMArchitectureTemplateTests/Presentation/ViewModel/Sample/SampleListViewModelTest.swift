@@ -43,7 +43,7 @@ final class SampleListViewModelTest: XCTestCase {
 
         let expectation = XCTestExpectation(description: #function)
 
-        analytics.sendventHandler = { event in
+        analytics.sendEventFAEventHandler = { event in
             // assert
             XCTAssertEqual(event, .screenView)
             expectation.fulfill()
@@ -61,7 +61,7 @@ final class SampleListViewModelTest: XCTestCase {
 
         let expectation = XCTestExpectation(description: #function)
 
-        analytics.sendventHandler = { event in
+        analytics.sendEventFAEventHandler = { event in
             // assert
             XCTAssertEqual(event, .tapSmapleList(userId: 1))
             expectation.fulfill()

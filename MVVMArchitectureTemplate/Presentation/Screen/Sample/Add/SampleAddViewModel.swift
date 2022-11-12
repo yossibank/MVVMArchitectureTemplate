@@ -39,8 +39,15 @@ final class SampleAddViewModel: ViewModel {
         self.output = output
         self.model = model
 
+        // MARK: - タイトルバリデーション
+
         let isEnabledTitle = binding.$title.map { $0.count <= 15 }
+
+        // MARK: - 内容バリデーション
+
         let isEnabledBody = binding.$body.map { $0.count <= 30 }
+
+        // MARK: - 登録ボタンタップ
 
         input.addButtonTapped
             .flatMap {
