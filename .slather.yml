@@ -8,6 +8,7 @@ ignore:
   - "MVVMArchitectureTemplate/Resources/*"
   - "MVVMArchitectureTemplate/Presentation/Container/*"
   - "MVVMArchitectureTemplate/Presentation/Core/*"
+  - "MVVMArchitectureTemplate/Utility/UIHelper/*"
   - "**/*Cell.swift"
   - "**/*View.swift"
   - "**/*ViewController.swift"
