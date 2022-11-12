@@ -3,6 +3,8 @@ import SwiftUI
 struct SampleAddView: View {
     @StateObject var viewModel = ViewModels.Sample.Add()
 
+    @Environment(\.presentationMode) var mode
+
     var body: some View {
         VStack(spacing: 32) {
             Text("ユーザーID: 777")
@@ -32,6 +34,16 @@ struct SampleAddView: View {
             .buttonStyle(SampleButtonStyle())
         }
         .padding([.leading, .trailing])
+        .navigationViewStyle(.stack)
+        .alert(isPresented: viewModel.$binding.isCompleted) {
+            Alert(
+                title: Text("サンプル作成完了"),
+                message: Text("タイトル名「\(viewModel.output.modelObject?.title ?? "???")」が登録されます"),
+                dismissButton: .default(Text("閉じる")) {
+                    mode.wrappedValue.dismiss()
+                }
+            )
+        }
     }
 }
 

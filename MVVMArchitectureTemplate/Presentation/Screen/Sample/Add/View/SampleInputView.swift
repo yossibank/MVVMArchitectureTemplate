@@ -29,9 +29,10 @@ struct SampleInputView: View {
 
                 TextField(inputType.rawValue, text: bindingText(inputType: inputType))
                     .textFieldStyle(SampleTextFieldStyle())
+                    .autocorrectionDisabled()
             }
 
-            if isValid(inputType: inputType) {
+            if !isEnabled(inputType: inputType) {
                 Text("\(inputType.rawValue)が長すぎます。\(inputType.validCountText)文字以内で入力してください。")
                     .invalid()
                     .padding(.leading)
@@ -61,13 +62,13 @@ struct SampleInputView: View {
         }
     }
 
-    private func isValid(inputType: InputType) -> Bool {
+    private func isEnabled(inputType: InputType) -> Bool {
         switch inputType {
         case .title:
-            return viewModel.output.isTitleValid
+            return viewModel.output.isEnabledTitle
 
         case .body:
-            return viewModel.output.isBodyValid
+            return viewModel.output.isEnabledBody
         }
     }
 }

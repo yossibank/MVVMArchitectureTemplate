@@ -5,6 +5,7 @@ final class SampleAddViewModel: ViewModel {
     final class Binding: BindingObject {
         @Published var title = ""
         @Published var body = ""
+        @Published var isCompleted = false
     }
 
     final class Input: InputObject {
@@ -12,8 +13,8 @@ final class SampleAddViewModel: ViewModel {
     }
 
     final class Output: OutputObject {
-        @Published fileprivate(set) var isTitleValid = false
-        @Published fileprivate(set) var isBodyValid = false
+        @Published fileprivate(set) var isEnabledTitle = false
+        @Published fileprivate(set) var isEnabledBody = false
         @Published fileprivate(set) var modelObject: SampleModelObject?
         @Published fileprivate(set) var appError: AppError?
     }
@@ -38,39 +39,36 @@ final class SampleAddViewModel: ViewModel {
         self.output = output
         self.model = model
 
-        let isTitleValid = binding.$title.map { $0.count > 15 }
-        let isBodyValid = binding.$body.map { $0.count > 30 }
+        let isEnabledTitle = binding.$title.map { $0.count <= 15 }
+        let isEnabledBody = binding.$body.map { $0.count <= 30 }
 
         input.addButtonTapped
-            .sink { [weak self] _ in
-                guard let self else {
-                    return
-                }
-
+            .flatMap {
                 model.post(parameters: .init(
                     userId: 777,
                     title: binding.title,
                     body: binding.body
                 ))
-                .receive(on: DispatchQueue.main)
-                .sink { completion in
-                    switch completion {
-                    case let .failure(appError):
-                        output.appError = appError
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case let .failure(appError):
+                    binding.isCompleted = true
+                    output.appError = appError
 
-                    case .finished:
-                        Logger.debug(message: "サンプル作成完了")
-                    }
-                } receiveValue: { modelObject in
-                    output.modelObject = modelObject
+                case .finished:
+                    Logger.debug(message: "サンプル作成完了")
                 }
-                .store(in: &self.cancellables)
+            } receiveValue: { modelObject in
+                binding.isCompleted = true
+                output.modelObject = modelObject
             }
             .store(in: &cancellables)
 
         cancellables.formUnion([
-            isTitleValid.assign(to: \.isTitleValid, on: output),
-            isBodyValid.assign(to: \.isBodyValid, on: output)
+            isEnabledTitle.assign(to: \.isEnabledTitle, on: output),
+            isEnabledBody.assign(to: \.isEnabledBody, on: output)
         ])
     }
 }
