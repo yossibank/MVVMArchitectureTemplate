@@ -16,7 +16,7 @@ struct SampleAddView: View {
                         .foregroundColor(.blue)
                 )
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading)
+                .padding(.leading, 16)
 
             SampleInputView(
                 viewModel: viewModel,
@@ -33,7 +33,7 @@ struct SampleAddView: View {
             }
             .buttonStyle(SampleButtonStyle())
         }
-        .padding([.leading, .trailing])
+        .padding(.horizontal, 16)
         .alert(isPresented: viewModel.$binding.isCompleted) {
             Alert(
                 title: Text("サンプル作成完了"),

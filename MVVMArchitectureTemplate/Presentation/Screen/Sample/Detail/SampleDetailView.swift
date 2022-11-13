@@ -28,7 +28,7 @@ struct SampleDetailView: View {
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.init(top: .zero, leading: 32, bottom: .zero, trailing: 32))
+        .padding(.horizontal, 32)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {

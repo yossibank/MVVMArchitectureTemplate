@@ -19,7 +19,7 @@ struct SampleEditView: View {
                 }
                 .buttonStyle(SampleButtonStyle())
             }
-            .padding(.init(top: .zero, leading: 32, bottom: .zero, trailing: 32))
+            .padding(.horizontal, 32)
             .navigationTitle("サンプル編集")
             .navigationBarTitleDisplayMode(.inline)
         }

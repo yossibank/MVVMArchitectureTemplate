@@ -38,7 +38,7 @@ struct SampleInputView: View {
             }
         }
         .frame(height: 80, alignment: .top)
-        .padding()
+        .padding(.horizontal, 16)
     }
 
     private func countText(inputType: InputType) -> String {
