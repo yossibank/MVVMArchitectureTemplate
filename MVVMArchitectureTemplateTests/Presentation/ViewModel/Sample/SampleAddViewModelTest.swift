@@ -49,6 +49,48 @@ final class SampleAddViewModelTest: XCTestCase {
         // assert
         XCTAssertFalse(viewModel.output.isEnabledBody)
     }
+
+    func test_有効_登録ボタンをタップした際に入力情報を登録できること() {
+        // arrange
+        let expectation = XCTestExpectation(description: #function)
+
+        setupViewModel()
+
+        viewModel.binding.title = String(repeating: "a", count: 10)
+        viewModel.binding.body = String(repeating: "b", count: 20)
+
+        // act
+        viewModel.input.addButtonTapped.send(())
+
+        DispatchQueue.main.async {
+            XCTAssertEqual(self.viewModel.output.modelObject, SampleModelObjectBuilder().build())
+            XCTAssertEqual(self.viewModel.binding.isCompleted, true)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 0.5)
+    }
+
+    func test_無効_登録ボタンをタップした際にエラー情報を登録できること() {
+        // arrange
+        let expectation = XCTestExpectation(description: #function)
+
+        setupViewModel(isSuccess: false)
+
+        viewModel.binding.title = String(repeating: "a", count: 10)
+        viewModel.binding.body = String(repeating: "b", count: 20)
+
+        // act
+        viewModel.input.addButtonTapped.send(())
+
+        DispatchQueue.main.async {
+            XCTAssertEqual(self.viewModel.output.appError, .init(error: .invalidStatusCode(400)))
+            XCTAssertEqual(self.viewModel.binding.isCompleted, true)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 0.5)
+    }
 }
 
 private extension SampleAddViewModelTest {
