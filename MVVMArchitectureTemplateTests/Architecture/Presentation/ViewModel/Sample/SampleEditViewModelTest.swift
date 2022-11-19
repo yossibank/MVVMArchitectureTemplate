@@ -4,6 +4,7 @@ import XCTest
 
 final class SampleEditViewModelTest: XCTestCase {
     private var model: SampleModelInputMock!
+    private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleEditViewModel!
 
     func test_受け取ったModelObjectがBindingに入力されていること() {
@@ -82,6 +83,7 @@ final class SampleEditViewModelTest: XCTestCase {
 private extension SampleEditViewModelTest {
     func setupViewModel(isSuccess: Bool = true) {
         model = .init()
+        analytics = .init(screenId: .sampleEdit)
 
         if isSuccess {
             model.putHandler = { _, _ in
@@ -109,7 +111,7 @@ private extension SampleEditViewModelTest {
         viewModel = .init(
             model: model,
             modelObject: SampleModelObjectBuilder().build(),
-            analytics: FirebaseAnalyzableMock(screenId: .sampleList)
+            analytics: analytics
         )
     }
 }

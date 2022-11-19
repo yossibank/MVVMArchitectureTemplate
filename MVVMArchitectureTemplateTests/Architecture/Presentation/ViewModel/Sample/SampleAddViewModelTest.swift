@@ -4,6 +4,7 @@ import XCTest
 
 final class SampleAddViewModelTest: XCTestCase {
     private var model: SampleModelInputMock!
+    private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleAddViewModel!
 
     func test_binding_title_15文字以下の場合にoutput_isEnabledTitleがtrueを出力すること() {
@@ -114,6 +115,7 @@ final class SampleAddViewModelTest: XCTestCase {
 private extension SampleAddViewModelTest {
     func setupViewModel(isSuccess: Bool = true) {
         model = .init()
+        analytics = .init(screenId: .sampleAdd)
 
         if isSuccess {
             model.postHandler = { _ in
@@ -131,6 +133,9 @@ private extension SampleAddViewModelTest {
             }
         }
 
-        viewModel = .init(model: model)
+        viewModel = .init(
+            model: model,
+            analytics: analytics
+        )
     }
 }

@@ -9,6 +9,7 @@ final class SampleEditViewModel: ViewModel {
     }
 
     final class Input: InputObject {
+        let viewWillAppear = PassthroughSubject<Void, Never>()
         let editButtonTapped = PassthroughSubject<Void, Never>()
     }
 

@@ -28,8 +28,12 @@ final class SampleAddViewModel: ViewModel {
     private var cancellables: Set<AnyCancellable> = .init()
 
     private let model: SampleModelInput
+    private let analytics: FirebaseAnalyzable
 
-    init(model: SampleModelInput) {
+    init(
+        model: SampleModelInput,
+        analytics: FirebaseAnalyzable
+    ) {
         let binding = Binding()
         let input = Input()
         let output = Output()
@@ -38,6 +42,7 @@ final class SampleAddViewModel: ViewModel {
         self.input = input
         self.output = output
         self.model = model
+        self.analytics = analytics
 
         // MARK: - タイトルバリデーション
 
