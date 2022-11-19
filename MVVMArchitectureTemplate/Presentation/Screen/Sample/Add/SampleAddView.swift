@@ -43,6 +43,9 @@ struct SampleAddView: View {
                 }
             )
         }
+        .onViewWillAppear {
+            viewModel.input.viewWillAppear.send(())
+        }
     }
 }
 

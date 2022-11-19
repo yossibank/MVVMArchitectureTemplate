@@ -49,6 +49,13 @@ final class SampleEditViewModel: ViewModel {
         binding.title = modelObject.title
         binding.body = modelObject.body
 
+        // MARK: - viewWillAppear
+
+        input.viewWillAppear.sink { _ in
+            analytics.sendEvent(.screenView)
+        }
+        .store(in: &cancellables)
+
         // MARK: - 編集ボタンタップ
 
         input.editButtonTapped

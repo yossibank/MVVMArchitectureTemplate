@@ -7,6 +7,24 @@ final class SampleAddViewModelTest: XCTestCase {
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleAddViewModel!
 
+    func test_viewWillAppear_FA_screenViewイベントを送信できていること() {
+        // arrange
+        setupViewModel()
+
+        let expectation = XCTestExpectation(description: #function)
+
+        analytics.sendEventFAEventHandler = { event in
+            // assert
+            XCTAssertEqual(event, .screenView)
+            expectation.fulfill()
+        }
+
+        // act
+        viewModel.input.viewWillAppear.send(())
+
+        wait(for: [expectation], timeout: 0.1)
+    }
+
     func test_binding_title_15文字以下の場合にoutput_isEnabledTitleがtrueを出力すること() {
         // arrange
         setupViewModel()

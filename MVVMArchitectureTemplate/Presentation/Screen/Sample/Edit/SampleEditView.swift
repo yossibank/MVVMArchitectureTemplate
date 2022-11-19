@@ -32,6 +32,9 @@ struct SampleEditView: View {
                 }
             )
         }
+        .onViewWillAppear {
+            viewModel.input.viewWillAppear.send(())
+        }
     }
 }
 

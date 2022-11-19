@@ -9,6 +9,7 @@ final class SampleAddViewModel: ViewModel {
     }
 
     final class Input: InputObject {
+        let viewWillAppear = PassthroughSubject<Void, Never>()
         let addButtonTapped = PassthroughSubject<Void, Never>()
     }
 
@@ -43,6 +44,13 @@ final class SampleAddViewModel: ViewModel {
         self.output = output
         self.model = model
         self.analytics = analytics
+
+        // MARK: - viewWillAppear
+
+        input.viewWillAppear.sink { _ in
+            analytics.sendEvent(.screenView)
+        }
+        .store(in: &cancellables)
 
         // MARK: - タイトルバリデーション
 
