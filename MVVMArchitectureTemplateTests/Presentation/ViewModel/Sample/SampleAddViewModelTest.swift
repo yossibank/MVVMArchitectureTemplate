@@ -63,15 +63,24 @@ final class SampleAddViewModelTest: XCTestCase {
         viewModel.input.addButtonTapped.send(())
 
         DispatchQueue.main.async {
-            XCTAssertEqual(self.viewModel.output.modelObject, SampleModelObjectBuilder().build())
-            XCTAssertEqual(self.viewModel.binding.isCompleted, true)
+            // assert
+            XCTAssertEqual(
+                self.viewModel.output.modelObject,
+                SampleModelObjectBuilder().build()
+            )
+
+            XCTAssertEqual(
+                self.viewModel.binding.isCompleted,
+                true
+            )
+
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 0.5)
     }
 
-    func test_無効_登録ボタンをタップした際にエラー情報を登録できること() {
+    func test_無効_登録ボタンをタップした際にエラー情報を取得できること() {
         // arrange
         let expectation = XCTestExpectation(description: #function)
 
@@ -84,8 +93,17 @@ final class SampleAddViewModelTest: XCTestCase {
         viewModel.input.addButtonTapped.send(())
 
         DispatchQueue.main.async {
-            XCTAssertEqual(self.viewModel.output.appError, .init(error: .invalidStatusCode(400)))
-            XCTAssertEqual(self.viewModel.binding.isCompleted, true)
+            // assert
+            XCTAssertEqual(
+                self.viewModel.output.appError,
+                .init(error: .invalidStatusCode(400))
+            )
+
+            XCTAssertEqual(
+                self.viewModel.binding.isCompleted,
+                true
+            )
+
             expectation.fulfill()
         }
 
