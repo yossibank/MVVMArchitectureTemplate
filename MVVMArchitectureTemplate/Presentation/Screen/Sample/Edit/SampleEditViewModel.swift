@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-final class SampleAddViewModel: ViewModel {
+final class SampleEditViewModel: ViewModel {
     final class Binding: BindingObject {
         @Published var title = ""
         @Published var body = ""
@@ -10,12 +10,10 @@ final class SampleAddViewModel: ViewModel {
 
     final class Input: InputObject {
         let viewWillAppear = PassthroughSubject<Void, Never>()
-        let addButtonTapped = PassthroughSubject<Void, Never>()
+        let editButtonTapped = PassthroughSubject<Void, Never>()
     }
 
     final class Output: OutputObject {
-        @Published fileprivate(set) var isEnabledTitle = false
-        @Published fileprivate(set) var isEnabledBody = false
         @Published fileprivate(set) var modelObject: SampleModelObject?
         @Published fileprivate(set) var appError: AppError?
     }
@@ -29,10 +27,12 @@ final class SampleAddViewModel: ViewModel {
     private var cancellables: Set<AnyCancellable> = .init()
 
     private let model: SampleModelInput
+    private let modelObject: SampleModelObject
     private let analytics: FirebaseAnalyzable
 
     init(
         model: SampleModelInput,
+        modelObject: SampleModelObject,
         analytics: FirebaseAnalyzable
     ) {
         let binding = Binding()
@@ -43,7 +43,11 @@ final class SampleAddViewModel: ViewModel {
         self.input = input
         self.output = output
         self.model = model
+        self.modelObject = modelObject
         self.analytics = analytics
+
+        binding.title = modelObject.title
+        binding.body = modelObject.body
 
         // MARK: - viewWillAppear
 
@@ -52,23 +56,19 @@ final class SampleAddViewModel: ViewModel {
         }
         .store(in: &cancellables)
 
-        // MARK: - タイトルバリデーション
+        // MARK: - 編集ボタンタップ
 
-        let isEnabledTitle = binding.$title.map { $0.count <= 15 }
-
-        // MARK: - 内容バリデーション
-
-        let isEnabledBody = binding.$body.map { $0.count <= 30 }
-
-        // MARK: - 登録ボタンタップ
-
-        input.addButtonTapped
+        input.editButtonTapped
             .flatMap {
-                model.post(parameters: .init(
-                    userId: 777,
-                    title: binding.title,
-                    body: binding.body
-                ))
+                model.put(
+                    userId: modelObject.userId,
+                    parameters: .init(
+                        userId: modelObject.userId,
+                        id: modelObject.id,
+                        title: binding.title,
+                        body: binding.body
+                    )
+                )
             }
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -78,17 +78,12 @@ final class SampleAddViewModel: ViewModel {
                     output.appError = appError
 
                 case .finished:
-                    Logger.debug(message: "サンプル作成完了")
+                    Logger.debug(message: "サンプル編集完了")
                 }
             } receiveValue: { modelObject in
                 binding.isCompleted = true
                 output.modelObject = modelObject
             }
             .store(in: &cancellables)
-
-        cancellables.formUnion([
-            isEnabledTitle.assign(to: \.isEnabledTitle, on: output),
-            isEnabledBody.assign(to: \.isEnabledBody, on: output)
-        ])
     }
 }

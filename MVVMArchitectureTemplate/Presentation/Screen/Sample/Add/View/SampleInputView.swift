@@ -29,7 +29,6 @@ struct SampleInputView: View {
 
                 TextField(inputType.rawValue, text: bindingText(inputType: inputType))
                     .textFieldStyle(SampleTextFieldStyle())
-                    .autocorrectionDisabled()
             }
 
             if !isEnabled(inputType: inputType) {
@@ -39,7 +38,7 @@ struct SampleInputView: View {
             }
         }
         .frame(height: 80, alignment: .top)
-        .padding()
+        .padding(.horizontal, 16)
     }
 
     private func countText(inputType: InputType) -> String {
