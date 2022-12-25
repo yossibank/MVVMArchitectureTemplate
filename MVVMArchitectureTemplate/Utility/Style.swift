@@ -31,6 +31,12 @@ extension Stylable {
     func apply(_ style: ViewStyle<Self>) {
         style.style(self)
     }
+
+    func apply(_ styles: [ViewStyle<Self>]) {
+        styles.forEach {
+            $0.style(self)
+        }
+    }
 }
 
 extension UIView: Stylable {}

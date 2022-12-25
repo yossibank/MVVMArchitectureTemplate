@@ -17,10 +17,18 @@ final class SampleDetailContentView: UIView {
         bodyLabel
     ]))
 
-    private let userIdLabel = UILabel(styles: [.bold14, .red])
-    private let idLabel = UILabel(styles: [.system12, .lightGray])
-    private let titleLabel = UILabel(styles: [.heavy18, .lineInfinity])
-    private let bodyLabel = UILabel(styles: [.italic16, .lightGray, .lineInfinity])
+    private let userIdLabel = UILabel(
+        styles: [.bold14, .red]
+    )
+    private let idLabel = UILabel(
+        styles: [.system12, .lightGray]
+    )
+    private let titleLabel = UILabel(
+        styles: [.heavy18, .lineInfinity]
+    )
+    private let bodyLabel = UILabel(
+        styles: [.italic16, .lightGray, .lineInfinity]
+    )
 
     private let modelObject: SampleModelObject
 

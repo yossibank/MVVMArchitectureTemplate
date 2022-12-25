@@ -7,7 +7,7 @@ final class SampleAddViewModelTest: XCTestCase {
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleAddViewModel!
 
-    func test_viewWillAppear_FA_screenViewイベントを送信できていること() {
+    func test_viewWillAppear_firebaseAnalytics_screenViewイベントを送信できていること() {
         // arrange
         setupViewModel()
 
@@ -25,108 +25,110 @@ final class SampleAddViewModelTest: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 
-    func test_binding_title_15文字以下の場合にoutput_isEnabledTitleがtrueを出力すること() {
+    func test_binding_title_1文字以上20文字以下の場合にoutput_titleValidationがnoneを出力すること() {
         // arrange
         setupViewModel()
 
         // act
-        viewModel.binding.title = String(repeating: "a", count: 15)
-
-        // assert
-        XCTAssertTrue(viewModel.output.isEnabledTitle)
-    }
-
-    func test_binding_title_16文字以上の場合にoutput_isEnabledTitleがfalseを出力すること() {
-        // arrange
-        setupViewModel()
-
-        // act
-        viewModel.binding.title = String(repeating: "a", count: 16)
-
-        // assert
-        XCTAssertFalse(viewModel.output.isEnabledTitle)
-    }
-
-    func test_binding_body_30文字以下の場合にoutput_isEnabledBodyがtrueを出力すること() {
-        // arrange
-        setupViewModel()
-
-        // act
-        viewModel.binding.body = String(repeating: "a", count: 30)
-
-        // assert
-        XCTAssertTrue(viewModel.output.isEnabledBody)
-    }
-
-    func test_binding_body_31文字以上の場合にoutput_isEnabledBodyがfalseを出力すること() {
-        // arrange
-        setupViewModel()
-
-        // act
-        viewModel.binding.body = String(repeating: "a", count: 31)
-
-        // assert
-        XCTAssertFalse(viewModel.output.isEnabledBody)
-    }
-
-    func test_有効_登録ボタンをタップした際に入力情報を登録できること() {
-        // arrange
-        let expectation = XCTestExpectation(description: #function)
-
-        setupViewModel()
-
         viewModel.binding.title = String(repeating: "a", count: 10)
-        viewModel.binding.body = String(repeating: "b", count: 20)
+
+        // assert
+        XCTAssertEqual(viewModel.output.titleValidation, ValidationError.none)
+    }
+
+    func test_binding_title_空文字の場合にoutput_titleValidationがemptyを出力すること() {
+        // arrange
+        setupViewModel()
+
+        // act
+        viewModel.binding.title = ""
+
+        // assert
+        XCTAssertEqual(viewModel.output.titleValidation, .empty)
+    }
+
+    func test_binding_title_21文字以上の場合にoutput_titleValidationがlongを出力すること() {
+        // arrange
+        setupViewModel()
+
+        // act
+        viewModel.binding.title = String(repeating: "a", count: 21)
+
+        // assert
+        XCTAssertEqual(viewModel.output.titleValidation, .long)
+    }
+
+    func test_binding_body_1文字以上20文字以下の場合にoutput_bodyValidationがnoneを出力すること() {
+        // arrange
+        setupViewModel()
+
+        // act
+        viewModel.binding.body = String(repeating: "a", count: 10)
+
+        // assert
+        XCTAssertEqual(viewModel.output.bodyValidation, ValidationError.none)
+    }
+
+    func test_binding_body_空文字の場合にoutput_bodyValidationがemptyを出力すること() {
+        // arrange
+        setupViewModel()
+
+        // act
+        viewModel.binding.body = ""
+
+        // assert
+        XCTAssertEqual(viewModel.output.bodyValidation, .empty)
+    }
+
+    func test_binding_body_21文字以上の場合にoutput_bodyValidationがlongを出力すること() {
+        // arrange
+        setupViewModel()
+
+        // act
+        viewModel.binding.body = String(repeating: "a", count: 21)
+
+        // assert
+        XCTAssertEqual(viewModel.output.bodyValidation, .long)
+    }
+
+    func test_有効_登録ボタンをタップした際に入力情報を登録できること() throws {
+        // arrange
+        setupViewModel()
+
+        viewModel.binding.title = String(repeating: "a", count: 15)
+        viewModel.binding.body = String(repeating: "b", count: 15)
 
         // act
         viewModel.input.addButtonTapped.send(())
 
-        DispatchQueue.main.async {
-            // assert
-            XCTAssertEqual(
-                self.viewModel.output.modelObject,
-                SampleModelObjectBuilder().build()
-            )
+        let publisher = viewModel.output.$modelObject.collect(1).first()
+        let output = try awaitOutputPublisher(publisher)
 
-            XCTAssertEqual(
-                self.viewModel.binding.isCompleted,
-                true
-            )
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 0.5)
+        // assert
+        XCTAssertEqual(
+            output.first,
+            SampleModelObjectBuilder().build()
+        )
     }
 
-    func test_無効_登録ボタンをタップした際にエラー情報を取得できること() {
+    func test_無効_登録ボタンをタップした際にエラー情報を取得できること() throws {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
-
         setupViewModel(isSuccess: false)
 
-        viewModel.binding.title = String(repeating: "a", count: 10)
-        viewModel.binding.body = String(repeating: "b", count: 20)
+        viewModel.binding.title = String(repeating: "a", count: 15)
+        viewModel.binding.body = String(repeating: "b", count: 15)
 
         // act
         viewModel.input.addButtonTapped.send(())
 
-        DispatchQueue.main.async {
-            // assert
-            XCTAssertEqual(
-                self.viewModel.output.appError,
-                .init(error: .invalidStatusCode(400))
-            )
+        let publisher = viewModel.output.$appError.collect(1).first()
+        let output = try awaitOutputPublisher(publisher)
 
-            XCTAssertEqual(
-                self.viewModel.binding.isCompleted,
-                true
-            )
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 0.5)
+        // assert
+        XCTAssertEqual(
+            output.first,
+            .init(error: .invalidStatusCode(400))
+        )
     }
 }
 

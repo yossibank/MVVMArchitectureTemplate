@@ -3,6 +3,12 @@ import UIKit
 extension ViewStyle where T: UILabel {
     // MARK: - 文字サイズ
 
+    static var system8: ViewStyle<T> {
+        .init {
+            $0.font = .systemFont(ofSize: 8)
+        }
+    }
+
     static var system10: ViewStyle<T> {
         .init {
             $0.font = .systemFont(ofSize: 10)

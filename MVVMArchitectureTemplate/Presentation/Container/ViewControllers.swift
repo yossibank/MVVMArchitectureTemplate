@@ -2,12 +2,16 @@ import SwiftUI
 
 enum AppControllers {
     enum Sample {
-        static func Add() -> UIHostingController<SampleAddView> {
-            let rootView = SampleAddView(viewModel: ViewModels.Sample.Add())
-            let instance = UIHostingController(rootView: rootView)
+        static func Add() -> SampleAddViewController {
+            let viewController = SampleAddViewController()
 
-            instance.title = "サンプル作成"
-            return instance
+            viewController.title = "サンプル作成"
+            viewController.inject(
+                contentView: ContentViews.Sample.Add(),
+                viewModel: ViewModels.Sample.Add()
+            )
+
+            return viewController
         }
 
         static func Detail(_ modelObject: SampleModelObject) -> SampleDetailViewController {
