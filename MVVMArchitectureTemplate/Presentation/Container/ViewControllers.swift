@@ -10,11 +10,15 @@ enum AppControllers {
             return instance
         }
 
-        static func Detail(_ modelObject: SampleModelObject) -> UIHostingController<SampleDetailView> {
-            let rootView = SampleDetailView(modelObject: modelObject)
-            let instance = UIHostingController(rootView: rootView)
+        static func Detail(_ modelObject: SampleModelObject) -> SampleDetailViewController {
+            let instance = SampleDetailViewController()
 
+            instance.inject(
+                contentView: ContentViews.Sample.Detail(modelObject: modelObject),
+                viewModel: ViewModels.Sample.Detail(modelObject: modelObject)
+            )
             instance.title = "サンプル詳細"
+
             return instance
         }
 
@@ -35,6 +39,7 @@ enum AppControllers {
             )
 
             instance.title = "サンプル一覧"
+
             return instance
         }
     }

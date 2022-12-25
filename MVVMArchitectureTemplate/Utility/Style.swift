@@ -23,6 +23,11 @@ extension Stylable {
         apply(style)
     }
 
+    init(styles: [ViewStyle<Self>]) {
+        self.init()
+        styles.forEach { apply($0) }
+    }
+
     func apply(_ style: ViewStyle<Self>) {
         style.style(self)
     }

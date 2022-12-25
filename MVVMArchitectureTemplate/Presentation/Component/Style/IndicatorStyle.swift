@@ -1,6 +1,8 @@
 import UIKit
 
 extension ViewStyle where T: UIActivityIndicatorView {
+    // MARK: - 基本インジケータ
+
     static var main: ViewStyle<T> {
         .init {
             $0.color = .gray

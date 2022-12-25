@@ -7,6 +7,13 @@ enum ViewModels {
             )
         }
 
+        static func Detail(modelObject: SampleModelObject) -> SampleDetailViewModel {
+            .init(
+                modelObject: modelObject,
+                analytics: FirebaseAnalytics(screenId: .sampleDetail)
+            )
+        }
+
         static func Edit(modelObject: SampleModelObject) -> SampleEditViewModel {
             .init(
                 model: Models.Sample(),
