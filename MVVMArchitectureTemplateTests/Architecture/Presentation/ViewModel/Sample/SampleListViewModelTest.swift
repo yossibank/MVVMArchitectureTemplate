@@ -4,6 +4,7 @@ import XCTest
 
 final class SampleListViewModelTest: XCTestCase {
     private var model: SampleModelInputMock!
+    private var routing: SampleListRoutingInputMock!
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleListViewModel!
 
@@ -37,7 +38,7 @@ final class SampleListViewModelTest: XCTestCase {
         )
     }
 
-    func test_viewWillAppear_FA_screenViewイベントを送信できていること() {
+    func test_viewWillAppear_firebaseAnalytics_screenViewイベントを送信できていること() {
         // arrange
         setupViewModel()
 
@@ -55,7 +56,18 @@ final class SampleListViewModelTest: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 
-    func test_contentTapped_FA_tapSampleListイベントを送信できていること() {
+    func test_barButtonTapped_routing_showAddScreenが呼び出されること() {
+        // arrange
+        setupViewModel()
+
+        // act
+        viewModel.input.barButtonTapped.send(())
+
+        // assert
+        XCTAssertEqual(routing.showAddScreenCallCount, 1)
+    }
+
+    func test_contentTapped_firebaseAnalytics_tapSampleListイベントを送信できていること() {
         // arrange
         setupViewModel()
 
@@ -72,11 +84,23 @@ final class SampleListViewModelTest: XCTestCase {
 
         wait(for: [expectation], timeout: 0.1)
     }
+
+    func test_contentTapped_routing_showDetailScreenが呼び出されること() {
+        // arrange
+        setupViewModel()
+
+        // act
+        viewModel.input.contentTapped.send((.init(row: 0, section: 0)))
+
+        // assert
+        XCTAssertEqual(routing.showDetailScreenCallCount, 1)
+    }
 }
 
 private extension SampleListViewModelTest {
     func setupViewModel(isSuccess: Bool = true) {
         model = .init()
+        routing = .init()
         analytics = .init(screenId: .sampleList)
 
         if isSuccess {
@@ -97,6 +121,7 @@ private extension SampleListViewModelTest {
 
         viewModel = .init(
             model: model,
+            routing: routing,
             analytics: analytics
         )
     }
