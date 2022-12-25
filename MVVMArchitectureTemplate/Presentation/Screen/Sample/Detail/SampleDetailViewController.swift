@@ -11,7 +11,7 @@ extension SampleDetailViewController: VCInjectable {
 // MARK: - stored properties & init
 
 final class SampleDetailViewController: UIViewController {
-    var viewModel: VM! { didSet { viewModel.routing.viewController = self } }
+    var viewModel: VM!
     var contentView: CV!
 
     private var cancellables: Set<AnyCancellable> = .init()

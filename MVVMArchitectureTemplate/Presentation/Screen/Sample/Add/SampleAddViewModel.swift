@@ -24,7 +24,6 @@ final class SampleAddViewModel: ViewModel {
 
     let input: Input
     let output: Output
-    let routing = NoRouting()
 
     private var cancellables: Set<AnyCancellable> = .init()
 

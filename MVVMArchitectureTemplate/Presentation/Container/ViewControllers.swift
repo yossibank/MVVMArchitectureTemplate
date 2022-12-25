@@ -11,15 +11,19 @@ enum AppControllers {
         }
 
         static func Detail(_ modelObject: SampleModelObject) -> SampleDetailViewController {
-            let instance = SampleDetailViewController()
+            let viewController = SampleDetailViewController()
+            let routing = SampleDetailRouting(viewController: viewController)
 
-            instance.inject(
+            viewController.title = "サンプル詳細"
+            viewController.inject(
                 contentView: ContentViews.Sample.Detail(modelObject: modelObject),
-                viewModel: ViewModels.Sample.Detail(modelObject: modelObject)
+                viewModel: ViewModels.Sample.Detail(
+                    modelObject: modelObject,
+                    routing: routing
+                )
             )
-            instance.title = "サンプル詳細"
 
-            return instance
+            return viewController
         }
 
         static func Edit(_ modelObject: SampleModelObject) -> UIHostingController<SampleEditView> {
@@ -31,16 +35,16 @@ enum AppControllers {
         }
 
         static func List() -> SampleListViewController {
-            let instance = SampleListViewController()
+            let viewController = SampleListViewController()
+            let routing = SampleListRouting(viewController: viewController)
 
-            instance.inject(
+            viewController.title = "サンプル一覧"
+            viewController.inject(
                 contentView: ContentViews.Sample.List(),
-                viewModel: ViewModels.Sample.List()
+                viewModel: ViewModels.Sample.List(routing: routing)
             )
 
-            instance.title = "サンプル一覧"
-
-            return instance
+            return viewController
         }
     }
 }
