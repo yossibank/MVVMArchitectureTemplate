@@ -91,7 +91,31 @@ final class SampleAddViewModelTest: XCTestCase {
         XCTAssertEqual(viewModel.output.bodyValidation, .long)
     }
 
-    func test_有効_登録ボタンをタップした際に入力情報を登録できること() throws {
+    func test_titleValidation_bodyValidationのどちらかがnoneでない場合_output_isEnabledがfalseを出力すること() {
+        // arrange
+        setupViewModel()
+
+        // act
+        viewModel.binding.title = ""
+        viewModel.binding.body = String(repeating: "b", count: 15)
+
+        // assert
+        XCTAssertFalse(viewModel.output.isEnabled!)
+    }
+
+    func test_titleValidation_bodyValidationが共にnoneの場合_output_isEnabledがtrueを出力すること() {
+        // arrange
+        setupViewModel()
+
+        // act
+        viewModel.binding.title = String(repeating: "a", count: 15)
+        viewModel.binding.body = String(repeating: "b", count: 15)
+
+        // assert
+        XCTAssertTrue(viewModel.output.isEnabled!)
+    }
+
+    func test_成功_登録ボタンをタップした際に入力情報を登録できること() throws {
         // arrange
         setupViewModel()
 
@@ -111,7 +135,7 @@ final class SampleAddViewModelTest: XCTestCase {
         )
     }
 
-    func test_無効_登録ボタンをタップした際にエラー情報を取得できること() throws {
+    func test_失敗_登録ボタンをタップした際にエラー情報を取得できること() throws {
         // arrange
         setupViewModel(isSuccess: false)
 

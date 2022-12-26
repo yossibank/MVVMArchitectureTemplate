@@ -5,7 +5,7 @@ extension ViewStyle where T: UIView {
 
     static var background: ViewStyle<T> {
         .init {
-            $0.backgroundColor = .systemBackground
+            $0.backgroundColor = .dynamicColor(light: .white, dark: .black)
         }
     }
 

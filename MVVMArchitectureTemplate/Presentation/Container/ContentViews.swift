@@ -8,6 +8,10 @@ enum ContentViews {
             .init(modelObject: modelObject)
         }
 
+        static func Edit(modelObject: SampleModelObject) -> SampleEditContentView {
+            .init(modelObject: modelObject)
+        }
+
         static func List() -> SampleListContentView {
             .init()
         }

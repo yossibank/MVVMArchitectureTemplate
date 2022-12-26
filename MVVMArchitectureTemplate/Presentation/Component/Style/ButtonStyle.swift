@@ -21,6 +21,12 @@ extension ViewStyle where T: UIButton {
                 $0.setTitle("作成する", for: .normal)
             }
         }
+
+        static var edit: ViewStyle<T> {
+            .init {
+                $0.setTitle("編集する", for: .normal)
+            }
+        }
     }
 
     // MARK: - タイトルカラー

@@ -20,12 +20,15 @@ final class SampleDetailContentView: UIView {
     private let userIdLabel = UILabel(
         styles: [.bold14, .red]
     )
+
     private let idLabel = UILabel(
         styles: [.system12, .lightGray]
     )
+
     private let titleLabel = UILabel(
         styles: [.heavy18, .lineInfinity]
     )
+
     private let bodyLabel = UILabel(
         styles: [.italic16, .lightGray, .lineInfinity]
     )
@@ -48,6 +51,17 @@ final class SampleDetailContentView: UIView {
     }
 }
 
+// MARK: - private methods
+
+private extension SampleDetailContentView {
+    func setupConfigure(modelObject: SampleModelObject) {
+        userIdLabel.text = "UserID: \(modelObject.userId)"
+        idLabel.text = "ID: \(modelObject.id)"
+        titleLabel.text = modelObject.title
+        bodyLabel.text = modelObject.body
+    }
+}
+
 // MARK: - protocol
 
 extension SampleDetailContentView: ContentView {
@@ -61,13 +75,6 @@ extension SampleDetailContentView: ContentView {
             $0.centerY.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(32)
         }
-    }
-
-    func setupConfigure(modelObject: SampleModelObject) {
-        userIdLabel.text = "UserID: \(modelObject.userId.description)"
-        idLabel.text = "ID: \(modelObject.id.description)"
-        titleLabel.text = modelObject.title
-        bodyLabel.text = modelObject.body
     }
 }
 

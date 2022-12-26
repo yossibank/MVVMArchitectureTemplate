@@ -7,7 +7,23 @@ final class SampleEditViewModelTest: XCTestCase {
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleEditViewModel!
 
-    func test_viewWillAppear_FA_screenViewイベントを送信できていること() {
+    func test_受け取ったModelObjectがBindingに入力されていること() {
+        // arrange
+        setupViewModel()
+
+        // assert
+        XCTAssertEqual(
+            viewModel.binding.title,
+            "sample title"
+        )
+
+        XCTAssertEqual(
+            viewModel.binding.body,
+            "sample body"
+        )
+    }
+
+    func test_viewWillAppear_FirebaseAnalytics_screenViewイベントを送信できていること() {
         // arrange
         setupViewModel()
 
@@ -25,76 +41,65 @@ final class SampleEditViewModelTest: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 
-    func test_受け取ったModelObjectがBindingに入力されていること() {
+    func test_title_bodyのどちらかが空文字の場合_output_isEnabledがfalseを出力すること() {
         // arrange
         setupViewModel()
 
-        // assert
-        XCTAssertEqual(
-            viewModel.binding.title,
-            "sample title"
-        )
+        // act
+        viewModel.binding.title = ""
+        viewModel.binding.body = String(repeating: "b", count: 15)
 
-        XCTAssertEqual(
-            viewModel.binding.body,
-            "sample body"
-        )
+        // assert
+        XCTAssertFalse(viewModel.output.isEnabled!)
     }
 
-    func test_有効_編集ボタンをタップした際に入力情報を更新できること() {
+    func test_title_bodyが共に空文字でない場合_output_isEnabledがtrueを出力すること() {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
+        setupViewModel()
 
+        // act
+        viewModel.binding.title = String(repeating: "a", count: 15)
+        viewModel.binding.body = String(repeating: "b", count: 15)
+
+        // assert
+        XCTAssertTrue(viewModel.output.isEnabled!)
+    }
+
+    func test_成功_編集ボタンをタップした際に入力情報を更新できること() throws {
+        // arrange
         setupViewModel()
 
         // act
         viewModel.input.editButtonTapped.send(())
 
-        DispatchQueue.main.async {
-            // assert
-            XCTAssertEqual(
-                self.viewModel.output.modelObject,
-                SampleModelObjectBuilder()
-                    .title("sample edit title")
-                    .body("sample edit body")
-                    .build()
-            )
+        let publisher = viewModel.output.$modelObject.collect(1).first()
+        let output = try awaitOutputPublisher(publisher)
 
-            XCTAssertEqual(
-                self.viewModel.binding.isCompleted,
-                true
-            )
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 0.5)
+        // assert
+        XCTAssertEqual(
+            output.first,
+            SampleModelObjectBuilder()
+                .title("sample edit title")
+                .body("sample edit body")
+                .build()
+        )
     }
 
-    func test_無効_編集ボタンをタップした際にエラー情報を取得できること() {
+    func test_失敗_編集ボタンをタップした際にエラー情報を取得できること() throws {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
-
         setupViewModel(isSuccess: false)
 
         // act
         viewModel.input.editButtonTapped.send(())
 
-        DispatchQueue.main.async {
-            XCTAssertEqual(
-                self.viewModel.output.appError,
-                .init(error: .invalidStatusCode(400))
-            )
+        let publisher = viewModel.output.$appError.collect(1).first()
+        let output = try awaitOutputPublisher(publisher)
 
-            XCTAssertEqual(
-                self.viewModel.binding.isCompleted,
-                true
-            )
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 0.5)
+        // assert
+        XCTAssertEqual(
+            output.first,
+            .init(error: .invalidStatusCode(400))
+        )
     }
 }
 

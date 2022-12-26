@@ -30,12 +30,16 @@ enum AppControllers {
             return viewController
         }
 
-        static func Edit(_ modelObject: SampleModelObject) -> UIHostingController<SampleEditView> {
-            let rootView = SampleEditView(viewModel: ViewModels.Sample.Edit(modelObject: modelObject))
-            let instance = UIHostingController(rootView: rootView)
+        static func Edit(_ modelObject: SampleModelObject) -> SampleEditViewController {
+            let viewController = SampleEditViewController()
 
-            instance.title = "サンプル編集"
-            return instance
+            viewController.title = "サンプル編集"
+            viewController.inject(
+                contentView: ContentViews.Sample.Edit(modelObject: modelObject),
+                viewModel: ViewModels.Sample.Edit(modelObject: modelObject)
+            )
+
+            return viewController
         }
 
         static func List() -> SampleListViewController {

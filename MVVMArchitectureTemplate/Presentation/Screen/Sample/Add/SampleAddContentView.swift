@@ -65,24 +65,41 @@ final class SampleAddContentView: UIView {
     private let userIdLabel = UILabel(
         styles: [.italic16]
     )
+
     private let titleCountLabel = UILabel(
         style: .system10
     )
+
     private let titleTextField = UITextField(
-        styles: [.PlaceHolder.title, .round]
+        styles: [
+            .PlaceHolder.title,
+            .round,
+            .borderPrimary,
+            .cornerRadius8
+        ]
     )
+
     private let titleValidationLabel = UILabel(
         styles: [.system10, .red]
     )
+
     private let bodyCountLabel = UILabel(
         style: .system10
     )
+
     private let bodyTextField = UITextField(
-        styles: [.PlaceHolder.body, .round]
+        styles: [
+            .PlaceHolder.body,
+            .round,
+            .borderPrimary,
+            .cornerRadius8
+        ]
     )
+
     private let bodyValidationLabel = UILabel(
         styles: [.system10, .red]
     )
+
     private let createButton = UIButton(
         styles: [
             .ButtonTitle.create,
@@ -110,7 +127,9 @@ final class SampleAddContentView: UIView {
         if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
             super.traitCollectionDidChange(previousTraitCollection)
 
-            createButton.apply(.borderPrimary)
+            [titleTextField, bodyTextField, createButton].forEach {
+                $0.apply(.borderPrimary)
+            }
         }
     }
 }
@@ -185,14 +204,14 @@ extension SampleAddContentView: ContentView {
 
         [titleStackView, bodyStackView].forEach {
             $0.snp.makeConstraints {
-                $0.height.equalTo(90)
+                $0.height.equalTo(96)
             }
         }
 
         [titleTextField, bodyTextField].forEach {
             $0.snp.makeConstraints {
                 $0.centerY.equalToSuperview()
-                $0.height.equalTo(40)
+                $0.height.equalTo(48)
             }
         }
 
@@ -210,7 +229,9 @@ extension SampleAddContentView: ContentView {
 
     struct SampleAddContentViewPreview: PreviewProvider {
         static var previews: some View {
-            WrapperView(view: SampleAddContentView())
+            WrapperView(
+                view: SampleAddContentView()
+            )
         }
     }
 #endif

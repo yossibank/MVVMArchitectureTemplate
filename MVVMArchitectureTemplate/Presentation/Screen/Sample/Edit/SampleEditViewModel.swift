@@ -1,11 +1,9 @@
 import Combine
-import Foundation
 
 final class SampleEditViewModel: ViewModel {
     final class Binding: BindingObject {
         @Published var title = ""
         @Published var body = ""
-        @Published var isCompleted = false
     }
 
     final class Input: InputObject {
@@ -16,6 +14,7 @@ final class SampleEditViewModel: ViewModel {
     final class Output: OutputObject {
         @Published fileprivate(set) var modelObject: SampleModelObject?
         @Published fileprivate(set) var appError: AppError?
+        @Published fileprivate(set) var isEnabled: Bool?
     }
 
     @BindableObject private(set) var binding: Binding
@@ -55,6 +54,12 @@ final class SampleEditViewModel: ViewModel {
         }
         .store(in: &cancellables)
 
+        // MARK: - 編集ボタン有効化
+
+        let isEnabled = Publishers.CombineLatest(binding.$title, binding.$body).map { title, body -> Bool? in
+            !title.isEmpty && !body.isEmpty
+        }
+
         // MARK: - 編集ボタンタップ
 
         input.editButtonTapped
@@ -69,20 +74,21 @@ final class SampleEditViewModel: ViewModel {
                     )
                 )
             }
-            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case let .failure(appError):
-                    binding.isCompleted = true
                     output.appError = appError
 
                 case .finished:
                     Logger.debug(message: "サンプル編集完了")
                 }
             } receiveValue: { modelObject in
-                binding.isCompleted = true
                 output.modelObject = modelObject
             }
             .store(in: &cancellables)
+
+        cancellables.formUnion([
+            isEnabled.assign(to: \.isEnabled, on: output)
+        ])
     }
 }
