@@ -33,7 +33,15 @@ final class SampleAddViewModelTest: XCTestCase {
         viewModel.binding.title = String(repeating: "a", count: 10)
 
         // assert
-        XCTAssertEqual(viewModel.output.titleValidation, ValidationError.none)
+        XCTAssertEqual(
+            viewModel.output.titleValidation,
+            ValidationError.none
+        )
+
+        XCTAssertEqual(
+            viewModel.output.titleValidation?.description,
+            ""
+        )
     }
 
     func test_binding_title_空文字の場合にoutput_titleValidationがemptyを出力すること() {
@@ -82,7 +90,15 @@ final class SampleAddViewModelTest: XCTestCase {
         viewModel.binding.body = String(repeating: "a", count: 10)
 
         // assert
-        XCTAssertEqual(viewModel.output.bodyValidation, ValidationError.none)
+        XCTAssertEqual(
+            viewModel.output.bodyValidation,
+            ValidationError.none
+        )
+
+        XCTAssertEqual(
+            viewModel.output.bodyValidation?.description,
+            ""
+        )
     }
 
     func test_binding_body_空文字の場合にoutput_bodyValidationがemptyを出力すること() {
