@@ -7,6 +7,17 @@ enum ViewModels {
             )
         }
 
+        static func Detail(
+            modelObject: SampleModelObject,
+            routing: SampleDetailRoutingInput
+        ) -> SampleDetailViewModel {
+            .init(
+                modelObject: modelObject,
+                routing: routing,
+                analytics: FirebaseAnalytics(screenId: .sampleDetail)
+            )
+        }
+
         static func Edit(modelObject: SampleModelObject) -> SampleEditViewModel {
             .init(
                 model: Models.Sample(),
@@ -15,9 +26,10 @@ enum ViewModels {
             )
         }
 
-        static func List() -> SampleListViewModel {
+        static func List(routing: SampleListRoutingInput) -> SampleListViewModel {
             .init(
                 model: Models.Sample(),
+                routing: routing,
                 analytics: FirebaseAnalytics(screenId: .sampleList)
             )
         }

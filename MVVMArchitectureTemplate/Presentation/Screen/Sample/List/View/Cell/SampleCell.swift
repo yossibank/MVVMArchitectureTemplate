@@ -26,10 +26,10 @@ final class SampleCell: UITableViewCell {
         bodyLabel
     ]))
 
-    private let idLabel = UILabel(style: .number)
-    private let userIdLabel = UILabel(style: .number)
-    private let titleLabel = UILabel(style: .title)
-    private let bodyLabel = UILabel(style: .subTitle)
+    private let idLabel = UILabel(style: .system10)
+    private let userIdLabel = UILabel(style: .system10)
+    private let titleLabel = UILabel(styles: [.bold14, .line2])
+    private let bodyLabel = UILabel(style: .system12)
 
     override init(
         style: UITableViewCell.CellStyle,
@@ -79,3 +79,17 @@ private extension SampleCell {
         }
     }
 }
+
+// MARK: - preview
+
+#if DEBUG
+    import SwiftUI
+
+    struct SampleCellPreview: PreviewProvider {
+        static var previews: some View {
+            WrapperView(view: SampleCell()) {
+                $0.configure(SampleModelObjectBuilder().build())
+            }
+        }
+    }
+#endif

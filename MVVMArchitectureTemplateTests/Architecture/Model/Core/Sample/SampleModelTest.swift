@@ -22,10 +22,17 @@ final class SampleModelTest: XCTestCase {
 
     func test_get_成功_情報を取得できること() throws {
         // arrange
-        apiClient.requestHandler = { _, completion in
+        let expectation = XCTestExpectation(description: #function)
+
+        apiClient.requestHandler = { request, completion in
+            // assert
+            XCTAssertTrue(request is SampleGetRequest)
+
             if let completion = completion as? (Result<[SampleDataObject], APIError>) -> Void {
                 completion(.success([SampleDataObjectBuilder().build()]))
             }
+
+            expectation.fulfill()
         }
 
         sampleConverter.convertHandler = { _ in
@@ -41,6 +48,8 @@ final class SampleModelTest: XCTestCase {
             output,
             [SampleModelObjectBuilder().build()]
         )
+
+        wait(for: [expectation], timeout: 0.1)
     }
 
     func test_get_失敗_エラーを取得できること() throws {
@@ -74,10 +83,17 @@ final class SampleModelTest: XCTestCase {
 
     func test_post_成功_情報を取得できること() throws {
         // arrange
-        apiClient.requestHandler = { _, completion in
+        let expectation = XCTestExpectation(description: #function)
+
+        apiClient.requestHandler = { request, completion in
+            // assert
+            XCTAssertTrue(request is SamplePostRequest)
+
             if let completion = completion as? (Result<SampleDataObject, APIError>) -> Void {
                 completion(.success(SampleDataObjectBuilder().build()))
             }
+
+            expectation.fulfill()
         }
 
         sampleConverter.convertObjectHandler = { _ in
@@ -94,6 +110,8 @@ final class SampleModelTest: XCTestCase {
             output,
             SampleModelObjectBuilder().build()
         )
+
+        wait(for: [expectation], timeout: 0.1)
     }
 
     func test_post_失敗_エラーを取得できること() throws {
@@ -128,10 +146,16 @@ final class SampleModelTest: XCTestCase {
 
     func test_put_成功_情報を取得できること() throws {
         // arrange
-        apiClient.requestHandler = { _, completion in
+        let expectation = XCTestExpectation(description: #function)
+
+        apiClient.requestHandler = { request, completion in
+            XCTAssertTrue(request is SamplePutRequest)
+
             if let completion = completion as? (Result<SampleDataObject, APIError>) -> Void {
                 completion(.success(SampleDataObjectBuilder().build()))
             }
+
+            expectation.fulfill()
         }
 
         sampleConverter.convertObjectHandler = { _ in
@@ -148,6 +172,8 @@ final class SampleModelTest: XCTestCase {
             output,
             SampleModelObjectBuilder().build()
         )
+
+        wait(for: [expectation], timeout: 0.1)
     }
 
     func test_put_失敗_エラーを取得できること() throws {
@@ -182,10 +208,17 @@ final class SampleModelTest: XCTestCase {
 
     func test_delete_成功_情報を取得できること() throws {
         // arrange
-        apiClient.requestHandler = { _, completion in
+        let expectation = XCTestExpectation(description: #function)
+
+        apiClient.requestHandler = { request, completion in
+            // assert
+            XCTAssertTrue(request is SampleDeleteRequest)
+
             if let completion = completion as? (Result<EmptyResponse, APIError>) -> Void {
                 completion(.success(.init()))
             }
+
+            expectation.fulfill()
         }
 
         // act
@@ -193,10 +226,9 @@ final class SampleModelTest: XCTestCase {
         let output = try awaitOutputPublisher(publisher)
 
         // assert
-        XCTAssertEqual(
-            output,
-            true
-        )
+        XCTAssertTrue(output)
+
+        wait(for: [expectation], timeout: 0.1)
     }
 
     func test_delete_失敗_エラーを取得できること() throws {

@@ -1,11 +1,9 @@
 import Combine
-import Foundation
 
 final class SampleAddViewModel: ViewModel {
     final class Binding: BindingObject {
         @Published var title = ""
         @Published var body = ""
-        @Published var isCompleted = false
     }
 
     final class Input: InputObject {
@@ -14,17 +12,17 @@ final class SampleAddViewModel: ViewModel {
     }
 
     final class Output: OutputObject {
-        @Published fileprivate(set) var isEnabledTitle = false
-        @Published fileprivate(set) var isEnabledBody = false
         @Published fileprivate(set) var modelObject: SampleModelObject?
         @Published fileprivate(set) var appError: AppError?
+        @Published fileprivate(set) var titleValidation: ValidationError?
+        @Published fileprivate(set) var bodyValidation: ValidationError?
+        @Published fileprivate(set) var isEnabled: Bool?
     }
 
     @BindableObject private(set) var binding: Binding
 
     let input: Input
     let output: Output
-    let routing = NoRouting()
 
     private var cancellables: Set<AnyCancellable> = .init()
 
@@ -52,13 +50,19 @@ final class SampleAddViewModel: ViewModel {
         }
         .store(in: &cancellables)
 
-        // MARK: - タイトルバリデーション
+        // MARK: - バリデーションエラー
 
-        let isEnabledTitle = binding.$title.map { $0.count <= 15 }
+        let titleValidation = binding.$title.map { [weak self] input in
+            self?.validation(input: input)
+        }
 
-        // MARK: - 内容バリデーション
+        let bodyValidation = binding.$body.map { [weak self] input in
+            self?.validation(input: input)
+        }
 
-        let isEnabledBody = binding.$body.map { $0.count <= 30 }
+        let isEnabled = Publishers.CombineLatest(titleValidation, bodyValidation).map { title, body -> Bool? in
+            (title?.isEnabled ?? false) && (body?.isEnabled ?? false)
+        }
 
         // MARK: - 登録ボタンタップ
 
@@ -70,25 +74,39 @@ final class SampleAddViewModel: ViewModel {
                     body: binding.body
                 ))
             }
-            .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                 case let .failure(appError):
-                    binding.isCompleted = true
                     output.appError = appError
 
                 case .finished:
                     Logger.debug(message: "サンプル作成完了")
                 }
             } receiveValue: { modelObject in
-                binding.isCompleted = true
                 output.modelObject = modelObject
             }
             .store(in: &cancellables)
 
         cancellables.formUnion([
-            isEnabledTitle.assign(to: \.isEnabledTitle, on: output),
-            isEnabledBody.assign(to: \.isEnabledBody, on: output)
+            titleValidation.assign(to: \.titleValidation, on: output),
+            bodyValidation.assign(to: \.bodyValidation, on: output),
+            isEnabled.assign(to: \.isEnabled, on: output)
         ])
+    }
+}
+
+// MARK: - private methods
+
+private extension SampleAddViewModel {
+    func validation(input: String) -> ValidationError {
+        if input.isEmpty {
+            return .empty
+        }
+
+        if input.count > 20 {
+            return .long
+        }
+
+        return .none
     }
 }

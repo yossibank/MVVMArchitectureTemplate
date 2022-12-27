@@ -6,12 +6,10 @@ protocol ViewModel: ObservableObject {
     associatedtype Input: InputObject
     associatedtype Output: OutputObject
     associatedtype Binding: BindingObject
-    associatedtype Routing: RoutingObject
 
     var input: Input { get }
     var output: Output { get }
     var binding: Binding { get }
-    var routing: Routing { get }
 }
 
 extension ViewModel where
@@ -32,10 +30,6 @@ protocol OutputObject: ObservableObject {}
 
 protocol BindingObject: ObservableObject {}
 
-protocol RoutingObject {
-    var viewController: UIViewController? { get set }
-}
-
 @propertyWrapper
 struct BindableObject<T: BindingObject> {
     @dynamicMemberLookup
@@ -54,5 +48,23 @@ struct BindableObject<T: BindingObject> {
 
     var projectedValue: Wrapper {
         .init(binding: wrappedValue)
+    }
+}
+
+final class NoInput: InputObject {}
+
+final class NoOutput: OutputObject {}
+
+final class NoBinding: BindingObject {}
+
+final class NoViewModel: ViewModel {
+    var input: NoInput
+    var output: NoOutput
+    var binding: NoBinding
+
+    init() {
+        self.input = .init()
+        self.output = .init()
+        self.binding = .init()
     }
 }

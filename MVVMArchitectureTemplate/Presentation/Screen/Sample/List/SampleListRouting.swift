@@ -1,8 +1,24 @@
 import UIKit
 
-final class SampleListRouting: RoutingObject {
-    weak var viewController: UIViewController?
+/// @mockable
+protocol SampleListRoutingInput {
+    func showAddScreen()
+    func showDetailScreen(_ modelObject: SampleModelObject)
+}
 
+// MARK: - stored properties & init
+
+final class SampleListRouting {
+    private weak var viewController: UIViewController?
+
+    init(viewController: UIViewController) {
+        self.viewController = viewController
+    }
+}
+
+// MARK: - protocol
+
+extension SampleListRouting: SampleListRoutingInput {
     func showAddScreen() {
         viewController?.navigationController?.pushViewController(
             AppControllers.Sample.Add(),

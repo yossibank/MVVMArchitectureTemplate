@@ -17,24 +17,24 @@ final class SampleListViewModel: ViewModel {
     let input: Input
     let output: Output
     let binding = NoBinding()
-    let routing: SampleListRouting
 
     private var cancellables: Set<AnyCancellable> = .init()
 
     private let model: SampleModelInput
+    private let routing: SampleListRoutingInput
     private let analytics: FirebaseAnalyzable
 
     init(
         model: SampleModelInput,
+        routing: SampleListRoutingInput,
         analytics: FirebaseAnalyzable
     ) {
         let input = Input()
         let output = Output()
-        let routing = Routing()
 
-        self.model = model
         self.input = input
         self.output = output
+        self.model = model
         self.routing = routing
         self.analytics = analytics
 

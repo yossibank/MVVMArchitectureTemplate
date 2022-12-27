@@ -2,40 +2,57 @@ import SwiftUI
 
 enum AppControllers {
     enum Sample {
-        static func Add() -> UIHostingController<SampleAddView> {
-            let rootView = SampleAddView(viewModel: ViewModels.Sample.Add())
-            let instance = UIHostingController(rootView: rootView)
+        static func Add() -> SampleAddViewController {
+            let viewController = SampleAddViewController()
 
-            instance.title = "サンプル作成"
-            return instance
+            viewController.title = "サンプル作成"
+            viewController.inject(
+                contentView: ContentViews.Sample.Add(),
+                viewModel: ViewModels.Sample.Add()
+            )
+
+            return viewController
         }
 
-        static func Detail(_ modelObject: SampleModelObject) -> UIHostingController<SampleDetailView> {
-            let rootView = SampleDetailView(modelObject: modelObject)
-            let instance = UIHostingController(rootView: rootView)
+        static func Detail(_ modelObject: SampleModelObject) -> SampleDetailViewController {
+            let viewController = SampleDetailViewController()
+            let routing = SampleDetailRouting(viewController: viewController)
 
-            instance.title = "サンプル詳細"
-            return instance
+            viewController.title = "サンプル詳細"
+            viewController.inject(
+                contentView: ContentViews.Sample.Detail(modelObject: modelObject),
+                viewModel: ViewModels.Sample.Detail(
+                    modelObject: modelObject,
+                    routing: routing
+                )
+            )
+
+            return viewController
         }
 
-        static func Edit(_ modelObject: SampleModelObject) -> UIHostingController<SampleEditView> {
-            let rootView = SampleEditView(viewModel: ViewModels.Sample.Edit(modelObject: modelObject))
-            let instance = UIHostingController(rootView: rootView)
+        static func Edit(_ modelObject: SampleModelObject) -> SampleEditViewController {
+            let viewController = SampleEditViewController()
 
-            instance.title = "サンプル編集"
-            return instance
+            viewController.title = "サンプル編集"
+            viewController.inject(
+                contentView: ContentViews.Sample.Edit(modelObject: modelObject),
+                viewModel: ViewModels.Sample.Edit(modelObject: modelObject)
+            )
+
+            return viewController
         }
 
         static func List() -> SampleListViewController {
-            let instance = SampleListViewController()
+            let viewController = SampleListViewController()
+            let routing = SampleListRouting(viewController: viewController)
 
-            instance.inject(
+            viewController.title = "サンプル一覧"
+            viewController.inject(
                 contentView: ContentViews.Sample.List(),
-                viewModel: ViewModels.Sample.List()
+                viewModel: ViewModels.Sample.List(routing: routing)
             )
 
-            instance.title = "サンプル一覧"
-            return instance
+            return viewController
         }
     }
 }
