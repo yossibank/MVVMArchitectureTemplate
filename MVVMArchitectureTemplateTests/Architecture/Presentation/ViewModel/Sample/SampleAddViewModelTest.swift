@@ -44,7 +44,15 @@ final class SampleAddViewModelTest: XCTestCase {
         viewModel.binding.title = ""
 
         // assert
-        XCTAssertEqual(viewModel.output.titleValidation, .empty)
+        XCTAssertEqual(
+            viewModel.output.titleValidation,
+            .empty
+        )
+
+        XCTAssertEqual(
+            viewModel.output.titleValidation?.description,
+            "文字が入力されていません。"
+        )
     }
 
     func test_binding_title_21文字以上の場合にoutput_titleValidationがlongを出力すること() {
@@ -55,7 +63,15 @@ final class SampleAddViewModelTest: XCTestCase {
         viewModel.binding.title = String(repeating: "a", count: 21)
 
         // assert
-        XCTAssertEqual(viewModel.output.titleValidation, .long)
+        XCTAssertEqual(
+            viewModel.output.titleValidation,
+            .long
+        )
+
+        XCTAssertEqual(
+            viewModel.output.titleValidation?.description,
+            "入力された文字が長すぎます。20文字以内でご入力ください。"
+        )
     }
 
     func test_binding_body_1文字以上20文字以下の場合にoutput_bodyValidationがnoneを出力すること() {
@@ -77,7 +93,15 @@ final class SampleAddViewModelTest: XCTestCase {
         viewModel.binding.body = ""
 
         // assert
-        XCTAssertEqual(viewModel.output.bodyValidation, .empty)
+        XCTAssertEqual(
+            viewModel.output.bodyValidation,
+            .empty
+        )
+
+        XCTAssertEqual(
+            viewModel.output.bodyValidation?.description,
+            "文字が入力されていません。"
+        )
     }
 
     func test_binding_body_21文字以上の場合にoutput_bodyValidationがlongを出力すること() {
@@ -88,7 +112,15 @@ final class SampleAddViewModelTest: XCTestCase {
         viewModel.binding.body = String(repeating: "a", count: 21)
 
         // assert
-        XCTAssertEqual(viewModel.output.bodyValidation, .long)
+        XCTAssertEqual(
+            viewModel.output.bodyValidation,
+            .long
+        )
+
+        XCTAssertEqual(
+            viewModel.output.bodyValidation?.description,
+            "入力された文字が長すぎます。20文字以内でご入力ください。"
+        )
     }
 
     func test_titleValidation_bodyValidationのどちらかがnoneでない場合_output_isEnabledがfalseを出力すること() {
