@@ -105,4 +105,4 @@ iOSInjectionProject/
 slather_html_report/
 
 # iOSSnapshotTestCase
-MVVMArchitectureTemplateTests/FailureDiffs
+MVVMArchitectureTemplateTests/TestSnapshot/FailureDiffs

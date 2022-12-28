@@ -22,6 +22,16 @@
         "enabled" : false
       }
     ],
+    "environmentVariableEntries" : [
+      {
+        "key" : "IMAGE_DIFF_DIR",
+        "value" : "$(SOURCE_ROOT)\/$(PROJECT_NAME)Tests\/TestSnapshot\/FailureDiffs"
+      },
+      {
+        "key" : "FB_REFERENCE_IMAGE_DIR",
+        "value" : "$(SOURCE_ROOT)\/$(PROJECT_NAME)Tests\/TestSnapshot\/ReferenceImages"
+      }
+    ],
     "language" : "ja",
     "locationScenario" : {
       "identifier" : "Tokyo, Japan",
