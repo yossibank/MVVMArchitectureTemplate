@@ -127,9 +127,11 @@ final class SampleAddContentView: UIView {
         if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
             super.traitCollectionDidChange(previousTraitCollection)
 
-            [titleTextField, bodyTextField, createButton].forEach {
+            [titleTextField, bodyTextField].forEach {
                 $0.apply(.borderPrimary)
             }
+
+            createButton.layer.borderColor = enableColor(isEnabled: createButton.isEnabled).cgColor
         }
     }
 }
@@ -148,13 +150,9 @@ extension SampleAddContentView {
     }
 
     func buttonEnabled(_ isEnabled: Bool) {
-        let color: UIColor = isEnabled
-            ? .dynamicColor(light: .black, dark: .white)
-            : .dynamicColor(light: .black, dark: .white).withAlphaComponent(0.3)
-
         createButton.isEnabled = isEnabled
-        createButton.layer.borderColor = color.cgColor
-        createButton.setTitleColor(color, for: .normal)
+        createButton.layer.borderColor = enableColor(isEnabled: isEnabled).cgColor
+        createButton.setTitleColor(enableColor(isEnabled: isEnabled), for: .normal)
     }
 }
 
@@ -185,6 +183,12 @@ private extension SampleAddContentView {
                 self?.bodyCountLabel.text = "入力文字数: \(count)"
             }
             .store(in: &cancellables)
+    }
+
+    func enableColor(isEnabled: Bool) -> UIColor {
+        isEnabled
+            ? .dynamicColor(light: .black, dark: .white)
+            : .dynamicColor(light: .black, dark: .white).withAlphaComponent(0.3)
     }
 }
 

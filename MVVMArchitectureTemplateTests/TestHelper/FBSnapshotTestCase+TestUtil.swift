@@ -1,8 +1,23 @@
 import iOSSnapshotTestCase
 @testable import MVVMArchitectureTemplate
 
-enum SnapshotTest {
+enum SnapshotRecordMode {
     static let recordMode = false
+}
+
+enum SnapshotColorMode: Int, CaseIterable {
+    case light = 1
+    case dark
+
+    var identifier: String {
+        switch self {
+        case .light:
+            return "ライトモード"
+
+        case .dark:
+            return "ダークモード"
+        }
+    }
 }
 
 extension FBSnapshotTestCase {
@@ -14,23 +29,32 @@ extension FBSnapshotTestCase {
     func snapshotWindow(
         subject: UIViewController,
         window: UIWindow = UIWindow(frame: UIScreen.main.bounds),
-        interfaceStyle: UIUserInterfaceStyle = .light
+        mode: SnapshotColorMode,
+        completion: VoidBlock? = nil
     ) {
         window.rootViewController = subject
-        window.overrideUserInterfaceStyle = interfaceStyle
+        window.overrideUserInterfaceStyle = .init(rawValue: mode.rawValue)!
         window.makeKeyAndVisible()
+        completion?()
     }
 
-    func snapshotVerifyView(subject: UIViewController!) {
-//        subject.view.layoutIfNeeded()
+    func snapshotVerifyView(
+        subject: UIViewController,
+        identifier: String
+    ) {
+        fileNameOptions = [.device, .OS, .screenSize, .screenScale]
 
         let expectation = XCTestExpectation(description: #function)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.FBSnapshotVerifyView(subject.view, overallTolerance: 0.05)
+        DispatchQueue.main.async {
+            self.FBSnapshotVerifyView(
+                subject.view,
+                identifier: identifier
+            )
+
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 3.0)
+        wait(for: [expectation], timeout: 0.1)
     }
 }
