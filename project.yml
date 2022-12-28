@@ -24,6 +24,9 @@ packages:
   OHHTTPStubs:
     url: https://github.com/AliSoftware/OHHTTPStubs.git
     from: 9.1.0
+  ios-snapshot-test-case:
+    url: https://github.com/uber/ios-snapshot-test-case
+    from: 8.0.0
 
 targets:
   MVVMArchitectureTemplate:
@@ -87,6 +90,8 @@ targets:
       - target: MVVMArchitectureTemplate
       - package: OHHTTPStubs
         product: OHHTTPStubsSwift
+      - package: ios-snapshot-test-case
+        product: iOSSnapshotTestCase
 
   MVVMArchitectureTemplateUITests:
     type: bundle.ui-testing
@@ -116,10 +121,16 @@ schemes:
       config: Debug
       gatherCoverageData: true
       targets:
-        - MVVMArchitectureTemplateTests
+        - name: MVVMArchitectureTemplateTests
+          parallelizable: false
+          randomExecutionOrder: true
+
         # - name: MVVMArchitectureTemplateUITests
         #   parallelizable: false
         #   randomExecutionOrder: true
+      environmentVariables:
+        FB_REFERENCE_IMAGE_DIR: $(SOURCE_ROOT)/$(PROJECT_NAME)Tests/ReferenceImages_64
+        IMAGE_DIFF_DIR: $(SOURCE_ROOT)/$(PROJECT_NAME)Tests/FailureDiffs
       language: ja
       region: JP
       testPlans:

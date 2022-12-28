@@ -103,3 +103,6 @@ iOSInjectionProject/
 
 # Slather
 slather_html_report/
+
+# iOSSnapshotTestCase
+MVVMArchitectureTemplateTests/FailureDiffs
