@@ -85,7 +85,7 @@ jobs:
           -sdk iphonesimulator
           -configuration Debug
           -scheme MVVMArchitectureTemplate
-          -destination 'platform=iOS Simulator,name=iPhone 14'
+          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.0'
           -only-testing MVVMArchitectureTemplateTests
           -clonedSourcePackagesDirPath SourcePackages
           clean test
@@ -107,6 +107,12 @@ jobs:
         with:
           name: test-results
           path: build/reports
+
+      # スナップショット差分のアップロード
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test-snapshot
+          path: MVVMArchitectureTemplateTests/TestSnapshot/FailureDiffs
 
       # コードカバレッジのアップロード
       - uses: actions/upload-artifact@v3
