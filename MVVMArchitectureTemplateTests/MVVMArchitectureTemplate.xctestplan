@@ -29,7 +29,7 @@
       },
       {
         "key" : "FB_REFERENCE_IMAGE_DIR",
-        "value" : "$(SOURCE_ROOT)\/$(PROJECT_NAME)Tests\/TestSnapshot\/ReferenceImages"
+        "value" : "$(SOURCE_ROOT)\/$(PROJECT_NAME)Tests\/TestSnapshot\/ReferenceImages_64"
       }
     ],
     "language" : "ja",
