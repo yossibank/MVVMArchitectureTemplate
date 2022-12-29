@@ -108,6 +108,12 @@ jobs:
           name: test-results
           path: build/reports
 
+      # スナップショット差分のアップロード
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test-snapshot
+          path: MVVMArchitectureTemplateTests/TestSnapshot/FailureDiffs
+
       # コードカバレッジのアップロード
       - uses: actions/upload-artifact@v3
         with:
