@@ -34,14 +34,16 @@ extension FBSnapshotTestCase {
     func snapshotVerifyView(
         viewMode: SnapshotViewMode,
         viewFrame: CGRect = UIScreen.main.bounds,
-        action: VoidBlock? = nil
+        viewAfter: CGFloat = .zero,
+        viewAction: VoidBlock? = nil
     ) {
         SnapshotColorMode.allCases.forEach { colorMode in
             snapshotVerifyView(
                 colorMode: colorMode,
                 viewMode: viewMode,
                 viewFrame: viewFrame,
-                action: action
+                viewAfter: viewAfter,
+                viewAction: viewAction
             )
         }
     }
@@ -52,7 +54,8 @@ private extension FBSnapshotTestCase {
         colorMode: SnapshotColorMode,
         viewMode: SnapshotViewMode,
         viewFrame: CGRect = UIScreen.main.bounds,
-        action: VoidBlock? = nil
+        viewAfter: CGFloat = .zero,
+        viewAction: VoidBlock? = nil
     ) {
         fileNameOptions = [.device, .OS, .screenSize, .screenScale]
 
@@ -67,7 +70,7 @@ private extension FBSnapshotTestCase {
             window.overrideUserInterfaceStyle = .init(rawValue: colorMode.rawValue)!
             window.makeKeyAndVisible()
 
-            action?()
+            viewAction?()
 
             DispatchQueue.main.async {
                 self.FBSnapshotVerifyView(
@@ -87,9 +90,9 @@ private extension FBSnapshotTestCase {
             window.overrideUserInterfaceStyle = .init(rawValue: colorMode.rawValue)!
             window.makeKeyAndVisible()
 
-            action?()
+            viewAction?()
 
-            DispatchQueue.main.async {
+            DispatchQueue.main.asyncAfter(deadline: .now() + viewAfter) {
                 self.FBSnapshotVerifyView(
                     nc.view,
                     identifier: colorMode.identifier
@@ -99,6 +102,6 @@ private extension FBSnapshotTestCase {
             }
         }
 
-        wait(for: [expectation], timeout: 0.1)
+        wait(for: [expectation], timeout: 3.0 + viewAfter)
     }
 }
