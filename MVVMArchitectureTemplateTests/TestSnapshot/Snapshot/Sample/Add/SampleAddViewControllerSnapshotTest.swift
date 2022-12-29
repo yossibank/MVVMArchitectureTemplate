@@ -9,7 +9,7 @@ final class SampleAddViewControllerSnapshotTest: FBSnapshotTestCase {
 
         folderName = "Sample追加画面"
 
-        recordMode = SnapshotRecordMode.recordMode
+        recordMode = SnapshotTest.recordMode
 
         subject = AppControllers.Sample.Add()
     }

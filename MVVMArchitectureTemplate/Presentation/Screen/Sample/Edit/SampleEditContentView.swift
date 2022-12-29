@@ -78,9 +78,11 @@ final class SampleEditContentView: UIView {
         if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
             super.traitCollectionDidChange(previousTraitCollection)
 
-            [titleTextField, bodyTextField, editButton].forEach {
+            [titleTextField, bodyTextField].forEach {
                 $0.apply(.borderPrimary)
             }
+
+            editButton.layer.borderColor = enableColor(isEnabled: editButton.isEnabled).cgColor
         }
     }
 }
@@ -89,13 +91,9 @@ final class SampleEditContentView: UIView {
 
 extension SampleEditContentView {
     func buttonEnabled(_ isEnabled: Bool) {
-        let color: UIColor = isEnabled
-            ? .dynamicColor(light: .black, dark: .white)
-            : .dynamicColor(light: .black, dark: .white).withAlphaComponent(0.3)
-
         editButton.isEnabled = isEnabled
-        editButton.layer.borderColor = color.cgColor
-        editButton.setTitleColor(color, for: .normal)
+        editButton.layer.borderColor = enableColor(isEnabled: isEnabled).cgColor
+        editButton.setTitleColor(enableColor(isEnabled: isEnabled), for: .normal)
     }
 }
 
@@ -106,6 +104,12 @@ private extension SampleEditContentView {
         userIdLabel.text = "UserID: \(modelObject.userId)"
         titleTextField.text = modelObject.title
         bodyTextField.text = modelObject.body
+    }
+
+    func enableColor(isEnabled: Bool) -> UIColor {
+        isEnabled
+            ? .dynamicColor(light: .black, dark: .white)
+            : .dynamicColor(light: .black, dark: .white).withAlphaComponent(0.3)
     }
 }
 

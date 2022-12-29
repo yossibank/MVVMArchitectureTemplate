@@ -1,7 +1,7 @@
 import iOSSnapshotTestCase
 @testable import MVVMArchitectureTemplate
 
-enum SnapshotRecordMode {
+enum SnapshotTest {
     static let recordMode = false
 }
 
