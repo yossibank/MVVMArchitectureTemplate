@@ -26,6 +26,26 @@ extension FBSnapshotTestCase {
         vc.endAppearanceTransition()
     }
 
+    func snapshotVerifyView(
+        subject: UIViewController,
+        completion: VoidBlock? = nil
+    ) {
+        SnapshotColorMode.allCases.forEach { mode in
+            snapshotWindow(
+                subject: subject,
+                mode: mode,
+                completion: completion
+            )
+
+            snapshotVerifyView(
+                subject: subject,
+                identifier: mode.identifier
+            )
+        }
+    }
+}
+
+private extension FBSnapshotTestCase {
     func snapshotWindow(
         subject: UIViewController,
         window: UIWindow = UIWindow(frame: UIScreen.main.bounds),
