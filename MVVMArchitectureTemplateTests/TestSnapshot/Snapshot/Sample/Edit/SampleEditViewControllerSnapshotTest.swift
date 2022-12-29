@@ -17,11 +17,11 @@ final class SampleEditViewControllerSnapshotTest: FBSnapshotTestCase {
     }
 
     func testSampleEditViewController_編集ボタン_有効化() {
-        snapshotVerifyView(subject: subject)
+        snapshotVerifyView(viewMode: .navigation(subject))
     }
 
     func testSampleEditViewController_編集ボタン_無効化() {
-        snapshotVerifyView(subject: subject) {
+        snapshotVerifyView(viewMode: .navigation(subject)) {
             self.subject.viewModel.binding.title = ""
             self.subject.viewModel.binding.body = ""
         }

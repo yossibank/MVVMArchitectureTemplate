@@ -5,6 +5,11 @@ enum SnapshotTest {
     static let recordMode = false
 }
 
+enum SnapshotViewMode {
+    case navigation(UIViewController)
+    case normal(UIViewController)
+}
+
 enum SnapshotColorMode: Int, CaseIterable {
     case light = 1
     case dark
@@ -27,52 +32,71 @@ extension FBSnapshotTestCase {
     }
 
     func snapshotVerifyView(
-        subject: UIViewController,
-        completion: VoidBlock? = nil
+        viewMode: SnapshotViewMode,
+        viewFrame: CGRect = UIScreen.main.bounds,
+        action: VoidBlock? = nil
     ) {
-        SnapshotColorMode.allCases.forEach { mode in
-            snapshotWindow(
-                subject: subject,
-                mode: mode,
-                completion: completion
-            )
-
+        SnapshotColorMode.allCases.forEach { colorMode in
             snapshotVerifyView(
-                subject: subject,
-                identifier: mode.identifier
+                colorMode: colorMode,
+                viewMode: viewMode,
+                viewFrame: viewFrame,
+                action: action
             )
         }
     }
 }
 
 private extension FBSnapshotTestCase {
-    func snapshotWindow(
-        subject: UIViewController,
-        window: UIWindow = UIWindow(frame: UIScreen.main.bounds),
-        mode: SnapshotColorMode,
-        completion: VoidBlock? = nil
-    ) {
-        window.rootViewController = subject
-        window.overrideUserInterfaceStyle = .init(rawValue: mode.rawValue)!
-        window.makeKeyAndVisible()
-        completion?()
-    }
-
     func snapshotVerifyView(
-        subject: UIViewController,
-        identifier: String
+        colorMode: SnapshotColorMode,
+        viewMode: SnapshotViewMode,
+        viewFrame: CGRect = UIScreen.main.bounds,
+        action: VoidBlock? = nil
     ) {
         fileNameOptions = [.device, .OS, .screenSize, .screenScale]
 
         let expectation = XCTestExpectation(description: #function)
 
-        DispatchQueue.main.async {
-            self.FBSnapshotVerifyView(
-                subject.view,
-                identifier: identifier
-            )
+        switch viewMode {
+        case let .normal(vc):
+            vc.view.frame = viewFrame
 
-            expectation.fulfill()
+            let window = UIWindow(frame: vc.view.frame)
+            window.rootViewController = vc
+            window.overrideUserInterfaceStyle = .init(rawValue: colorMode.rawValue)!
+            window.makeKeyAndVisible()
+
+            action?()
+
+            DispatchQueue.main.async {
+                self.FBSnapshotVerifyView(
+                    vc.view,
+                    identifier: colorMode.identifier
+                )
+
+                expectation.fulfill()
+            }
+
+        case let .navigation(vc):
+            vc.view.frame = viewFrame
+
+            let window = UIWindow(frame: vc.view.frame)
+            let nc = UINavigationController(rootViewController: vc)
+            window.rootViewController = nc
+            window.overrideUserInterfaceStyle = .init(rawValue: colorMode.rawValue)!
+            window.makeKeyAndVisible()
+
+            action?()
+
+            DispatchQueue.main.async {
+                self.FBSnapshotVerifyView(
+                    nc.view,
+                    identifier: colorMode.identifier
+                )
+
+                expectation.fulfill()
+            }
         }
 
         wait(for: [expectation], timeout: 0.1)
