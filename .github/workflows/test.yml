@@ -85,7 +85,7 @@ jobs:
           -sdk iphonesimulator
           -configuration Debug
           -scheme MVVMArchitectureTemplate
-          -destination 'platform=iOS Simulator,name=iPhone 14'
+          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.2'
           -only-testing MVVMArchitectureTemplateTests
           -clonedSourcePackagesDirPath SourcePackages
           clean test
