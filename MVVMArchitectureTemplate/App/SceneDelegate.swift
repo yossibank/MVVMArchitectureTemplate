@@ -61,6 +61,7 @@ private extension SceneDelegate {
         if #available(iOS 15.0, *) {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .dynamicColor(light: .white, dark: .black)
             UINavigationBar.appearance().standardAppearance = appearance
             UINavigationBar.appearance().scrollEdgeAppearance = appearance
         }

@@ -20,7 +20,9 @@ final class SampleDetailRouting {
 extension SampleDetailRouting: SampleDetailRoutingInput {
     func showEditScreen(modelObject: SampleModelObject) {
         viewController?.present(
-            AppControllers.Sample.Edit(modelObject),
+            UINavigationController(
+                rootViewController: AppControllers.Sample.Edit(modelObject)
+            ),
             animated: true
         )
     }
