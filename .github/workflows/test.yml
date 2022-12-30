@@ -88,6 +88,7 @@ jobs:
           -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.0'
           -only-testing MVVMArchitectureTemplateTests
           -clonedSourcePackagesDirPath SourcePackages
+          -resultBundlePath MVVMArchitectureTemplate.xcresult
           clean test
           | bundle exec xcpretty --report html
 
