@@ -66,7 +66,8 @@ private extension SampleDetailContentView {
 
 extension SampleDetailContentView: ContentView {
     func setupViews() {
-        apply(.background)
+//        apply(.background)
+        backgroundColor = .red
         addSubview(stackView)
     }
 

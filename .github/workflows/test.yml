@@ -107,7 +107,7 @@ jobs:
 
       # スナップショット差分のアップロード
       - uses: actions/upload-artifact@v3
-        if: always()
+        if: success() || failure()
         with:
           name: test-snapshot
           path: MVVMArchitectureTemplateTests/TestSnapshot/FailureDiffs

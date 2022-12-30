@@ -150,8 +150,7 @@ extension SampleListContentView: UITableViewDelegate {
 
 extension SampleListContentView: ContentView {
     func setupViews() {
-//        apply(.background)
-        backgroundColor = .red
+        apply(.background)
         addSubview(tableView)
         addSubview(indicator)
     }
@@ -166,3 +165,36 @@ extension SampleListContentView: ContentView {
         }
     }
 }
+
+// MARK: - preview
+
+#if DEBUG
+    import SwiftUI
+
+    struct SampleListContentViewPreview: PreviewProvider {
+        static var previews: some View {
+            WrapperView(view: SampleListContentView()) { view in
+                view.modelObject = [
+                    SampleModelObjectBuilder()
+                        .id(1)
+                        .build(),
+                    SampleModelObjectBuilder()
+                        .id(2)
+                        .build(),
+                    SampleModelObjectBuilder()
+                        .id(3)
+                        .build(),
+                    SampleModelObjectBuilder()
+                        .id(4)
+                        .build(),
+                    SampleModelObjectBuilder()
+                        .id(5)
+                        .build(),
+                    SampleModelObjectBuilder()
+                        .id(6)
+                        .build()
+                ]
+            }
+        }
+    }
+#endif
