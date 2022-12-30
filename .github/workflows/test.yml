@@ -98,10 +98,6 @@ jobs:
         run: |
           bundle exec danger
 
-      # コードカバレッジ出力
-      - name: Run Slather
-        run: bundle exec slather
-
       # テスト結果のアップロード
       - uses: actions/upload-artifact@v3
         with:
@@ -113,9 +109,3 @@ jobs:
         with:
           name: test-snapshot
           path: MVVMArchitectureTemplateTests/TestSnapshot/FailureDiffs
-
-      # コードカバレッジのアップロード
-      - uses: actions/upload-artifact@v3
-        with:
-          name: test-coverage
-          path: slather_html_report
