@@ -27,7 +27,12 @@ swiftlint.lint_files(inline_mode: true) do |violation|
 end
 
 ### コードカバレッジ ###
-slather.configure("MVVMArchitectureTemplate.xcodeproj", "MVVMArchitectureTemplate")
-# slather.notify_if_coverage_is_less_than(minimum_coverage: 80)
-# slather.notify_if_modified_file_is_less_than(minimum_coverage: 60)
-slather.show_coverage
+system("mint run xcparse codecov MVVMArchitectureTemplate.xcresult ./")
+
+xcov.report(
+    project: "MVVMArchitectureTemplate.xcodeproj",
+    scheme: "MVVMArchitectureTemplate",
+    xccov_file_direct_path: "action.xccovreport",
+    minimum_coverage_percentage: 60.0,
+    only_project_targets: true
+)
