@@ -150,7 +150,8 @@ extension SampleListContentView: UITableViewDelegate {
 
 extension SampleListContentView: ContentView {
     func setupViews() {
-        apply(.background)
+//        apply(.background)
+        backgroundColor = .red
         addSubview(tableView)
         addSubview(indicator)
     }
