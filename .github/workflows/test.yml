@@ -88,6 +88,7 @@ jobs:
           -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.0'
           -only-testing MVVMArchitectureTemplateTests
           -clonedSourcePackagesDirPath SourcePackages
+          -resultBundlePath MVVMArchitectureTemplate.xcresult
           clean test
           | bundle exec xcpretty --report html
 
@@ -98,10 +99,6 @@ jobs:
         run: |
           bundle exec danger
 
-      # コードカバレッジ出力
-      - name: Run Slather
-        run: bundle exec slather
-
       # テスト結果のアップロード
       - uses: actions/upload-artifact@v3
         with:
@@ -110,12 +107,7 @@ jobs:
 
       # スナップショット差分のアップロード
       - uses: actions/upload-artifact@v3
+        if: success() || failure()
         with:
           name: test-snapshot
           path: MVVMArchitectureTemplateTests/TestSnapshot/FailureDiffs
-
-      # コードカバレッジのアップロード
-      - uses: actions/upload-artifact@v3
-        with:
-          name: test-coverage
-          path: slather_html_report
