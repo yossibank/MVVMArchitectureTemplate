@@ -12,14 +12,8 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
 
 jobs:
-  ci:
-    name: Run Test
-
+  setup:
     runs-on: macos-12
-
-    env:
-      MINT_PATH: mint/lib
-      MINT_LINK_PATH: mint/bin
 
     steps:
       # チェックアウト(GitHubリポジトリからソース取得)
@@ -78,6 +72,42 @@ jobs:
           make generate-test-mock
           make generate-xcodeproj
 
+  build:
+    name: Run Build
+
+    runs-on: macos-12
+
+    needs: setup
+
+    env:
+      MINT_PATH: mint/lib
+      MINT_LINK_PATH: mint/bin
+
+    steps:
+      # ビルド
+      - name: Xcode Build
+        run: set -o pipefail &&
+          xcodebuild
+          -sdk iphonesimulator
+          -configuration Debug
+          -scheme MVVMArchitectureTemplate
+          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.0'
+          -clonedSourcePackagesDirPath SourcePackages
+          build
+          | bundle exec xcpretty
+
+  test:
+    name: Run Test
+
+    runs-on: macos-12
+
+    needs: setup
+
+    env:
+      MINT_PATH: mint/lib
+      MINT_LINK_PATH: mint/bin
+
+    steps:
       # テスト
       - name: Xcode Test
         run: set -o pipefail &&
@@ -113,9 +143,7 @@ jobs:
           path: MVVMArchitectureTemplateTests/TestSnapshot/FailureDiffs
 
       # PRコメントテスト
-      - uses: thollander/actions-comment-pull-request@v1
+      - uses: thollander/actions-comment-pull-request@v2
         with:
-          name: Comment PR
           message: Thank you for your contribution. We aim to review it within 48 hours!
-          comment_includes: "Thank you"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
