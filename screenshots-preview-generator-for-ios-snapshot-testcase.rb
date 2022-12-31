@@ -31,7 +31,7 @@ def createMarkdown
                 postfix = tokens[2..].join("_")
                 os = postfix.match(PATTERN_OF_OS_VERSION)[0].gsub('_', '.')
                 screenSize = convertScreenSizeIntoDeviceName(postfix.match(PATTERN_OF_SCREEN_SIZE)[0])
-                src = "../#{screenShot[/.\/#{scheme}\/(.+)/, 1]}"
+                src = "#{scheme}/#{screenShot[/.\/#{scheme}\/(.+)/, 1]}"
                 imageTag = "<img src='#{src}' width='#{IMAGE_WIDTH}' style='border: 1px solid #999' />"
 
                 rows[0].push header
