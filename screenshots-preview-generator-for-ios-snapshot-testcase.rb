@@ -26,31 +26,28 @@ def createMarkdown
             rows = Array.new(NUMBER_OF_ROWS) { Array.new(0, 0) }
 
             slice.each do |screenShot|
-            tokens = screenShot[/test(.+)/, 1].split("_")
-            header = tokens[1]
-            postfix = tokens[2..].join("_")
-            os = postfix.match(PATTERN_OF_OS_VERSION)[0].gsub('_', '.')
-            screenSize = convertScreenSizeIntoDeviceName(postfix.match(PATTERN_OF_SCREEN_SIZE)[0])
-            src = "../#{screenShot[/.\/#{scheme}\/(.+)/, 1]}"
-            imageTag = "<img src='#{src}' width='#{IMAGE_WIDTH}' style='border: 1px solid #999' />"
+                tokens = screenShot[/test(.+)/, 1].split("_")
+                header = tokens[1]
+                postfix = tokens[2..].join("_")
+                os = postfix.match(PATTERN_OF_OS_VERSION)[0].gsub('_', '.')
+                screenSize = convertScreenSizeIntoDeviceName(postfix.match(PATTERN_OF_SCREEN_SIZE)[0])
+                src = "../#{screenShot[/.\/#{scheme}\/(.+)/, 1]}"
+                imageTag = "<img src='#{src}' width='#{IMAGE_WIDTH}' style='border: 1px solid #999' />"
 
-
-            rows[0].push header
-            rows[1].push ":---:"
-            rows[2].push os
-            rows[3].push screenSize
-            rows[4].push imageTag
-        end
+                rows[0].push header
+                rows[1].push ":---:"
+                rows[2].push os
+                rows[3].push screenSize
+                rows[4].push imageTag
+            end
 
         markdowns += rows.map { |row| row.join('|').prepend('|').concat('|') + "\n" }.join
         markdowns += "\n"
-    end
+        end
 
-    report_file_path = "./#{scheme}/Reports/#{test_title}.md"
-
-    status = FileTest.exist?(report_file_path) ? "UPDATED" : "CREATED"
-
-    File.write(report_file_path, markdowns)
+        report_file_path = "./#{scheme}/Reports/#{test_title}.md"
+        status = FileTest.exist?(report_file_path) ? "UPDATED" : "CREATED"
+        File.write(report_file_path, markdowns)
         puts "[#{status}] #{report_file_path}"
     end
 end
