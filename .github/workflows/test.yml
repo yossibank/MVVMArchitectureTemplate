@@ -111,3 +111,11 @@ jobs:
         with:
           name: test-snapshot
           path: MVVMArchitectureTemplateTests/TestSnapshot/FailureDiffs
+
+      # PRコメントテスト
+      - uses: thollander/actions-comment-pull-request@v1
+        with:
+          name: Comment PR
+          message: Thank you for your contribution. We aim to review it within 48 hours!
+          comment_includes: "Thank you"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
