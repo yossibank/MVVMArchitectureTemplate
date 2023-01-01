@@ -42,6 +42,10 @@ generate-files:
 	mkdir -p MVVMArchitectureTemplate/Resources/Generated
 	mkdir -p MVVMArchitectureTemplateTests/TestMock
 
+.PHONY: generate-snapshot-md
+generate-snapshot-md:
+	ruby Scripts/Snapshot/screenshots-preview-generator-for-snapshot.rb
+
 .PHONY: open
 open:
 	open ./$(PRODUCT_NAME).xcodeproj

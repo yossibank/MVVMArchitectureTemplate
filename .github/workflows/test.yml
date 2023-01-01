@@ -115,5 +115,4 @@ jobs:
       # PRコメントテスト
       - uses: thollander/actions-comment-pull-request@v2
         with:
-          message: Thank you for your contribution. We aim to review it within 48 hours!
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          filePath: Scripts/Snapshot/screenshots-failure-diffs-for-snapshot.txt
