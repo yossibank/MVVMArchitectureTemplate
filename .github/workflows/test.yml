@@ -111,8 +111,3 @@ jobs:
         with:
           name: test-snapshot
           path: MVVMArchitectureTemplateTests/TestSnapshot/FailureDiffs
-
-      # PRコメントテスト
-      - uses: thollander/actions-comment-pull-request@v2
-        with:
-          filePath: Scripts/Snapshot/screenshots-failure-diffs-for-snapshot.txt
