@@ -140,3 +140,13 @@ schemes:
       config: Debug
     archive:
       config: Release
+
+aggregateTargets:
+    Periphery:
+        buildScripts:
+            - script: |
+                xcrun --sdk macosx mint run periphery scan \
+                    --project "MVVMArchitectureTemplate.xcodeproj" \
+                    --schemes "MVVMArchitectureTemplate" \
+                    --targets "MVVMArchitectureTemplate" \
+                    --format xcode
