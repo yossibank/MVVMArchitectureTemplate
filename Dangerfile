@@ -26,6 +26,15 @@ swiftlint.lint_files(inline_mode: true) do |violation|
     !ignored_rule_ids.include?(violation["rule_id"])
 end
 
+### Periphery ###
+periphery.scan(
+    project: "MVVMArchitectureTemplate.xcodeproj",
+    schemes: "MVVMArchitectureTemplate",
+    targets: "MVVMArchitectureTemplate",
+    skip_build: true,
+    index_store_path: 'DerivedData/Index.noindex/DataStore'
+)
+
 ### コードカバレッジ ###
 system("mint run xcparse codecov MVVMArchitectureTemplate.xcresult ./")
 

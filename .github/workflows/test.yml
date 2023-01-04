@@ -89,6 +89,7 @@ jobs:
           -only-testing MVVMArchitectureTemplateTests
           -clonedSourcePackagesDirPath SourcePackages
           -resultBundlePath MVVMArchitectureTemplate.xcresult
+          -derivedDataPath DerivedData
           clean test
           | bundle exec xcpretty --report html
 
