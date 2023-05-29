@@ -1,7 +1,8 @@
 @testable import MVVMArchitectureTemplate
 import UIKit
 
-final class AppDelegate: UIResponder, UIApplicationDelegate {
+@objc(AppDelegateMock)
+final class AppDelegateMock: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(
@@ -19,10 +20,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        let sceneConfiguration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
-        sceneConfiguration.delegateClass = SceneDelegate.self
+        let sceneConfiguration = UISceneConfiguration(
+            name: nil,
+            sessionRole: connectingSceneSession.role
+        )
+        sceneConfiguration.delegateClass = SceneDelegateMock.self
         sceneConfiguration.storyboard = nil
         return sceneConfiguration
     }
@@ -38,8 +40,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-extension AppDelegate {
-    private func removeSessions(application: UIApplication) {
+private extension AppDelegateMock {
+    func removeSessions(application: UIApplication) {
         application.openSessions.forEach {
             application.perform(Selector(("_removeSessionFromSessionSet:")), with: $0)
         }
