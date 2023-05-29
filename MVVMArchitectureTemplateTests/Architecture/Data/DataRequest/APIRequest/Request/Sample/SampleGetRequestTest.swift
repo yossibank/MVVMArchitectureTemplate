@@ -3,13 +3,15 @@ import OHHTTPStubs
 import OHHTTPStubsSwift
 import XCTest
 
-final class SamplePostRequestTest: XCTestCase {
+final class SampleGetRequestTest: XCTestCase {
     private var apiClient: APIClient!
+    private var expectation: XCTestExpectation!
 
     override func setUp() {
         super.setUp()
 
         apiClient = .init()
+        expectation = .init(description: #function)
     }
 
     override func tearDown() {
@@ -18,14 +20,12 @@ final class SamplePostRequestTest: XCTestCase {
         HTTPStubs.removeAllStubs()
     }
 
-    func test_post_成功_正常系のレスポンスを取得できること() {
+    func test_get_成功_正常系のレスポンスを取得できること() {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
-
         stub(condition: isPath("/posts")) { _ in
             fixture(
                 filePath: OHPathForFile(
-                    "success_sample_post.json",
+                    "success_sample_get.json",
                     type(of: self)
                 )!,
                 headers: ["Content-Type": "application/json"]
@@ -34,38 +34,31 @@ final class SamplePostRequestTest: XCTestCase {
 
         // act
         apiClient.request(
-            item: SamplePostRequest(parameters: .init(
-                userId: 1,
-                title: "sample title",
-                body: "sample body"
-            ))
+            item: SampleGetRequest(parameters: .init(userId: nil))
         ) {
             switch $0 {
             case let .success(dataObject):
                 // assert
                 XCTAssertNotNil(dataObject)
-                XCTAssertEqual(dataObject.userId, 1)
-                XCTAssertEqual(dataObject.title, "sample title")
-                XCTAssertEqual(dataObject.body, "sample body")
+                XCTAssertEqual(dataObject.count, 100)
+                XCTAssertEqual(dataObject.first!.userId, 1)
 
             case let .failure(error):
                 XCTFail(error.localizedDescription)
             }
 
-            expectation.fulfill()
+            self.expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 0.1)
     }
 
-    func test_post_デコード失敗_エラーを取得できること() {
+    func test_get_デコード失敗_エラーを取得できること() {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
-
         stub(condition: isPath("/posts")) { _ in
             fixture(
                 filePath: OHPathForFile(
-                    "failure_sample_post.json",
+                    "failure_sample_get.json",
                     type(of: self)
                 )!,
                 headers: ["Content-Type": "application/json"]
@@ -74,22 +67,17 @@ final class SamplePostRequestTest: XCTestCase {
 
         // act
         apiClient.request(
-            item: SamplePostRequest(parameters: .init(
-                userId: 1,
-                title: "sample title",
-                body: "sample body"
-            ))
+            item: SampleGetRequest(parameters: .init(userId: nil))
         ) {
-            switch $0 {
-            case .success:
-                XCTFail()
-
-            case let .failure(error):
+            if case let .failure(error) = $0 {
                 // assert
-                XCTAssertEqual(error, .decodeError)
-            }
+                XCTAssertEqual(
+                    error,
+                    .decodeError
+                )
 
-            expectation.fulfill()
+                self.expectation.fulfill()
+            }
         }
 
         wait(for: [expectation], timeout: 0.1)

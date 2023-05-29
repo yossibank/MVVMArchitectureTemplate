@@ -5,11 +5,13 @@ import XCTest
 
 final class SamplePutRequestTest: XCTestCase {
     private var apiClient: APIClient!
+    private var expectation: XCTestExpectation!
 
     override func setUp() {
         super.setUp()
 
         apiClient = .init()
+        expectation = .init(description: #function)
     }
 
     override func tearDown() {
@@ -20,8 +22,6 @@ final class SamplePutRequestTest: XCTestCase {
 
     func test_put_成功_正常系のレスポンスを取得できること() {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
-
         stub(condition: isPath("/posts/1")) { _ in
             fixture(
                 filePath: OHPathForFile(
@@ -54,7 +54,7 @@ final class SamplePutRequestTest: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
 
-            expectation.fulfill()
+            self.expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 0.1)
@@ -62,8 +62,6 @@ final class SamplePutRequestTest: XCTestCase {
 
     func test_put_デコード失敗_エラーを取得できること() {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
-
         stub(condition: isPath("/posts/1")) { _ in
             fixture(
                 filePath: OHPathForFile(
@@ -86,16 +84,15 @@ final class SamplePutRequestTest: XCTestCase {
                 pathComponent: 1
             )
         ) {
-            switch $0 {
-            case .success:
-                XCTFail()
-
-            case let .failure(error):
+            if case let .failure(error) = $0 {
                 // assert
-                XCTAssertEqual(error, .decodeError)
-            }
+                XCTAssertEqual(
+                    error,
+                    .decodeError
+                )
 
-            expectation.fulfill()
+                self.expectation.fulfill()
+            }
         }
 
         wait(for: [expectation], timeout: 0.1)

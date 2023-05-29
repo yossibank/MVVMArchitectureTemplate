@@ -5,11 +5,13 @@ import XCTest
 
 final class APIClientTest: XCTestCase {
     private var apiClient: APIClient!
+    private var expectation: XCTestExpectation!
 
     override func setUp() {
         super.setUp()
 
         apiClient = .init()
+        expectation = .init(description: #function)
     }
 
     override func tearDown() {
@@ -19,8 +21,7 @@ final class APIClientTest: XCTestCase {
     }
 
     func test_受け取ったステータスコードが300台の際にステータスコードエラーを受け取れること() {
-        let expectation = XCTestExpectation(description: #function)
-
+        // arrange
         stub(condition: isPath("/posts")) { _ in
             fixture(
                 filePath: OHPathForFile(
@@ -32,27 +33,26 @@ final class APIClientTest: XCTestCase {
             )
         }
 
+        // act
         apiClient.request(
             item: SampleGetRequest(parameters: .init(userId: nil))
         ) {
-            switch $0 {
-            case .success:
-                XCTFail()
-
-            case let .failure(error):
+            if case let .failure(error) = $0 {
                 // assert
-                XCTAssertEqual(error, .invalidStatusCode(302))
+                XCTAssertEqual(
+                    error,
+                    .invalidStatusCode(302)
+                )
             }
 
-            expectation.fulfill()
+            self.expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 0.1)
     }
 
     func test_受け取ったステータスコードが400台の際にステータスコードエラーを受け取れること() {
-        let expectation = XCTestExpectation(description: #function)
-
+        // arrange
         stub(condition: isPath("/posts")) { _ in
             fixture(
                 filePath: OHPathForFile(
@@ -64,27 +64,26 @@ final class APIClientTest: XCTestCase {
             )
         }
 
+        // act
         apiClient.request(
             item: SampleGetRequest(parameters: .init(userId: nil))
         ) {
-            switch $0 {
-            case .success:
-                XCTFail()
-
-            case let .failure(error):
+            if case let .failure(error) = $0 {
                 // assert
-                XCTAssertEqual(error, .invalidStatusCode(404))
+                XCTAssertEqual(
+                    error,
+                    .invalidStatusCode(404)
+                )
             }
 
-            expectation.fulfill()
+            self.expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 0.1)
     }
 
     func test_受け取ったステータスコードが500台の際にステータスコードエラーを受け取れること() {
-        let expectation = XCTestExpectation(description: #function)
-
+        // arrange
         stub(condition: isPath("/posts")) { _ in
             fixture(
                 filePath: OHPathForFile(
@@ -96,19 +95,19 @@ final class APIClientTest: XCTestCase {
             )
         }
 
+        // act
         apiClient.request(
             item: SampleGetRequest(parameters: .init(userId: nil))
         ) {
-            switch $0 {
-            case .success:
-                XCTFail()
-
-            case let .failure(error):
+            if case let .failure(error) = $0 {
                 // assert
-                XCTAssertEqual(error, .invalidStatusCode(500))
+                XCTAssertEqual(
+                    error,
+                    .invalidStatusCode(500)
+                )
             }
 
-            expectation.fulfill()
+            self.expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 0.1)

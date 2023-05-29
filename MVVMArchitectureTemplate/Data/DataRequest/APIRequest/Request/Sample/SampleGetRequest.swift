@@ -8,11 +8,10 @@ struct SampleGetRequest: Request {
         let userId: Int?
     }
 
-    let parameters: Parameters
     var method: HTTPMethod { .get }
     var path: String { "/posts" }
 
-    var body: Data?
+    let parameters: Parameters
 
     init(
         parameters: Parameters,

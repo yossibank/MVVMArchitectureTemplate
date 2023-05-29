@@ -10,13 +10,12 @@ struct SamplePutRequest: Request {
         let body: String
     }
 
-    private let id: Int
-
-    let parameters: Parameters
     var method: HTTPMethod { .put }
     var path: String { "/posts/\(id)" }
 
-    var queryItems: [URLQueryItem]?
+    let parameters: Parameters
+
+    private let id: Int
 
     init(
         parameters: Parameters,

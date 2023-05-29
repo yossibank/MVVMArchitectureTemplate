@@ -10,11 +10,10 @@ struct SamplePostRequest: Request {
         let body: String
     }
 
-    let parameters: Parameters
     var method: HTTPMethod { .post }
     var path: String { "/posts" }
 
-    var queryItems: [URLQueryItem]?
+    let parameters: Parameters
 
     init(
         parameters: Parameters,

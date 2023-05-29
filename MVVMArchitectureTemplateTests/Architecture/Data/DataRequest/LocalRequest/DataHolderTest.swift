@@ -46,9 +46,9 @@ final class DataHolderTest: XCTestCase {
         DataHolder.sample = .sample3
 
         // act
-        let output = try awaitOutputPublisher(samplePublisher)
+        let output = try awaitOutputPublisher(samplePublisher).first
 
         // assert
-        XCTAssertEqual(output.first, .sample3)
+        XCTAssertEqual(output, .sample3)
     }
 }

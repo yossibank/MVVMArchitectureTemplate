@@ -5,11 +5,13 @@ import XCTest
 
 final class SampleDeleteRequestTest: XCTestCase {
     private var apiClient: APIClient!
+    private var expectation: XCTestExpectation!
 
     override func setUp() {
         super.setUp()
 
         apiClient = .init()
+        expectation = .init(description: #function)
     }
 
     override func tearDown() {
@@ -20,8 +22,6 @@ final class SampleDeleteRequestTest: XCTestCase {
 
     func test_delete_成功_正常系のレスポンスを取得できること() {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
-
         stub(condition: isPath("/posts/1")) { _ in
             fixture(
                 filePath: OHPathForFile(
@@ -45,7 +45,7 @@ final class SampleDeleteRequestTest: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
 
-            expectation.fulfill()
+            self.expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 0.1)
