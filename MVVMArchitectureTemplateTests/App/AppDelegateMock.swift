@@ -1,12 +1,15 @@
-import Firebase
+@testable import MVVMArchitectureTemplate
 import UIKit
 
-final class AppDelegate: UIResponder, UIApplicationDelegate {
+@objc(AppDelegateMock)
+final class AppDelegateMock: UIResponder, UIApplicationDelegate {
+    var window: UIWindow?
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        FirebaseApp.configure()
+        removeSessions(application: application)
         return true
     }
 
@@ -17,10 +20,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        .init(
-            name: "Default Configuration",
+        let sceneConfiguration = UISceneConfiguration(
+            name: nil,
             sessionRole: connectingSceneSession.role
         )
+        sceneConfiguration.delegateClass = SceneDelegateMock.self
+        sceneConfiguration.storyboard = nil
+        return sceneConfiguration
     }
 
     func application(
@@ -31,5 +37,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after
         // application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+    }
+}
+
+private extension AppDelegateMock {
+    func removeSessions(application: UIApplication) {
+        application.openSessions.forEach {
+            application.perform(Selector(("_removeSessionFromSessionSet:")), with: $0)
+        }
     }
 }

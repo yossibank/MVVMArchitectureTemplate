@@ -32,6 +32,8 @@ extension SampleListViewController {
         setupNavigation()
         bindToView()
         bindToViewModel()
+
+        viewModel.input.viewDidLoad.send(())
     }
 
     override func viewWillAppear(_ animated: Bool) {

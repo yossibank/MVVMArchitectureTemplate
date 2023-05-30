@@ -3,6 +3,7 @@ import Foundation
 
 final class SampleListViewModel: ViewModel {
     final class Input: InputObject {
+        let viewDidLoad = PassthroughSubject<Void, Never>()
         let viewWillAppear = PassthroughSubject<Void, Never>()
         let barButtonTapped = PassthroughSubject<Void, Never>()
         let contentTapped = PassthroughSubject<IndexPath, Never>()
@@ -38,22 +39,10 @@ final class SampleListViewModel: ViewModel {
         self.routing = routing
         self.analytics = analytics
 
-        // MARK: - 詳細API取得
+        // MARK: - viewDidLoad
 
-        output.isLoading = true
-
-        model.get(userId: nil).sink { completion in
-            output.isLoading = false
-
-            switch completion {
-            case let .failure(error):
-                output.error = error
-
-            case .finished:
-                Logger.debug(message: "詳細API読み込み完了")
-            }
-        } receiveValue: { modelObject in
-            output.modelObject = modelObject
+        input.viewDidLoad.sink { [weak self] _ in
+            self?.fetch()
         }
         .store(in: &cancellables)
 
@@ -77,6 +66,25 @@ final class SampleListViewModel: ViewModel {
             let modelObject = output.modelObject[indexPath.row]
             analytics.sendEvent(.tapSmapleList(userId: modelObject.userId))
             routing.showDetailScreen(modelObject)
+        }
+        .store(in: &cancellables)
+    }
+}
+
+// MARK: - private methods
+
+private extension SampleListViewModel {
+    func fetch() {
+        output.isLoading = true
+
+        model.get(userId: nil).sink { [weak self] completion in
+            self?.output.isLoading = false
+
+            if case let .failure(error) = completion {
+                self?.output.error = error
+            }
+        } receiveValue: { [weak self] modelObject in
+            self?.output.modelObject = modelObject
         }
         .store(in: &cancellables)
     }

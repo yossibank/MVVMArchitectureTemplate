@@ -7,10 +7,19 @@ final class SampleEditViewModelTest: XCTestCase {
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleEditViewModel!
 
-    func test_受け取ったModelObjectがBindingに入力されていること() {
-        // arrange
-        setupViewModel()
+    override func setUp() {
+        super.setUp()
 
+        model = .init()
+        analytics = .init(screenId: .sampleEdit)
+        viewModel = .init(
+            model: model,
+            modelObject: SampleModelObjectBuilder().build(),
+            analytics: analytics
+        )
+    }
+
+    func test_受け取ったModelObjectがBindingに入力されていること() {
         // assert
         XCTAssertEqual(
             viewModel.binding.title,
@@ -25,8 +34,6 @@ final class SampleEditViewModelTest: XCTestCase {
 
     func test_viewWillAppear_FirebaseAnalytics_screenViewイベントを送信できていること() {
         // arrange
-        setupViewModel()
-
         let expectation = XCTestExpectation(description: #function)
 
         analytics.sendEventFAEventHandler = { event in
@@ -43,11 +50,12 @@ final class SampleEditViewModelTest: XCTestCase {
 
     func test_title_bodyのどちらかが空文字の場合_output_isEnabledがfalseを出力すること() {
         // arrange
-        setupViewModel()
+        let title = ""
+        let body = String(repeating: "b", count: 15)
 
         // act
-        viewModel.binding.title = ""
-        viewModel.binding.body = String(repeating: "b", count: 15)
+        viewModel.binding.title = title
+        viewModel.binding.body = body
 
         // assert
         XCTAssertFalse(viewModel.output.isEnabled!)
@@ -55,11 +63,12 @@ final class SampleEditViewModelTest: XCTestCase {
 
     func test_title_bodyが共に空文字でない場合_output_isEnabledがtrueを出力すること() {
         // arrange
-        setupViewModel()
+        let title = String(repeating: "a", count: 15)
+        let body = String(repeating: "b", count: 15)
 
         // act
-        viewModel.binding.title = String(repeating: "a", count: 15)
-        viewModel.binding.body = String(repeating: "b", count: 15)
+        viewModel.binding.title = title
+        viewModel.binding.body = body
 
         // assert
         XCTAssertTrue(viewModel.output.isEnabled!)
@@ -67,17 +76,29 @@ final class SampleEditViewModelTest: XCTestCase {
 
     func test_成功_編集ボタンをタップした際に入力情報を更新できること() throws {
         // arrange
-        setupViewModel()
+        model.putHandler = { _, _ in
+            Future<SampleModelObject, AppError> { promise in
+                promise(
+                    .success(
+                        SampleModelObjectBuilder()
+                            .title("sample edit title")
+                            .body("sample edit body")
+                            .build()
+                    )
+                )
+            }
+            .eraseToAnyPublisher()
+        }
 
         // act
         viewModel.input.editButtonTapped.send(())
 
         let publisher = viewModel.output.$modelObject.collect(1).first()
-        let output = try awaitOutputPublisher(publisher)
+        let output = try awaitOutputPublisher(publisher).first
 
         // assert
         XCTAssertEqual(
-            output.first,
+            output,
             SampleModelObjectBuilder()
                 .title("sample edit title")
                 .body("sample edit body")
@@ -87,54 +108,23 @@ final class SampleEditViewModelTest: XCTestCase {
 
     func test_失敗_編集ボタンをタップした際にエラー情報を取得できること() throws {
         // arrange
-        setupViewModel(isSuccess: false)
+        model.putHandler = { _, _ in
+            Future<SampleModelObject, AppError> { promise in
+                promise(.failure(.init(error: .invalidStatusCode(400))))
+            }
+            .eraseToAnyPublisher()
+        }
 
         // act
         viewModel.input.editButtonTapped.send(())
 
         let publisher = viewModel.output.$appError.collect(1).first()
-        let output = try awaitOutputPublisher(publisher)
+        let output = try awaitOutputPublisher(publisher).first
 
         // assert
         XCTAssertEqual(
-            output.first,
+            output,
             .init(error: .invalidStatusCode(400))
-        )
-    }
-}
-
-private extension SampleEditViewModelTest {
-    func setupViewModel(isSuccess: Bool = true) {
-        model = .init()
-        analytics = .init(screenId: .sampleEdit)
-
-        if isSuccess {
-            model.putHandler = { _, _ in
-                Future<SampleModelObject, AppError> { promise in
-                    promise(
-                        .success(
-                            SampleModelObjectBuilder()
-                                .title("sample edit title")
-                                .body("sample edit body")
-                                .build()
-                        )
-                    )
-                }
-                .eraseToAnyPublisher()
-            }
-        } else {
-            model.putHandler = { _, _ in
-                Future<SampleModelObject, AppError> { promise in
-                    promise(.failure(.init(error: .invalidStatusCode(400))))
-                }
-                .eraseToAnyPublisher()
-            }
-        }
-
-        viewModel = .init(
-            model: model,
-            modelObject: SampleModelObjectBuilder().build(),
-            analytics: analytics
         )
     }
 }

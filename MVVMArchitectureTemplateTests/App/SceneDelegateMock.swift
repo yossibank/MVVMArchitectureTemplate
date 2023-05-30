@@ -1,6 +1,7 @@
+@testable import MVVMArchitectureTemplate
 import UIKit
 
-final class SceneDelegate: UIResponder, UIWindowSceneDelegate, UIAppearanceProtocol {
+final class SceneDelegateMock: UIResponder, UIWindowSceneDelegate, UIAppearanceProtocol {
     var window: UIWindow?
 
     func scene(
@@ -12,12 +13,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate, UIAppearanceProto
             return
         }
 
+        if let userDefaults = UserDefaults(suiteName: "test") {
+            UserDefaults.inject(userDefaults)
+        }
+
         configureAppearance()
 
         window = .init(windowScene: windowScene)
-        window?.rootViewController = UINavigationController(
-            rootViewController: AppControllers.Sample.List()
-        )
+        window?.rootViewController = UIViewController()
         window?.makeKeyAndVisible()
     }
 

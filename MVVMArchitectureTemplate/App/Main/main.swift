@@ -6,15 +6,9 @@ private extension UIApplication {
     }
 }
 
-private func delegateClassName() -> String {
-    UIApplication.isXCTesting
-        ? "MVVMArchitectureTemplateTests.AppDelegate"
-        : NSStringFromClass(AppDelegate.self)
-}
-
 UIApplicationMain(
     CommandLine.argc,
     CommandLine.unsafeArgv,
     nil,
-    delegateClassName()
+    NSStringFromClass(NSClassFromString("AppDelegateMock") ?? AppDelegate.self)
 )

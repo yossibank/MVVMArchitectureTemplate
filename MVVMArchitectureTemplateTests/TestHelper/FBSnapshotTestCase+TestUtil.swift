@@ -6,8 +6,8 @@ enum SnapshotTest {
 }
 
 enum SnapshotViewMode {
-    case navigation(UIViewController)
     case normal(UIViewController)
+    case navigation(UIViewController)
 }
 
 enum SnapshotColorMode: Int, CaseIterable {
@@ -55,51 +55,42 @@ private extension FBSnapshotTestCase {
         viewMode: SnapshotViewMode,
         viewFrame: CGRect = UIScreen.main.bounds,
         viewAfter: CGFloat = .zero,
-        viewAction: VoidBlock? = nil
+        viewAction: VoidBlock? = nil,
+        file: StaticString = #file,
+        line: UInt = #line
     ) {
         fileNameOptions = [.device, .OS, .screenSize, .screenScale]
 
         let expectation = XCTestExpectation(description: #function)
+        let window: UIWindow
 
         switch viewMode {
-        case let .normal(vc):
-            vc.view.frame = viewFrame
+        case let .normal(viewController):
+            viewController.view.frame = viewFrame
+            window = .init(frame: viewFrame)
+            window.rootViewController = viewController
 
-            let window = UIWindow(frame: vc.view.frame)
-            window.rootViewController = vc
-            window.overrideUserInterfaceStyle = .init(rawValue: colorMode.rawValue)!
-            window.makeKeyAndVisible()
+        case let .navigation(viewController):
+            viewController.view.frame = viewFrame
+            window = .init(frame: viewFrame)
+            window.rootViewController = UINavigationController(rootViewController: viewController)
+        }
 
-            viewAction?()
+        viewAction?()
 
-            DispatchQueue.main.async {
-                self.FBSnapshotVerifyView(
-                    vc.view,
-                    identifier: colorMode.identifier
-                )
+        window.makeKeyAndVisible()
+        window.rootViewController?.view.layoutIfNeeded()
+        window.overrideUserInterfaceStyle = colorMode == .light ? .light : .dark
 
-                expectation.fulfill()
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + viewAfter) {
+            self.FBSnapshotVerifyView(
+                window,
+                identifier: colorMode.identifier,
+                file: file,
+                line: line
+            )
 
-        case let .navigation(vc):
-            vc.view.frame = viewFrame
-
-            let window = UIWindow(frame: vc.view.frame)
-            let nc = UINavigationController(rootViewController: vc)
-            window.rootViewController = nc
-            window.overrideUserInterfaceStyle = .init(rawValue: colorMode.rawValue)!
-            window.makeKeyAndVisible()
-
-            viewAction?()
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + viewAfter) {
-                self.FBSnapshotVerifyView(
-                    nc.view,
-                    identifier: colorMode.identifier
-                )
-
-                expectation.fulfill()
-            }
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 3.0 + viewAfter)

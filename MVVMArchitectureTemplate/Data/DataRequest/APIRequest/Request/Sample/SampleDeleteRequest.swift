@@ -4,14 +4,12 @@ struct SampleDeleteRequest: Request {
     typealias Parameters = EmptyParameters
     typealias Response = EmptyResponse
 
-    private let id: Int
-
-    let parameters: Parameters
     var method: HTTPMethod { .delete }
     var path: String { "/posts/\(id)" }
 
-    var body: Data?
-    var queryItems: [URLQueryItem]?
+    let parameters: Parameters
+
+    private let id: Int
 
     init(
         parameters: Parameters = .init(),
