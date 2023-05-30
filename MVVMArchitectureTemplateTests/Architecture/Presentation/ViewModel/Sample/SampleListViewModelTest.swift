@@ -8,24 +8,43 @@ final class SampleListViewModelTest: XCTestCase {
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleListViewModel!
 
-    func test_画面表示_成功_一覧情報を取得できること() throws {
-        // arrange
-        setupViewModel()
+    override func setUp() {
+        super.setUp()
 
+        model = .init()
+        routing = .init()
+        analytics = .init(screenId: .sampleList)
+        viewModel = .init(
+            model: model,
+            routing: routing,
+            analytics: analytics
+        )
+
+        model.getHandler = { _ in
+            Future<[SampleModelObject], AppError> { promise in
+                promise(.success([SampleModelObjectBuilder().build()]))
+            }
+            .eraseToAnyPublisher()
+        }
+
+        viewModel.input.viewDidLoad.send(())
+    }
+
+    func test_画面表示_成功_一覧情報を取得できること() throws {
         // act
         let publisher = viewModel.output.$modelObject.collect(1).first()
-        let output = try awaitOutputPublisher(publisher)
+        let output = try awaitOutputPublisher(publisher).first
 
         // assert
         XCTAssertEqual(
-            output.first,
+            output,
             [SampleModelObjectBuilder().build()]
         )
     }
 
     func test_画面表示_失敗_エラー情報を取得できること() throws {
         // arrange
-        setupViewModel(isSuccess: false)
+        viewDidLoad(isSuccess: false)
 
         // act
         let publisher = viewModel.output.$error.collect(1).first()
@@ -40,8 +59,6 @@ final class SampleListViewModelTest: XCTestCase {
 
     func test_viewWillAppear_firebaseAnalytics_screenViewイベントを送信できていること() {
         // arrange
-        setupViewModel()
-
         let expectation = XCTestExpectation(description: #function)
 
         analytics.sendEventFAEventHandler = { event in
@@ -57,9 +74,6 @@ final class SampleListViewModelTest: XCTestCase {
     }
 
     func test_barButtonTapped_routing_showAddScreenが呼び出されること() {
-        // arrange
-        setupViewModel()
-
         // act
         viewModel.input.barButtonTapped.send(())
 
@@ -69,8 +83,6 @@ final class SampleListViewModelTest: XCTestCase {
 
     func test_contentTapped_firebaseAnalytics_tapSampleListイベントを送信できていること() {
         // arrange
-        setupViewModel()
-
         let expectation = XCTestExpectation(description: #function)
 
         analytics.sendEventFAEventHandler = { event in
@@ -86,9 +98,6 @@ final class SampleListViewModelTest: XCTestCase {
     }
 
     func test_contentTapped_routing_showDetailScreenが呼び出されること() {
-        // arrange
-        setupViewModel()
-
         // act
         viewModel.input.contentTapped.send((.init(row: 0, section: 0)))
 
@@ -98,11 +107,7 @@ final class SampleListViewModelTest: XCTestCase {
 }
 
 private extension SampleListViewModelTest {
-    func setupViewModel(isSuccess: Bool = true) {
-        model = .init()
-        routing = .init()
-        analytics = .init(screenId: .sampleList)
-
+    func viewDidLoad(isSuccess: Bool = true) {
         if isSuccess {
             model.getHandler = { _ in
                 Future<[SampleModelObject], AppError> { promise in
@@ -119,10 +124,6 @@ private extension SampleListViewModelTest {
             }
         }
 
-        viewModel = .init(
-            model: model,
-            routing: routing,
-            analytics: analytics
-        )
+        viewModel.input.viewDidLoad.send(())
     }
 }
