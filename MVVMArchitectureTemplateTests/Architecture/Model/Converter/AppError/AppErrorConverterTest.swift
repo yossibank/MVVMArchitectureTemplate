@@ -1,13 +1,21 @@
 @testable import MVVMArchitectureTemplate
 import XCTest
 
-final class APIErrorConverterTest: XCTestCase {
+final class AppErrorConverterTest: XCTestCase {
+    private var converter: AppErrorConverter!
+
+    override func setUp() {
+        super.setUp()
+
+        converter = .init()
+    }
+
     func test_APIErrorをAppErrorに変換できること() {
         // arrange
         let input = APIError.invalidRequest
 
         // act
-        let actual = AppErrorConverter().convert(input)
+        let actual = converter.convert(input)
 
         // assert
         XCTAssertEqual(
@@ -21,7 +29,7 @@ final class APIErrorConverterTest: XCTestCase {
         let input = APIError.decodeError
 
         // assert
-        let actual = AppErrorConverter().convert(input)
+        let actual = converter.convert(input)
 
         // assert
         XCTAssertEqual(
@@ -35,7 +43,7 @@ final class APIErrorConverterTest: XCTestCase {
         let input = APIError.emptyData
 
         // assert
-        let actual = AppErrorConverter().convert(input)
+        let actual = converter.convert(input)
 
         // assert
         XCTAssertEqual(
@@ -49,7 +57,7 @@ final class APIErrorConverterTest: XCTestCase {
         let input = APIError.emptyResponse
 
         // assert
-        let actual = AppErrorConverter().convert(input)
+        let actual = converter.convert(input)
 
         // assert
         XCTAssertEqual(
@@ -63,7 +71,7 @@ final class APIErrorConverterTest: XCTestCase {
         let input = APIError.emptyResponse
 
         // assert
-        let actual = AppErrorConverter().convert(input)
+        let actual = converter.convert(input)
 
         // assert
         XCTAssertEqual(
@@ -77,7 +85,7 @@ final class APIErrorConverterTest: XCTestCase {
         let input = APIError.urlSessionError
 
         // assert
-        let actual = AppErrorConverter().convert(input)
+        let actual = converter.convert(input)
 
         // assert
         XCTAssertEqual(
@@ -91,7 +99,7 @@ final class APIErrorConverterTest: XCTestCase {
         let input = APIError.invalidStatusCode(400)
 
         // assert
-        let actual = AppErrorConverter().convert(input)
+        let actual = converter.convert(input)
 
         // assert
         XCTAssertEqual(
@@ -105,7 +113,7 @@ final class APIErrorConverterTest: XCTestCase {
         let input = APIError.unknown
 
         // assert
-        let actual = AppErrorConverter().convert(input)
+        let actual = converter.convert(input)
 
         // assert
         XCTAssertEqual(
