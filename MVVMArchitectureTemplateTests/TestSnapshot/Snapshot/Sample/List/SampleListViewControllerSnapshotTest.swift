@@ -2,9 +2,10 @@ import iOSSnapshotTestCase
 @testable import MVVMArchitectureTemplate
 import OHHTTPStubs
 import OHHTTPStubsSwift
+import SwiftUI
 
 final class SampleListViewControllerSnapshotTest: FBSnapshotTestCase {
-    private var subject: SampleListViewController!
+    private var subject: SampleListView!
 
     override func setUp() {
         super.setUp()
@@ -66,16 +67,17 @@ private extension SampleListViewControllerSnapshotTest {
             )
         }
 
-        subject = AppControllers.Sample.List()
+        subject = SampleListView()
 
         snapshotVerifyView(
-            viewMode: .navigation(subject),
+            viewMode: .swiftui(subject),
             viewFrame: .init(
                 x: .zero,
                 y: .zero,
                 width: UIScreen.main.bounds.width,
                 height: mock.height
-            )
+            ),
+            viewAfter: 0.5
         )
     }
 }

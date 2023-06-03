@@ -15,7 +15,7 @@ struct SampleListView: View {
         }
         .listStyle(.plain)
         .onAppear {
-            viewModel.input.viewDidLoad.send(())
+            viewModel.input.onAppear.send(())
         }
     }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 
 final class SampleListSwiftUIViewModel: ViewModel {
     final class Input: InputObject {
-        let viewDidLoad = PassthroughSubject<Void, Never>()
+        let onAppear = PassthroughSubject<Void, Never>()
     }
 
     final class Output: OutputObject {
@@ -29,7 +29,7 @@ final class SampleListSwiftUIViewModel: ViewModel {
         self.model = model
 
         // 初期表示
-        input.viewDidLoad.sink { [weak self] _ in
+        input.onAppear.sink { [weak self] _ in
             self?.fetch()
         }
         .store(in: &cancellables)

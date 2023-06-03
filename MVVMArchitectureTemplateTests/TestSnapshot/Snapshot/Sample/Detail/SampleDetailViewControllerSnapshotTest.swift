@@ -48,6 +48,6 @@ final class SampleDetailViewControllerSnapshotTest: FBSnapshotTestCase {
 private extension SampleDetailViewControllerSnapshotTest {
     func snapshotVerifyView(modelObject: SampleModelObject) {
         subject = AppControllers.Sample.Detail(modelObject)
-        snapshotVerifyView(viewMode: .navigation(subject))
+        snapshotVerifyView(viewMode: .uikit(.navigation(subject)))
     }
 }

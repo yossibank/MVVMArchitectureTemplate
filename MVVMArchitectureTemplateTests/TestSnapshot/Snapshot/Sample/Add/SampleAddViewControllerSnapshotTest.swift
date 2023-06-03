@@ -15,30 +15,30 @@ final class SampleAddViewControllerSnapshotTest: FBSnapshotTestCase {
     }
 
     func testSampleAddViewController_作成ボタン_有効化() {
-        snapshotVerifyView(viewMode: .navigation(subject)) {
+        snapshotVerifyView(viewMode: .uikit(.navigation(subject))) {
             self.subject.viewModel.binding.title = "title"
             self.subject.viewModel.binding.body = "body"
         }
     }
 
     func testSampleAddViewController_作成ボタン_無効化() {
-        snapshotVerifyView(viewMode: .navigation(subject))
+        snapshotVerifyView(viewMode: .uikit(.navigation(subject)))
     }
 
     func testSampleAddViewController_バリデーション_タイトル_空文字() {
-        snapshotVerifyView(viewMode: .navigation(subject)) {
+        snapshotVerifyView(viewMode: .uikit(.navigation(subject))) {
             self.subject.viewModel.binding.title = ""
         }
     }
 
     func testSampleAddViewController_バリデーション_内容_空文字() {
-        snapshotVerifyView(viewMode: .navigation(subject)) {
+        snapshotVerifyView(viewMode: .uikit(.navigation(subject))) {
             self.subject.viewModel.binding.body = ""
         }
     }
 
     func testSampleAddViewController_バリデーション_タイトル_内容_空文字() {
-        snapshotVerifyView(viewMode: .navigation(subject)) {
+        snapshotVerifyView(viewMode: .uikit(.navigation(subject))) {
             self.subject.viewModel.binding.title = ""
             self.subject.viewModel.binding.body = ""
         }
