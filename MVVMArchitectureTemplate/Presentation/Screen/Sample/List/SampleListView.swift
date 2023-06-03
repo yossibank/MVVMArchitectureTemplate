@@ -11,6 +11,7 @@ struct SampleListView: View {
         List(viewModel.output.modelObjects, id: \.self) {
             SampleRow(modelObject: $0)
                 .listRowBackground(Color.clear)
+                .listRowInsets(.init())
         }
         .listStyle(.plain)
         .onAppear {
