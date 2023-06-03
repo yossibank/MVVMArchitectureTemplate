@@ -9,6 +9,7 @@ final class SampleListSwiftUIViewModel: ViewModel {
     final class Output: OutputObject {
         @Published fileprivate(set) var isLoading = false
         @Published fileprivate(set) var modelObjects: [SampleModelObject] = []
+        @Published fileprivate(set) var placeholder: [SampleModelObject] = []
         @Published fileprivate(set) var appError: AppError?
     }
 
@@ -33,6 +34,11 @@ final class SampleListSwiftUIViewModel: ViewModel {
         self.model = model
         self.analytics = analytics
 
+        // プレースホルダー準備
+        output.placeholder = (1 ..< 20).map { _ in
+            SampleModelObjectBuilder().build()
+        }
+
         // 初期表示
         input.onAppear.sink { [weak self] _ in
             self?.fetch()
@@ -42,20 +48,22 @@ final class SampleListSwiftUIViewModel: ViewModel {
     }
 }
 
-extension SampleListSwiftUIViewModel {
+private extension SampleListSwiftUIViewModel {
     func fetch() {
         output.isLoading = true
 
-        model.get(userId: nil).sink { [weak self] in
-            self?.output.isLoading = false
+        model.get(userId: nil)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.output.isLoading = false
 
-            if case let .failure(appError) = $0 {
-                self?.output.appError = appError
+                if case let .failure(appError) = $0 {
+                    self?.output.appError = appError
+                }
+            } receiveValue: { [weak self] modelObjects in
+                self?.output.modelObjects = modelObjects
             }
-        } receiveValue: { [weak self] modelObjects in
-            self?.output.modelObjects = modelObjects
-        }
-        .store(in: &cancellables)
+            .store(in: &cancellables)
     }
 }
 

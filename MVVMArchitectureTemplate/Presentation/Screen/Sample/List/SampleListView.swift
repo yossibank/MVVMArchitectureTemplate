@@ -10,9 +10,18 @@ struct SampleListView: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(.init())
             }
+//            .overlay {
+//                if viewModel.output.isLoading {
+//                    ProgressView("読み込み中。。。")
+//                        .progressViewStyle(.circular)
+//                        .tint(.primary)
+//                        .foregroundColor(.primary)
+//                }
+//            }
             .navigationTitle("サンプル一覧")
             .navigationBarTitleDisplayMode(.inline)
             .listStyle(.plain)
+            .redacted(reason: viewModel.output.isLoading ? .placeholder : [])
             .onAppear {
                 viewModel.input.onAppear.send(())
             }
