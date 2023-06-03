@@ -17,12 +17,15 @@ final class SampleListSwiftUIViewModel: ViewModel {
     let output: Output
     let binding = NoBinding()
 
+    private(set) var router: SampleListRouterInput
+
     private var cancellables = Set<AnyCancellable>()
 
     private let model: SampleModelInput
     private let analytics: FirebaseAnalyzable
 
     init(
+        router: SampleListRouterInput,
         model: SampleModelInput,
         analytics: FirebaseAnalyzable
     ) {
@@ -31,13 +34,12 @@ final class SampleListSwiftUIViewModel: ViewModel {
 
         self.input = input
         self.output = output
+        self.router = router
         self.model = model
         self.analytics = analytics
 
-        // プレースホルダー準備
-        output.placeholder = (1 ..< 20).map { _ in
-            SampleModelObjectBuilder().build()
-        }
+        // プレースホルダー
+        output.placeholder = SampleModelObjectBuilder.placeholder
 
         // 初期表示
         input.onAppear.sink { [weak self] _ in

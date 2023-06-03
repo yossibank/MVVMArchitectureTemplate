@@ -5,26 +5,29 @@ struct SampleListView: View {
 
     var body: some View {
         NavigationView {
-            List(viewModel.output.modelObjects, id: \.self) {
+            List(
+                viewModel.output.isLoading
+                    ? viewModel.output.placeholder
+                    : viewModel.output.modelObjects,
+                id: \.self
+            ) {
                 SampleRow(modelObject: $0)
                     .listRowBackground(Color.clear)
                     .listRowInsets(.init())
             }
-//            .overlay {
-//                if viewModel.output.isLoading {
-//                    ProgressView("読み込み中。。。")
-//                        .progressViewStyle(.circular)
-//                        .tint(.primary)
-//                        .foregroundColor(.primary)
-//                }
-//            }
+            .listStyle(.plain)
+            .redacted(showPlaceholder: viewModel.output.isLoading)
+            .toolbar {
+                NavigationLink(destination: viewModel.router.routeToSample()) {
+                    Image(systemName: "plus.square")
+                        .tint(.primary)
+                }
+            }
             .navigationTitle("サンプル一覧")
             .navigationBarTitleDisplayMode(.inline)
-            .listStyle(.plain)
-            .redacted(reason: viewModel.output.isLoading ? .placeholder : [])
-            .onAppear {
-                viewModel.input.onAppear.send(())
-            }
+        }
+        .onAppear {
+            viewModel.input.onAppear.send(())
         }
     }
 }

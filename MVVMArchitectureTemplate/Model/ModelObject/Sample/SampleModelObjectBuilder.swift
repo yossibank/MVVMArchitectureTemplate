@@ -1,5 +1,14 @@
 #if DEBUG
     final class SampleModelObjectBuilder {
+        static let placeholder: [SampleModelObject] = (1 ..< 20).map {
+            SampleModelObjectBuilder()
+                .userId($0 + 1)
+                .id($0 + 1)
+                .title("placeholder placeholder")
+                .body("placeholder placeholder")
+                .build()
+        }
+
         private var userId = 1
         private var id = 1
         private var title = "sample title"
