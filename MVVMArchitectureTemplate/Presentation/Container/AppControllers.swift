@@ -55,13 +55,10 @@ enum AppControllers {
             let routing = SampleListRouting(viewController: vc)
 
             vc.title = "サンプル一覧"
-            vc.inject(
-                contentView: .init(),
-                viewModel: .init(
-                    model: Models.Sample(),
-                    routing: routing,
-                    analytics: FirebaseAnalytics(screenId: .sampleList)
-                )
+            vc.viewModel = .init(
+                model: Models.Sample(),
+                routing: routing,
+                analytics: FirebaseAnalytics(screenId: .sampleList)
             )
 
             return vc
