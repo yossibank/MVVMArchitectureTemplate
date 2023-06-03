@@ -12,9 +12,19 @@ final class AppDelegateMock: UIResponder, UIApplicationDelegate {
         removeSessions(application: application)
         return true
     }
+}
 
-    // MARK: UISceneSession Lifecycle
+private extension AppDelegateMock {
+    func removeSessions(application: UIApplication) {
+        application.openSessions.forEach {
+            application.perform(Selector(("_removeSessionFromSessionSet:")), with: $0)
+        }
+    }
+}
 
+// MARK: - UISceneSession Lifecycle
+
+extension AppDelegateMock {
     func application(
         _ application: UIApplication,
         configurationForConnecting connectingSceneSession: UISceneSession,
@@ -32,18 +42,5 @@ final class AppDelegateMock: UIResponder, UIApplicationDelegate {
     func application(
         _ application: UIApplication,
         didDiscardSceneSessions sceneSessions: Set<UISceneSession>
-    ) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after
-        // application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-}
-
-private extension AppDelegateMock {
-    func removeSessions(application: UIApplication) {
-        application.openSessions.forEach {
-            application.perform(Selector(("_removeSessionFromSessionSet:")), with: $0)
-        }
-    }
+    ) {}
 }
