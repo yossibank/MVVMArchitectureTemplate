@@ -1,21 +1,21 @@
 import SwiftUI
 
 struct SampleListView: View {
-    @StateObject private var viewModel = SampleListSwiftUIViewModel(model: Models.Sample())
-
-    init() {
-        UITableView.appearance().showsVerticalScrollIndicator = false
-    }
+    @StateObject private var viewModel = ViewModels.Sample.List()
 
     var body: some View {
-        List(viewModel.output.modelObjects, id: \.self) {
-            SampleRow(modelObject: $0)
-                .listRowBackground(Color.clear)
-                .listRowInsets(.init())
-        }
-        .listStyle(.plain)
-        .onAppear {
-            viewModel.input.onAppear.send(())
+        NavigationView {
+            List(viewModel.output.modelObjects, id: \.self) {
+                SampleRow(modelObject: $0)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(.init())
+            }
+            .navigationTitle("サンプル一覧")
+            .navigationBarTitleDisplayMode(.inline)
+            .listStyle(.plain)
+            .onAppear {
+                viewModel.input.onAppear.send(())
+            }
         }
     }
 }

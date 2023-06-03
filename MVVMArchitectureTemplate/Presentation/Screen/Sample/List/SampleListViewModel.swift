@@ -19,18 +19,24 @@ final class SampleListSwiftUIViewModel: ViewModel {
     private var cancellables = Set<AnyCancellable>()
 
     private let model: SampleModelInput
+    private let analytics: FirebaseAnalyzable
 
-    init(model: SampleModelInput) {
+    init(
+        model: SampleModelInput,
+        analytics: FirebaseAnalyzable
+    ) {
         let input = Input()
         let output = Output()
 
         self.input = input
         self.output = output
         self.model = model
+        self.analytics = analytics
 
         // 初期表示
         input.onAppear.sink { [weak self] _ in
             self?.fetch()
+            self?.analytics.sendEvent(.screenView)
         }
         .store(in: &cancellables)
     }
