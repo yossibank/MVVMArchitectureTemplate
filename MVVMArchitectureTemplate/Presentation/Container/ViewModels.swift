@@ -2,7 +2,7 @@ import Foundation
 
 enum ViewModels {
     enum Sample {
-        static func List() -> SampleListSwiftUIViewModel {
+        static func List() -> SampleListViewModel {
             .init(
                 router: SampleListRouter(),
                 model: Models.Sample(),

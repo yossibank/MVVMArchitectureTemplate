@@ -10,15 +10,22 @@ struct SampleListView: View {
                     ? viewModel.output.placeholder
                     : viewModel.output.modelObjects,
                 id: \.self
-            ) {
-                SampleRow(modelObject: $0)
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(.init())
+            ) { modelObject in
+                ZStack {
+                    NavigationLink(destination: viewModel.router.routeToDetail(id: modelObject.id)) {
+                        EmptyView()
+                    }
+                    .opacity(0)
+
+                    SampleRow(modelObject: modelObject)
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(.init())
             }
             .listStyle(.plain)
             .redacted(showPlaceholder: viewModel.output.isLoading)
             .toolbar {
-                NavigationLink(destination: viewModel.router.routeToSample()) {
+                NavigationLink(destination: viewModel.router.routeToAdd()) {
                     Image(systemName: "plus.square")
                         .tint(.primary)
                 }

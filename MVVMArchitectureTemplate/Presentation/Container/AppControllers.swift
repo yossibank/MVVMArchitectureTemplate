@@ -49,19 +49,5 @@ enum AppControllers {
 
             return vc
         }
-
-        static func List() -> SampleListViewController {
-            let vc = SampleListViewController()
-            let routing = SampleListRouting(viewController: vc)
-
-            vc.title = "サンプル一覧"
-            vc.viewModel = .init(
-                model: Models.Sample(),
-                routing: routing,
-                analytics: FirebaseAnalytics(screenId: .sampleList)
-            )
-
-            return vc
-        }
     }
 }

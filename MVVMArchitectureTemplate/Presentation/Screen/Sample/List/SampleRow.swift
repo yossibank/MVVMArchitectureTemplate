@@ -25,16 +25,13 @@ struct SampleRow: View {
                     .lineLimit(1)
             }
         }
-        .padding(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
+        .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
 struct SampleRow_Previews: PreviewProvider {
     static var previews: some View {
-        SampleRow(
-            modelObject: SampleModelObjectBuilder()
-                .build()
-        )
+        SampleRow(modelObject: SampleModelObjectBuilder().build())
     }
 }
