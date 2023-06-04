@@ -51,12 +51,12 @@ final class SampleAddViewModel: ViewModel {
         .store(in: &cancellables)
 
         // 各バリデーション
-        let titleError = binding.$title.dropFirst().compactMap { [weak self] input in
-            self?.validation(input)
+        let titleError = binding.$title.dropFirst().compactMap { input in
+            ValidationError.addValidate(input)
         }
 
-        let bodyError = binding.$body.dropFirst().compactMap { [weak self] input in
-            self?.validation(input)
+        let bodyError = binding.$body.dropFirst().compactMap { input in
+            ValidationError.addValidate(input)
         }
 
         let isEnabled = Publishers.CombineLatest(
@@ -89,19 +89,5 @@ final class SampleAddViewModel: ViewModel {
             bodyError.assignNoRetain(to: \.bodyError, on: output),
             isEnabled.assignNoRetain(to: \.isEnabled, on: output)
         ])
-    }
-}
-
-private extension SampleAddViewModel {
-    func validation(_ input: String) -> ValidationError {
-        if input.isEmpty {
-            return .empty
-        }
-
-        if input.count > 20 {
-            return .long
-        }
-
-        return .none
     }
 }

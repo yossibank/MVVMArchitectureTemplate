@@ -1,17 +1,17 @@
 import SwiftUI
 
-struct SampleAddView: View {
-    @StateObject var viewModel: SampleAddViewModel
+struct SampleEditView: View {
+    @StateObject var viewModel: SampleEditSwiftUIViewModel
 
     @FocusState private var focusField: FocusField?
 
-    init(viewModel: SampleAddViewModel = ViewModels.Sample.Add()) {
-        _viewModel = .init(wrappedValue: viewModel)
+    init(modelObject: SampleModelObject) {
+        _viewModel = .init(wrappedValue: ViewModels.Sample.Edit(modelObject: modelObject))
     }
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("UserID: MyユーザーID")
+            Text("UserID: \(viewModel.output.initialModelObject?.userId.description ?? "")")
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             VStack(alignment: .leading, spacing: 8) {
@@ -54,15 +54,17 @@ struct SampleAddView: View {
                     .foregroundColor(.red)
             }
 
-            Button("作成する") {
-                viewModel.input.didTapCreateButton.send(())
+            Button("編集する") {
+                viewModel.input.didTapEditButton.send(())
             }
             .buttonStyle(SampleButtonStyle())
             .disabled(!viewModel.output.isEnabled)
             .padding(.vertical, 16)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 32)
-        .navigationTitle("サンプル追加")
+        .backgroundColor(light: .white, dark: .black)
+        .navigationTitle("サンプル編集")
         .navigationBarTitleDisplayMode(.inline)
         .contentShape(Rectangle())
         .onTapGesture {
@@ -74,17 +76,15 @@ struct SampleAddView: View {
     }
 }
 
-extension SampleAddView {
+extension SampleEditView {
     enum FocusField: Hashable {
         case title
         case body
     }
 }
 
-struct SampleAddView_Previews: PreviewProvider {
+struct SampleEditView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            SampleAddView()
-        }
+        SampleEditView(modelObject: SampleModelObjectBuilder().build())
     }
 }

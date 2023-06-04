@@ -24,6 +24,18 @@ extension View {
         )
     }
 
+    func backgroundColor(
+        light lightColor: Color,
+        dark darkColor: Color
+    ) -> some View {
+        modifier(
+            AdaptiveBackgroundColorModifier(
+                lightColor: lightColor,
+                darkColor: darkColor
+            )
+        )
+    }
+
     func listBackground(_ color: Color) -> some View {
         if #available(iOS 16.0, *) {
             return scrollContentBackground(.hidden).background(color)

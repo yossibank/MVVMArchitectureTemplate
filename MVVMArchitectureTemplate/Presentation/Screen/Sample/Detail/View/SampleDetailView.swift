@@ -3,6 +3,8 @@ import SwiftUI
 struct SampleDetailView: View {
     @StateObject var viewModel: SampleDetailViewModel
 
+    @State private var isShowSheet = false
+
     init(modelObject: SampleModelObject) {
         _viewModel = .init(wrappedValue: ViewModels.Sample.Detail(modelObject: modelObject))
     }
@@ -24,12 +26,14 @@ struct SampleDetailView: View {
                 .font(.system(size: 16))
                 .italic()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding([.top, .leading, .trailing], 32)
         .navigationTitle("サンプル詳細")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            NavigationLink(destination: viewModel.router.routeToEdit()) {
+            Button {
+                isShowSheet = true
+            } label: {
                 Image(systemName: "list.clipboard")
                     .tint(.primary)
             }
@@ -37,11 +41,18 @@ struct SampleDetailView: View {
         .onAppear {
             viewModel.input.onAppear.send(())
         }
+        .sheet(isPresented: $isShowSheet) {
+            if let modelObject = viewModel.output.modelObject {
+                viewModel.router.routeToEdit(modelObject: modelObject)
+            }
+        }
     }
 }
 
 struct SampleDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        SampleDetailView(modelObject: SampleModelObjectBuilder().build())
+        NavigationView {
+            SampleDetailView(modelObject: SampleModelObjectBuilder().build())
+        }
     }
 }

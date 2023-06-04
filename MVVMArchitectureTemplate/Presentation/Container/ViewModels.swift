@@ -17,6 +17,14 @@ enum ViewModels {
             )
         }
 
+        static func Edit(modelObject: SampleModelObject) -> SampleEditSwiftUIViewModel {
+            .init(
+                model: Models.Sample(),
+                modelObject: modelObject,
+                analytics: FirebaseAnalytics(screenId: .sampleEdit)
+            )
+        }
+
         static func List() -> SampleListViewModel {
             .init(
                 router: SampleListRouter(),
