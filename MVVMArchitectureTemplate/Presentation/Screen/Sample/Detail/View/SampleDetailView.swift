@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SampleDetailView: View {
-    @StateObject var viewModel: SampleDetailSwiftUIViewModel
+    @StateObject var viewModel: SampleDetailViewModel
 
     init(modelObject: SampleModelObject) {
         _viewModel = .init(wrappedValue: ViewModels.Sample.Detail(modelObject: modelObject))

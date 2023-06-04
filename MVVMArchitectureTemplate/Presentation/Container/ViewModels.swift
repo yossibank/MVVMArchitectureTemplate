@@ -9,7 +9,7 @@ enum ViewModels {
             )
         }
 
-        static func Detail(modelObject: SampleModelObject) -> SampleDetailSwiftUIViewModel {
+        static func Detail(modelObject: SampleModelObject) -> SampleDetailViewModel {
             .init(
                 router: SampleDetailRouter(),
                 modelObject: modelObject,
