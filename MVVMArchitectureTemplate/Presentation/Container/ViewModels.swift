@@ -9,6 +9,14 @@ enum ViewModels {
             )
         }
 
+        static func Detail(modelObject: SampleModelObject) -> SampleDetailSwiftUIViewModel {
+            .init(
+                router: SampleDetailRouter(),
+                modelObject: modelObject,
+                analytics: FirebaseAnalytics(screenId: .sampleDetail)
+            )
+        }
+
         static func List() -> SampleListViewModel {
             .init(
                 router: SampleListRouter(),

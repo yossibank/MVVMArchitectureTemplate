@@ -3,7 +3,7 @@ import SwiftUI
 /// @mockable
 protocol SampleListRouterInput {
     func routeToAdd() -> SampleAddView
-    func routeToDetail(id: Int) -> Text
+    func routeToDetail(modelObject: SampleModelObject) -> SampleDetailView
 }
 
 final class SampleListRouter: SampleListRouterInput {
@@ -11,7 +11,7 @@ final class SampleListRouter: SampleListRouterInput {
         SampleAddView()
     }
 
-    func routeToDetail(id: Int) -> Text {
-        Text("Detail: \(id)")
+    func routeToDetail(modelObject: SampleModelObject) -> SampleDetailView {
+        SampleDetailView(modelObject: modelObject)
     }
 }

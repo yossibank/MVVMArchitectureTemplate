@@ -16,7 +16,7 @@ struct SampleListView: View {
                 id: \.self
             ) { modelObject in
                 ZStack {
-                    NavigationLink(destination: viewModel.router.routeToDetail(id: modelObject.id)) {
+                    NavigationLink(destination: viewModel.router.routeToDetail(modelObject: modelObject)) {
                         EmptyView()
                     }
                     .opacity(0)
@@ -27,10 +27,10 @@ struct SampleListView: View {
                 .listRowInsets(.init())
             }
             .listStyle(.plain)
-            .navigationTitle("サンプル一覧")
-            .navigationBarTitleDisplayMode(.inline)
             .animation(.default, value: viewModel.output.modelObjects)
             .redacted(showPlaceholder: viewModel.output.isLoading)
+            .navigationTitle("サンプル一覧")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 NavigationLink(destination: viewModel.router.routeToAdd()) {
                     Image(systemName: "plus.square")

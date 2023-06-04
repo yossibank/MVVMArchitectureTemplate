@@ -15,13 +15,11 @@ struct SampleRow: View {
                     .lineLimit(1)
 
                 Text(modelObject.title)
-                    .font(.system(size: 14))
-                    .fontWeight(.bold)
+                    .font(.system(size: 14, weight: .bold))
                     .lineLimit(2)
 
                 Text(modelObject.body)
-                    .font(.system(size: 11))
-                    .fontWeight(.bold)
+                    .font(.system(size: 11, weight: .bold))
                     .lineLimit(1)
             }
         }
