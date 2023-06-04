@@ -2,9 +2,8 @@ import iOSSnapshotTestCase
 @testable import MVVMArchitectureTemplate
 import OHHTTPStubs
 import OHHTTPStubsSwift
-import SwiftUI
 
-final class SampleListViewControllerSnapshotTest: FBSnapshotTestCase {
+final class SampleListViewSnapshotTest: FBSnapshotTestCase {
     private var subject: SampleListView!
 
     override func setUp() {
@@ -21,20 +20,20 @@ final class SampleListViewControllerSnapshotTest: FBSnapshotTestCase {
         HTTPStubs.removeAllStubs()
     }
 
-    func testSampleListViewController_少件数() {
+    func testSampleListView_少件数() {
         snapshotVerifyView(mock: .short)
     }
 
-    func testSampleListViewController_中件数() {
+    func testSampleListView_中件数() {
         snapshotVerifyView(mock: .medium)
     }
 
-    func testSampleListViewController_多件数() {
+    func testSampleListView_多件数() {
         snapshotVerifyView(mock: .long)
     }
 }
 
-private extension SampleListViewControllerSnapshotTest {
+private extension SampleListViewSnapshotTest {
     enum APIMock: String {
         case short
         case medium

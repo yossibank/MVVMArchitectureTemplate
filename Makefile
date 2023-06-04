@@ -7,6 +7,7 @@ setup:
 	$(MAKE) generate-consts
 	$(MAKE) generate-test-mock
 	$(MAKE) generate-xcodeproj
+	$(MAKE) generate-snapshot-md
 	$(MAKE) open
 
 .PHONY: install-bundler

@@ -1,8 +1,7 @@
 import iOSSnapshotTestCase
 @testable import MVVMArchitectureTemplate
-import SwiftUI
 
-final class SampleAddViewControllerSnapshotTest: FBSnapshotTestCase {
+final class SampleAddViewSnapshotTest: FBSnapshotTestCase {
     private var subject: SampleAddView!
     private var viewModel: SampleAddViewModel!
 
@@ -16,19 +15,19 @@ final class SampleAddViewControllerSnapshotTest: FBSnapshotTestCase {
         viewModel = ViewModels.Sample.Add()
     }
 
-    func testSampleAddViewController_作成_有効() {
+    func testSampleAddView_作成_有効() {
         snapshotVerifyView(
             title: "title",
             body: "body"
         )
     }
 
-    func testSampleAddViewController_作成_無効() {
+    func testSampleAddView_作成_無効() {
         snapshotVerifyView()
     }
 }
 
-private extension SampleAddViewControllerSnapshotTest {
+private extension SampleAddViewSnapshotTest {
     func snapshotVerifyView(
         title: String = "",
         body: String = ""
