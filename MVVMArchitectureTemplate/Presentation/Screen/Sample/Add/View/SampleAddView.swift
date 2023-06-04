@@ -1,0 +1,78 @@
+import SwiftUI
+
+struct SampleAddView: View {
+    @FocusState private var focusField: FocusField?
+    @StateObject private var viewModel = ViewModels.Sample.Add()
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("UserId: MyユーザーID")
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Spacer()
+
+                    Text("入力文字数: \(viewModel.binding.title.count)")
+                        .font(.system(size: 10))
+                }
+
+                TextField("タイトル", text: viewModel.$binding.title)
+                    .textFieldStyle(SampleTextFieldStyle())
+                    .focused($focusField, equals: .title)
+                    .onTapGesture {
+                        focusField = .title
+                    }
+
+                Text(viewModel.output.titleError.description)
+                    .font(.system(size: 12))
+                    .foregroundColor(.red)
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Spacer()
+
+                    Text("入力文字数: \(viewModel.binding.body.count)")
+                        .font(.system(size: 10))
+                }
+
+                TextField("内容", text: viewModel.$binding.body)
+                    .textFieldStyle(SampleTextFieldStyle())
+                    .focused($focusField, equals: .body)
+                    .onTapGesture {
+                        focusField = .body
+                    }
+
+                Text(viewModel.output.bodyError.description)
+                    .font(.system(size: 12))
+                    .foregroundColor(.red)
+            }
+
+            Button("作成する") {
+                viewModel.input.didTapCreateButton.send(())
+            }
+            .buttonStyle(SampleButtonStyle())
+            .disabled(!viewModel.output.isEnabled)
+            .padding(.vertical, 16)
+        }
+        .padding(.horizontal, 32)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            focusField = nil
+        }
+    }
+}
+
+extension SampleAddView {
+    enum FocusField: Hashable {
+        case title
+        case body
+    }
+}
+
+struct SampleAddView_Previews: PreviewProvider {
+    static var previews: some View {
+        SampleAddView()
+    }
+}

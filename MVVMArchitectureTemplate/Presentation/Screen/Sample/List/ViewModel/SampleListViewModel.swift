@@ -1,5 +1,5 @@
 import Combine
-import SwiftUI
+import Foundation
 
 final class SampleListViewModel: ViewModel {
     final class Input: InputObject {
