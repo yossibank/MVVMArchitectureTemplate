@@ -47,7 +47,7 @@ extension Request {
     }
 
     var timeoutInterval: TimeInterval {
-        10.0
+        3.0
     }
 
     var headers: [String: String] {

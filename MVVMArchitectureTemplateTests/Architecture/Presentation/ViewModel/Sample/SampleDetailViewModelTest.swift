@@ -2,23 +2,23 @@
 import XCTest
 
 final class SampleDetailViewModelTest: XCTestCase {
-    private var routing: SampleDetailRoutingInputMock!
+    private var router: SampleDetailRouterInputMock!
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleDetailViewModel!
 
     override func setUp() {
         super.setUp()
 
-        routing = .init()
+        router = .init()
         analytics = .init(screenId: .sampleDetail)
         viewModel = .init(
+            router: router,
             modelObject: SampleModelObjectBuilder().build(),
-            routing: routing,
             analytics: analytics
         )
     }
 
-    func test_viewWillAppear_firebaseAnalytics_screenViewイベントを送信できていること() {
+    func test_input_onAppear_FA_screenViewイベントを送信できていること() {
         // arrange
         let expectation = XCTestExpectation(description: #function)
 
@@ -29,16 +29,8 @@ final class SampleDetailViewModelTest: XCTestCase {
         }
 
         // act
-        viewModel.input.viewWillAppear.send(())
+        viewModel.input.onAppear.send(())
 
         wait(for: [expectation], timeout: 0.1)
-    }
-
-    func test_barButtonTapped_routing_showEditScreenが呼び出されること() {
-        // act
-        viewModel.input.barButtonTapped.send(())
-
-        // assert
-        XCTAssertEqual(routing.showEditScreenCallCount, 1)
     }
 }

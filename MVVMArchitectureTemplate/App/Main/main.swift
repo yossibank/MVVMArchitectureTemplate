@@ -1,6 +1,6 @@
 import UIKit
 
-private extension UIApplication {
+extension UIApplication {
     static var isXCTesting: Bool {
         NSClassFromString("XCTestCase") != nil
     }

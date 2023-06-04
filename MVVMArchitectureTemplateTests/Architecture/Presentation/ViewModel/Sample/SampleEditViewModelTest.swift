@@ -17,9 +17,11 @@ final class SampleEditViewModelTest: XCTestCase {
             modelObject: SampleModelObjectBuilder().build(),
             analytics: analytics
         )
+
+        viewModel.input.onAppear.send(())
     }
 
-    func test_受け取ったModelObjectがBindingに入力されていること() {
+    func test_input_onAppear_初期化時のmodelObjectがbindingに注入されていること() {
         // assert
         XCTAssertEqual(
             viewModel.binding.title,
@@ -32,7 +34,7 @@ final class SampleEditViewModelTest: XCTestCase {
         )
     }
 
-    func test_viewWillAppear_FirebaseAnalytics_screenViewイベントを送信できていること() {
+    func test_input_onAppear_FA_screenViewイベントを送信できていること() {
         // arrange
         let expectation = XCTestExpectation(description: #function)
 
@@ -43,12 +45,40 @@ final class SampleEditViewModelTest: XCTestCase {
         }
 
         // act
-        viewModel.input.viewWillAppear.send(())
+        viewModel.input.onAppear.send(())
 
         wait(for: [expectation], timeout: 0.1)
     }
 
-    func test_title_bodyのどちらかが空文字の場合_output_isEnabledがfalseを出力すること() {
+    func test_binding_title_空文字の場合にoutput_titleErrorがemptyを出力すること() {
+        // arrange
+        let title = ""
+
+        // act
+        viewModel.binding.title = title
+
+        // assert
+        XCTAssertEqual(
+            viewModel.output.titleError,
+            .empty
+        )
+    }
+
+    func test_binding_body_空文字の場合にoutput_bodyErrorがemptyを出力すること() {
+        // arrange
+        let body = ""
+
+        // act
+        viewModel.binding.body = body
+
+        // assert
+        XCTAssertEqual(
+            viewModel.output.bodyError,
+            .empty
+        )
+    }
+
+    func test_titleError_bodyErrorのどちらかがnoneでない場合_output_isEnabledがfalseを出力すること() {
         // arrange
         let title = ""
         let body = String(repeating: "b", count: 15)
@@ -58,10 +88,10 @@ final class SampleEditViewModelTest: XCTestCase {
         viewModel.binding.body = body
 
         // assert
-        XCTAssertFalse(viewModel.output.isEnabled!)
+        XCTAssertFalse(viewModel.output.isEnabled)
     }
 
-    func test_title_bodyが共に空文字でない場合_output_isEnabledがtrueを出力すること() {
+    func test_titleError_bodyErrorが共にnoneの場合_output_isEnabledがtrueを出力すること() {
         // arrange
         let title = String(repeating: "a", count: 15)
         let body = String(repeating: "b", count: 15)
@@ -71,10 +101,10 @@ final class SampleEditViewModelTest: XCTestCase {
         viewModel.binding.body = body
 
         // assert
-        XCTAssertTrue(viewModel.output.isEnabled!)
+        XCTAssertTrue(viewModel.output.isEnabled)
     }
 
-    func test_成功_編集ボタンをタップした際に入力情報を更新できること() throws {
+    func test_input_didTapEditButton_成功_編集ボタンをタップした際に入力情報を更新できること() throws {
         // arrange
         model.putHandler = { _, _ in
             Future<SampleModelObject, AppError> { promise in
@@ -91,9 +121,9 @@ final class SampleEditViewModelTest: XCTestCase {
         }
 
         // act
-        viewModel.input.editButtonTapped.send(())
+        viewModel.input.didTapEditButton.send(())
 
-        let publisher = viewModel.output.$modelObject.collect(1).first()
+        let publisher = viewModel.output.$modelObject.dropFirst().collect(1).first()
         let output = try awaitOutputPublisher(publisher).first
 
         // assert
@@ -106,7 +136,7 @@ final class SampleEditViewModelTest: XCTestCase {
         )
     }
 
-    func test_失敗_編集ボタンをタップした際にエラー情報を取得できること() throws {
+    func test_input_didTapEditButton_失敗_編集ボタンをタップした際にエラー情報を取得できること() throws {
         // arrange
         model.putHandler = { _, _ in
             Future<SampleModelObject, AppError> { promise in
@@ -116,9 +146,9 @@ final class SampleEditViewModelTest: XCTestCase {
         }
 
         // act
-        viewModel.input.editButtonTapped.send(())
+        viewModel.input.didTapEditButton.send(())
 
-        let publisher = viewModel.output.$appError.collect(1).first()
+        let publisher = viewModel.output.$appError.dropFirst().collect(1).first()
         let output = try awaitOutputPublisher(publisher).first
 
         // assert
