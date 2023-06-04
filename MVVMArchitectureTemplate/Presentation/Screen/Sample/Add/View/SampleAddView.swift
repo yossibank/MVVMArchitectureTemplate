@@ -71,6 +71,22 @@ struct SampleAddView: View {
         .onAppear {
             viewModel.input.onAppear.send(())
         }
+        .alert(
+            "成功",
+            isPresented: viewModel.$binding.isShowSuccessAlert
+        ) {} message: {
+            Text(
+                """
+                UserID: \(viewModel.output.modelObject?.userId.description ?? "")
+                Title: \(viewModel.output.modelObject?.title ?? "")
+                Body: \(viewModel.output.modelObject?.body ?? "")
+                """
+            )
+        }
+        .alert(
+            isPresented: viewModel.$binding.isShowErrorAlert,
+            error: viewModel.output.appError
+        ) {}
     }
 }
 

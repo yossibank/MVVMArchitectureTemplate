@@ -18,6 +18,8 @@ final class SampleAddViewModel: ViewModel {
     final class Binding: BindingObject {
         @Published var title = ""
         @Published var body = ""
+        @Published var isShowSuccessAlert = false
+        @Published var isShowErrorAlert = false
     }
 
     @BindableObject private(set) var binding: Binding
@@ -67,20 +69,8 @@ final class SampleAddViewModel: ViewModel {
         }
 
         // 作成ボタンタップ
-        input.didTapCreateButton.flatMap {
-            model.post(parameters: .init(
-                userId: 1,
-                title: binding.title,
-                body: binding.body
-            ))
-        }
-        .receive(on: DispatchQueue.main)
-        .sink {
-            if case let .failure(appError) = $0 {
-                output.appError = appError
-            }
-        } receiveValue: { modelObject in
-            output.modelObject = modelObject
+        input.didTapCreateButton.sink { [weak self] _ in
+            self?.post()
         }
         .store(in: &cancellables)
 
@@ -89,5 +79,26 @@ final class SampleAddViewModel: ViewModel {
             bodyError.assignNoRetain(to: \.bodyError, on: output),
             isEnabled.assignNoRetain(to: \.isEnabled, on: output)
         ])
+    }
+}
+
+private extension SampleAddViewModel {
+    func post() {
+        model.post(parameters: .init(
+            userId: 1,
+            title: binding.title,
+            body: binding.body
+        ))
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] in
+            if case let .failure(appError) = $0 {
+                self?.output.appError = appError
+                self?.binding.isShowErrorAlert = true
+            }
+        } receiveValue: { [weak self] modelObject in
+            self?.output.modelObject = modelObject
+            self?.binding.isShowSuccessAlert = true
+        }
+        .store(in: &cancellables)
     }
 }
