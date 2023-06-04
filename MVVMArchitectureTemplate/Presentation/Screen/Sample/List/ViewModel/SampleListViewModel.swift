@@ -4,7 +4,7 @@ import Foundation
 final class SampleListViewModel: ViewModel {
     final class Input: InputObject {
         let onAppear = PassthroughSubject<Void, Never>()
-        let pullToRefresh = PassthroughSubject<Void, Never>()
+        let viewRefresh = PassthroughSubject<Void, Never>()
     }
 
     final class Output: OutputObject {
@@ -14,9 +14,14 @@ final class SampleListViewModel: ViewModel {
         @Published fileprivate(set) var appError: AppError?
     }
 
+    final class Binding: BindingObject {
+        @Published var isShowErrorAlert = false
+    }
+
+    @BindableObject private(set) var binding: Binding
+
     let input: Input
     let output: Output
-    let binding = NoBinding()
 
     private(set) var router: SampleListRouterInput
 
@@ -32,9 +37,11 @@ final class SampleListViewModel: ViewModel {
     ) {
         let input = Input()
         let output = Output()
+        let binding = Binding()
 
         self.input = input
         self.output = output
+        self.binding = binding
         self.router = router
         self.model = model
         self.analytics = analytics
@@ -50,8 +57,8 @@ final class SampleListViewModel: ViewModel {
         .store(in: &cancellables)
 
         // 引っ張り更新
-        input.pullToRefresh.sink { [weak self] _ in
-            self?.pullToRefresh()
+        input.viewRefresh.sink { [weak self] _ in
+            self?.fetch()
         }
         .store(in: &cancellables)
     }
@@ -68,19 +75,7 @@ private extension SampleListViewModel {
 
                 if case let .failure(appError) = $0 {
                     self?.output.appError = appError
-                }
-            } receiveValue: { [weak self] modelObjects in
-                self?.output.modelObjects = modelObjects
-            }
-            .store(in: &cancellables)
-    }
-
-    func pullToRefresh() {
-        model.get(userId: nil)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                if case let .failure(appError) = $0 {
-                    self?.output.appError = appError
+                    self?.binding.isShowErrorAlert = true
                 }
             } receiveValue: { [weak self] modelObjects in
                 self?.output.modelObjects = modelObjects

@@ -42,7 +42,17 @@ struct SampleListView: View {
             viewModel.input.onAppear.send(())
         }
         .refreshable {
-            viewModel.input.pullToRefresh.send(())
+            viewModel.input.viewRefresh.send(())
+        }
+        .alert(
+            isPresented: viewModel.$binding.isShowErrorAlert,
+            error: viewModel.output.appError
+        ) {
+            Button("閉じる") {}
+
+            Button("再読み込み") {
+                viewModel.input.viewRefresh.send(())
+            }
         }
     }
 }
