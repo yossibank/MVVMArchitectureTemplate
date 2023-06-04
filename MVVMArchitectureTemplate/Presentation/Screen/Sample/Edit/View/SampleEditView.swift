@@ -73,6 +73,16 @@ struct SampleEditView: View {
         .onAppear {
             viewModel.input.onAppear.send(())
         }
+        .alert(
+            "成功",
+            isPresented: viewModel.$binding.isShowSuccessAlert
+        ) {} message: {
+            Text("タイトル: \(viewModel.output.modelObject?.title ?? "")")
+        }
+        .alert(
+            isPresented: viewModel.$binding.isShowErrorAlert,
+            error: viewModel.output.appError
+        ) {}
     }
 }
 

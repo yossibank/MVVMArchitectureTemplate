@@ -75,13 +75,7 @@ struct SampleAddView: View {
             "成功",
             isPresented: viewModel.$binding.isShowSuccessAlert
         ) {} message: {
-            Text(
-                """
-                UserID: \(viewModel.output.modelObject?.userId.description ?? "")
-                Title: \(viewModel.output.modelObject?.title ?? "")
-                Body: \(viewModel.output.modelObject?.body ?? "")
-                """
-            )
+            Text("タイトル: \(viewModel.output.modelObject?.title ?? "")")
         }
         .alert(
             isPresented: viewModel.$binding.isShowErrorAlert,

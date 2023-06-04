@@ -19,6 +19,8 @@ final class SampleEditViewModel: ViewModel {
     final class Binding: BindingObject {
         @Published var title = ""
         @Published var body = ""
+        @Published var isShowSuccessAlert = false
+        @Published var isShowErrorAlert = false
     }
 
     @BindableObject private(set) var binding: Binding
@@ -74,24 +76,8 @@ final class SampleEditViewModel: ViewModel {
         }
 
         // 編集ボタンタップ
-        input.didTapEditButton.flatMap {
-            model.put(
-                userId: modelObject.userId,
-                parameters: .init(
-                    userId: modelObject.userId,
-                    id: modelObject.id,
-                    title: binding.title,
-                    body: binding.body
-                )
-            )
-        }
-        .receive(on: DispatchQueue.main)
-        .sink {
-            if case let .failure(appError) = $0 {
-                output.appError = appError
-            }
-        } receiveValue: { modelObject in
-            output.modelObject = modelObject
+        input.didTapEditButton.sink { [weak self] _ in
+            self?.update()
         }
         .store(in: &cancellables)
 
@@ -100,5 +86,30 @@ final class SampleEditViewModel: ViewModel {
             bodyError.assignNoRetain(to: \.bodyError, on: output),
             isEnabled.assign(to: \.isEnabled, on: output)
         ])
+    }
+}
+
+private extension SampleEditViewModel {
+    func update() {
+        model.put(
+            userId: modelObject.userId,
+            parameters: .init(
+                userId: modelObject.userId,
+                id: modelObject.id,
+                title: binding.title,
+                body: binding.body
+            )
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] in
+            if case let .failure(appError) = $0 {
+                self?.output.appError = appError
+                self?.binding.isShowErrorAlert = true
+            }
+        } receiveValue: { [weak self] modelObject in
+            self?.output.modelObject = modelObject
+            self?.binding.isShowSuccessAlert = true
+        }
+        .store(in: &cancellables)
     }
 }
