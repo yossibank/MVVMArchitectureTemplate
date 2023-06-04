@@ -1,8 +1,10 @@
 import iOSSnapshotTestCase
 @testable import MVVMArchitectureTemplate
+import SwiftUI
 
 final class SampleAddViewControllerSnapshotTest: FBSnapshotTestCase {
-    private var subject: SampleAddViewController!
+    private var subject: SampleAddView!
+    private var viewModel: SampleAddViewModel!
 
     override func setUp() {
         super.setUp()
@@ -11,36 +13,29 @@ final class SampleAddViewControllerSnapshotTest: FBSnapshotTestCase {
 
         recordMode = SnapshotTest.recordMode
 
-        subject = AppControllers.Sample.Add()
+        viewModel = ViewModels.Sample.Add()
     }
 
-    func testSampleAddViewController_作成ボタン_有効化() {
-        snapshotVerifyView(viewMode: .uikit(.navigation(subject))) {
-            self.subject.viewModel.binding.title = "title"
-            self.subject.viewModel.binding.body = "body"
-        }
+    func testSampleAddViewController_作成_有効() {
+        snapshotVerifyView(
+            title: "title",
+            body: "body"
+        )
     }
 
-    func testSampleAddViewController_作成ボタン_無効化() {
-        snapshotVerifyView(viewMode: .uikit(.navigation(subject)))
+    func testSampleAddViewController_作成_無効() {
+        snapshotVerifyView()
     }
+}
 
-    func testSampleAddViewController_バリデーション_タイトル_空文字() {
-        snapshotVerifyView(viewMode: .uikit(.navigation(subject))) {
-            self.subject.viewModel.binding.title = ""
-        }
-    }
-
-    func testSampleAddViewController_バリデーション_内容_空文字() {
-        snapshotVerifyView(viewMode: .uikit(.navigation(subject))) {
-            self.subject.viewModel.binding.body = ""
-        }
-    }
-
-    func testSampleAddViewController_バリデーション_タイトル_内容_空文字() {
-        snapshotVerifyView(viewMode: .uikit(.navigation(subject))) {
-            self.subject.viewModel.binding.title = ""
-            self.subject.viewModel.binding.body = ""
-        }
+private extension SampleAddViewControllerSnapshotTest {
+    func snapshotVerifyView(
+        title: String = "",
+        body: String = ""
+    ) {
+        viewModel.binding.title = title
+        viewModel.binding.body = body
+        subject = .init(viewModel: viewModel)
+        snapshotVerifyView(viewMode: .swiftui(.navigation(subject)))
     }
 }

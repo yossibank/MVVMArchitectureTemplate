@@ -7,12 +7,17 @@ enum SnapshotTest {
 }
 
 enum SnapshotViewMode {
-    case uikit(ScreenMode)
-    case swiftui(any View)
+    case uikit(ScreenUIKitMode)
+    case swiftui(ScreenSwiftUIMode)
 
-    enum ScreenMode {
+    enum ScreenUIKitMode {
         case normal(UIViewController)
         case navigation(UIViewController)
+    }
+
+    enum ScreenSwiftUIMode {
+        case normal(any View)
+        case navigation(any View)
     }
 }
 
@@ -84,8 +89,16 @@ private extension FBSnapshotTestCase {
                 window.rootViewController = UINavigationController(rootViewController: viewController)
             }
 
-        case let .swiftui(view):
-            window.rootViewController = UIHostingController(rootView: AnyView(view))
+        case let .swiftui(screenMode):
+            switch screenMode {
+            case let .normal(view):
+                window.rootViewController = UIHostingController(rootView: AnyView(view))
+
+            case let .navigation(view):
+                window.rootViewController = UIHostingController(rootView: NavigationView {
+                    AnyView(view)
+                })
+            }
         }
 
         window.rootViewController?.view.frame = viewFrame

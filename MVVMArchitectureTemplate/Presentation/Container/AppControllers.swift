@@ -2,21 +2,6 @@ import SwiftUI
 
 enum AppControllers {
     enum Sample {
-        static func Add() -> SampleAddViewController {
-            let vc = SampleAddViewController()
-
-            vc.title = "サンプル作成"
-            vc.inject(
-                contentView: .init(),
-                viewModel: .init(
-                    model: Models.Sample(),
-                    analytics: FirebaseAnalytics(screenId: .sampleAdd)
-                )
-            )
-
-            return vc
-        }
-
         static func Detail(_ modelObject: SampleModelObject) -> SampleDetailViewController {
             let vc = SampleDetailViewController()
             let routing = SampleDetailRouting(viewController: vc)

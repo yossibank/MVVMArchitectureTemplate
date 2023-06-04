@@ -2,7 +2,7 @@ import Foundation
 
 enum ViewModels {
     enum Sample {
-        static func Add() -> SampleAddSwiftUIViewModel {
+        static func Add() -> SampleAddViewModel {
             .init(
                 model: Models.Sample(),
                 analytics: FirebaseAnalytics(screenId: .sampleAdd)

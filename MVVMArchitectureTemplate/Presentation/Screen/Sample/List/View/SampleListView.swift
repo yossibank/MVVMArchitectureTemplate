@@ -1,7 +1,11 @@
 import SwiftUI
 
 struct SampleListView: View {
-    @StateObject private var viewModel = ViewModels.Sample.List()
+    @StateObject var viewModel = ViewModels.Sample.List()
+
+    init(viewModel: SampleListViewModel = ViewModels.Sample.List()) {
+        _viewModel = .init(wrappedValue: viewModel)
+    }
 
     var body: some View {
         NavigationView {
@@ -23,6 +27,8 @@ struct SampleListView: View {
                 .listRowInsets(.init())
             }
             .listStyle(.plain)
+            .navigationTitle("サンプル一覧")
+            .navigationBarTitleDisplayMode(.inline)
             .animation(.default, value: viewModel.output.modelObjects)
             .redacted(showPlaceholder: viewModel.output.isLoading)
             .toolbar {
@@ -31,8 +37,6 @@ struct SampleListView: View {
                         .tint(.primary)
                 }
             }
-            .navigationTitle("サンプル一覧")
-            .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
             viewModel.input.onAppear.send(())

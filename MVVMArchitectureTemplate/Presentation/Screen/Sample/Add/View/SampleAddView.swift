@@ -1,8 +1,13 @@
 import SwiftUI
 
 struct SampleAddView: View {
+    @StateObject var viewModel: SampleAddViewModel
+
     @FocusState private var focusField: FocusField?
-    @StateObject private var viewModel = ViewModels.Sample.Add()
+
+    init(viewModel: SampleAddViewModel = ViewModels.Sample.Add()) {
+        _viewModel = .init(wrappedValue: viewModel)
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -57,9 +62,14 @@ struct SampleAddView: View {
             .padding(.vertical, 16)
         }
         .padding(.horizontal, 32)
+        .navigationTitle("サンプル追加")
+        .navigationBarTitleDisplayMode(.inline)
         .contentShape(Rectangle())
         .onTapGesture {
             focusField = nil
+        }
+        .onAppear {
+            viewModel.input.onAppear.send(())
         }
     }
 }

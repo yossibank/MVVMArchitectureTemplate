@@ -30,7 +30,7 @@ final class SampleListViewModelTest: XCTestCase {
         viewModel.input.onAppear.send(())
     }
 
-    func test_画面表示_成功_一覧情報を取得できること() throws {
+    func test_input_onAppear_一覧情報取得成功_一覧情報を取得できること() throws {
         // act
         let publisher = viewModel.output.$modelObjects.dropFirst().collect(1).first()
         let output = try awaitOutputPublisher(publisher).first
@@ -42,7 +42,7 @@ final class SampleListViewModelTest: XCTestCase {
         )
     }
 
-    func test_画面表示_失敗_エラー情報を取得できること() throws {
+    func test_input_onAppear_一覧情報取得成功_エラー情報を取得できること() throws {
         // arrange
         model.getHandler = { _ in
             Future<[SampleModelObject], AppError> { promise in
@@ -64,7 +64,7 @@ final class SampleListViewModelTest: XCTestCase {
         )
     }
 
-    func test_画面表示_FA_screenViewイベントを送信できていること() {
+    func test_input_onAppear_FA_screenViewイベントを送信できていること() {
         // arrange
         let expectation = XCTestExpectation(description: #function)
 

@@ -20,8 +20,3 @@ enum ValidationError {
         }
     }
 }
-
-enum ValidationType {
-    case title(ValidationError)
-    case body(ValidationError)
-}

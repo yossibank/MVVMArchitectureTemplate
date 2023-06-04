@@ -70,7 +70,7 @@ private extension SampleListViewControllerSnapshotTest {
         subject = SampleListView()
 
         snapshotVerifyView(
-            viewMode: .swiftui(subject),
+            viewMode: .swiftui(.normal(subject)),
             viewFrame: .init(
                 x: .zero,
                 y: .zero,
