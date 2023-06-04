@@ -17,7 +17,7 @@ enum ViewModels {
             )
         }
 
-        static func Edit(modelObject: SampleModelObject) -> SampleEditSwiftUIViewModel {
+        static func Edit(modelObject: SampleModelObject) -> SampleEditViewModel {
             .init(
                 model: Models.Sample(),
                 modelObject: modelObject,

@@ -11,11 +11,11 @@ struct SampleDetailView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 28) {
-            Text("ID: \(viewModel.output.modelObject?.userId.description ?? "")")
+            Text("ID: \(viewModel.output.modelObject?.id.description ?? "")")
                 .font(.system(size: 14, weight: .bold))
                 .foregroundColor(.secondary)
 
-            Text("UserID: \(viewModel.output.modelObject?.id.description ?? "")")
+            Text("UserID: \(viewModel.output.modelObject?.userId.description ?? "")")
                 .font(.system(size: 14))
                 .foregroundColor(.red)
 

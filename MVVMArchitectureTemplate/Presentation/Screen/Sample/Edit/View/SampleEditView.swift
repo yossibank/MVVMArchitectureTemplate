@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SampleEditView: View {
-    @StateObject var viewModel: SampleEditSwiftUIViewModel
+    @StateObject var viewModel: SampleEditViewModel
 
     @FocusState private var focusField: FocusField?
 

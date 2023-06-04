@@ -2,9 +2,7 @@ import iOSSnapshotTestCase
 @testable import MVVMArchitectureTemplate
 
 final class SampleEditViewControllerSnapshotTest: FBSnapshotTestCase {
-    private var subject: SampleEditViewController!
-
-    private let modelObject = SampleModelObjectBuilder().build()
+    private var subject: SampleEditView!
 
     override func setUp() {
         super.setUp()
@@ -12,18 +10,29 @@ final class SampleEditViewControllerSnapshotTest: FBSnapshotTestCase {
         folderName = "Sample編集画面"
 
         recordMode = SnapshotTest.recordMode
-
-        subject = AppControllers.Sample.Edit(modelObject)
     }
 
-    func testSampleEditViewController_編集ボタン_有効化() {
-        snapshotVerifyView(viewMode: .uikit(.navigation(subject)))
+    func testSampleEditViewController_編集_有効() {
+        snapshotVerifyView()
     }
 
-    func testSampleEditViewController_編集ボタン_無効化() {
-        snapshotVerifyView(viewMode: .uikit(.navigation(subject))) {
-            self.subject.viewModel.binding.title = ""
-            self.subject.viewModel.binding.body = ""
-        }
+    func testSampleEditViewController_編集_無効() {
+        snapshotVerifyView(
+            modelObject: SampleModelObjectBuilder()
+                .title("")
+                .body("")
+                .build()
+        )
+    }
+}
+
+private extension SampleEditViewControllerSnapshotTest {
+    func snapshotVerifyView(modelObject: SampleModelObject = SampleModelObjectBuilder().build()) {
+        subject = .init(modelObject: modelObject)
+
+        snapshotVerifyView(
+            viewMode: .swiftui(.navigation(subject)),
+            viewAfter: 0.2
+        )
     }
 }
