@@ -23,6 +23,7 @@ struct SampleListView: View {
                 .listRowInsets(.init())
             }
             .listStyle(.plain)
+            .animation(.default, value: viewModel.output.modelObjects)
             .redacted(showPlaceholder: viewModel.output.isLoading)
             .toolbar {
                 NavigationLink(destination: viewModel.router.routeToAdd()) {
@@ -35,6 +36,9 @@ struct SampleListView: View {
         }
         .onAppear {
             viewModel.input.onAppear.send(())
+        }
+        .refreshable {
+            viewModel.input.pullToRefresh.send(())
         }
     }
 }

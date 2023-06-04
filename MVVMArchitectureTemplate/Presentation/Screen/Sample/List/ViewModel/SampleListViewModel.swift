@@ -4,6 +4,7 @@ import SwiftUI
 final class SampleListViewModel: ViewModel {
     final class Input: InputObject {
         let onAppear = PassthroughSubject<Void, Never>()
+        let pullToRefresh = PassthroughSubject<Void, Never>()
     }
 
     final class Output: OutputObject {
@@ -47,6 +48,12 @@ final class SampleListViewModel: ViewModel {
             self?.analytics.sendEvent(.screenView)
         }
         .store(in: &cancellables)
+
+        // 引っ張り更新
+        input.pullToRefresh.sink { [weak self] _ in
+            self?.pullToRefresh()
+        }
+        .store(in: &cancellables)
     }
 }
 
@@ -59,6 +66,19 @@ private extension SampleListViewModel {
             .sink { [weak self] in
                 self?.output.isLoading = false
 
+                if case let .failure(appError) = $0 {
+                    self?.output.appError = appError
+                }
+            } receiveValue: { [weak self] modelObjects in
+                self?.output.modelObjects = modelObjects
+            }
+            .store(in: &cancellables)
+    }
+
+    func pullToRefresh() {
+        model.get(userId: nil)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
                 if case let .failure(appError) = $0 {
                     self?.output.appError = appError
                 }
