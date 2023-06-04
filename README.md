@@ -13,12 +13,11 @@
 
 ## 対象OS
 
-* iOS14以降
+* iOS15以降
 
 ## 導入ライブラリ
 
 * **Firebase**
-* **SnapKit**
 * **OHHTTPStubs**
 * **iOSSnapshotTestCase**
 * **Mockolo**
