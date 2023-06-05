@@ -6,6 +6,8 @@ protocol APIClientInput {
         item: some Request<T>,
         completion: @escaping (Result<T, APIError>) -> Void
     )
+
+    func request<T>(item: some Request<T>) async throws -> T
 }
 
 struct APIClient: APIClientInput {
@@ -46,6 +48,42 @@ struct APIClient: APIClientInput {
         }
 
         task.resume()
+    }
+
+    func request<T>(item: some Request<T>) async throws -> T {
+        guard let urlRequest = createURLRequest(item) else {
+            throw APIError.invalidRequest
+        }
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+
+            guard !data.isEmpty else {
+                throw APIError.emptyData
+            }
+
+            guard let response = response as? HTTPURLResponse else {
+                throw APIError.emptyResponse
+            }
+
+            guard (200 ... 299).contains(response.statusCode) else {
+                throw APIError.invalidStatusCode(response.statusCode)
+            }
+
+            let decoder: JSONDecoder = {
+                $0.keyDecodingStrategy = .convertFromSnakeCase
+                return $0
+            }(JSONDecoder())
+
+            let value = try decoder.decode(
+                T.self,
+                from: data
+            )
+
+            return value
+        } catch {
+            throw APIError.parseError(error)
+        }
     }
 }
 
