@@ -32,7 +32,7 @@ extension SampleListViewModel {
     func fetch(pullToRefresh: Bool = false) async {
         do {
             if pullToRefresh {
-                try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+                try await Task.sleep(seconds: 1)
             }
 
             modelObjects = try await model.get(userId: nil)
