@@ -25,6 +25,7 @@ enum ViewModels {
             )
         }
 
+        @MainActor
         static func List() -> SampleListViewModel {
             .init(
                 router: SampleListRouter(),

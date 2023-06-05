@@ -16,7 +16,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate, UIAppearanceProto
         configureAppearance()
 
         window = .init(windowScene: windowScene)
-        window?.rootViewController = UIHostingController(rootView: SampleListView())
+        window?.rootViewController = UIHostingController(
+            rootView: SampleListView(
+                viewModel: ViewModels.Sample.List()
+            )
+        )
         window?.makeKeyAndVisible()
     }
 

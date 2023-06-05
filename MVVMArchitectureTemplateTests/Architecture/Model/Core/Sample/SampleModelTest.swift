@@ -20,19 +20,13 @@ final class SampleModelTest: XCTestCase {
         )
     }
 
-    func test_get_成功_情報を取得できること() throws {
+    func test_get_成功_情報を取得できること() async throws {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
-
-        apiClient.requestHandler = { request, completion in
+        apiClient.requestItemHandler = { request in
             // assert
             XCTAssertTrue(request is SampleGetRequest)
 
-            if let completion = completion as? (Result<[SampleDataObject], APIError>) -> Void {
-                completion(.success([SampleDataObjectBuilder().build()]))
-            }
-
-            expectation.fulfill()
+            return [SampleDataObjectBuilder().build()]
         }
 
         sampleConverter.convertHandler = { _ in
@@ -40,24 +34,22 @@ final class SampleModelTest: XCTestCase {
         }
 
         // act
-        let publisher = model.get()
-        let output = try awaitOutputPublisher(publisher)
+        let modelObject = try await model.get(userId: nil)
 
         // assert
         XCTAssertEqual(
-            output,
+            modelObject,
             [SampleModelObjectBuilder().build()]
         )
-
-        wait(for: [expectation], timeout: 0.1)
     }
 
-    func test_get_失敗_エラーを取得できること() throws {
+    func test_get_失敗_エラーを取得できること() async throws {
         // arrange
-        apiClient.requestHandler = { _, completion in
-            if let completion = completion as? (Result<[SampleDataObject], APIError>) -> Void {
-                completion(.failure(.urlSessionError))
-            }
+        apiClient.requestItemHandler = { request in
+            // assert
+            XCTAssertTrue(request is SampleGetRequest)
+
+            throw APIError.decodeError
         }
 
         errorConverter.convertHandler = { error in
@@ -65,18 +57,13 @@ final class SampleModelTest: XCTestCase {
         }
 
         // act
-        let publisher = model.get()
-        let result = try awaitResultPublisher(publisher)
-
-        switch result {
-        case .success:
-            XCTFail()
-
-        case let .failure(error):
+        do {
+            _ = try await model.get(userId: nil)
+        } catch let appError as AppError {
             // assert
             XCTAssertEqual(
-                error as! AppError,
-                .init(error: .urlSessionError)
+                appError,
+                .init(error: .decodeError)
             )
         }
     }

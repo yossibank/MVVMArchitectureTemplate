@@ -3,6 +3,7 @@ import iOSSnapshotTestCase
 import OHHTTPStubs
 import OHHTTPStubsSwift
 
+@MainActor
 final class SampleListViewSnapshotTest: FBSnapshotTestCase {
     private var subject: SampleListView!
 
@@ -66,7 +67,7 @@ private extension SampleListViewSnapshotTest {
             )
         }
 
-        subject = SampleListView()
+        subject = SampleListView(viewModel: ViewModels.Sample.List())
 
         snapshotVerifyView(
             viewMode: .swiftui(.normal(subject)),

@@ -2,9 +2,7 @@ import Combine
 
 /// @mockable
 protocol SampleModelInput: Model {
-    func get(
-        userId: Int?
-    ) -> AnyPublisher<[SampleModelObject], AppError>
+    func get(userId: Int?) async throws -> [SampleModelObject]
 
     func post(
         parameters: SamplePostRequest.Parameters
@@ -33,6 +31,22 @@ struct SampleModel: SampleModelInput {
         self.apiClient = apiClient
         self.sampleConverter = sampleConverter
         self.errorConverter = errorConverter
+    }
+
+    func get(userId: Int? = nil) async throws -> [SampleModelObject] {
+        do {
+            let dataObject = try await apiClient.request(
+                item: SampleGetRequest(
+                    parameters: .init(userId: userId)
+                )
+            )
+            let modelObject = sampleConverter.convert(dataObject)
+            return modelObject
+        } catch let apiError as APIError {
+            throw errorConverter.convert(apiError)
+        } catch {
+            throw AppError(error: .unknown)
+        }
     }
 
     func get(

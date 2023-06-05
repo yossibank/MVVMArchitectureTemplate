@@ -2,11 +2,14 @@ import Combine
 @testable import MVVMArchitectureTemplate
 import XCTest
 
+@MainActor
 final class SampleListViewModelTest: XCTestCase {
     private var model: SampleModelInputMock!
     private var router: SampleListRouterInputMock!
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleListViewModel!
+
+    private var faEvent: FAEvent?
 
     override func setUp() {
         super.setUp()
@@ -14,78 +17,54 @@ final class SampleListViewModelTest: XCTestCase {
         model = .init()
         router = .init()
         analytics = .init(screenId: .sampleList)
+
+        analytics.sendEventFAEventHandler = { event in
+            self.faEvent = event
+        }
+
         viewModel = .init(
             router: router,
             model: model,
             analytics: analytics
         )
-
-        model.getHandler = { _ in
-            Future<[SampleModelObject], AppError> { promise in
-                promise(.success([SampleModelObjectBuilder().build()]))
-            }
-            .eraseToAnyPublisher()
-        }
-
-        viewModel.input.onAppear.send(())
     }
 
-    func test_input_onAppear_一覧情報取得成功_一覧情報を取得できること() throws {
+    func test_ViewModel初期化_FA_screenViewイベントを送信できていること() {
+        XCTAssertEqual(
+            faEvent,
+            .screenView
+        )
+    }
+
+    func test_fetch_成功_modelObjectsに値が代入されること() async {
+        // arrange
+        model.getHandler = { _ in
+            [SampleModelObjectBuilder().build()]
+        }
+
         // act
-        let publisher = viewModel.output.$modelObjects.dropFirst().collect(1).first()
-        let output = try awaitOutputPublisher(publisher).first
+        await viewModel.fetch()
 
         // assert
         XCTAssertEqual(
-            output,
+            viewModel.modelObjects,
             [SampleModelObjectBuilder().build()]
         )
     }
 
-    func test_input_onAppear_一覧情報取得成功_エラー情報を取得できること() throws {
+    func test_fetch_失敗_appErrorに値が代入されること() async {
         // arrange
         model.getHandler = { _ in
-            Future<[SampleModelObject], AppError> { promise in
-                promise(.failure(.init(error: .invalidStatusCode(400))))
-            }
-            .eraseToAnyPublisher()
+            throw AppError(error: .decodeError)
         }
 
-        viewModel.input.onAppear.send(())
-
         // act
-        let publisher = viewModel.output.$appError.dropFirst().collect(1).first()
-        let output = try awaitOutputPublisher(publisher).first
+        await viewModel.fetch()
 
         // assert
         XCTAssertEqual(
-            output,
-            .init(error: .invalidStatusCode(400))
+            viewModel.appError,
+            .init(error: .decodeError)
         )
-    }
-
-    func test_input_onAppear_FA_screenViewイベントを送信できていること() {
-        // arrange
-        let expectation = XCTestExpectation(description: #function)
-
-        analytics.sendEventFAEventHandler = { event in
-            // assert
-            XCTAssertEqual(event, .screenView)
-            expectation.fulfill()
-        }
-
-        // act
-        viewModel.input.onAppear.send(())
-
-        wait(for: [expectation], timeout: 0.1)
-    }
-
-    func test_output_placeholder_初期化時に値が代入されていること() throws {
-        // act
-        let publisher = viewModel.output.$placeholder.collect(1).first()
-        let output = try awaitOutputPublisher(publisher).first!
-
-        // assert
-        XCTAssertEqual(output.count, 20)
     }
 }
