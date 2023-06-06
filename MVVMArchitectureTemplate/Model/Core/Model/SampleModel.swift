@@ -42,10 +42,9 @@ struct SampleModel: SampleModelInput {
             )
             let modelObject = sampleConverter.convert(dataObject)
             return modelObject
-        } catch let apiError as APIError {
-            throw errorConverter.convert(apiError)
         } catch {
-            throw AppError(error: .unknown)
+            let appError = errorConverter.convert(APIError.parse(error))
+            throw appError
         }
     }
 

@@ -82,7 +82,7 @@ final class SamplePostRequestTest: XCTestCase {
                 // assert
                 XCTAssertEqual(
                     error,
-                    .decodeError
+                    .decode
                 )
 
                 self.expectation.fulfill()

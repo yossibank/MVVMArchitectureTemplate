@@ -55,7 +55,7 @@ final class SampleListViewModelTest: XCTestCase {
     func test_fetch_失敗_appErrorに値が代入されること() async {
         // arrange
         model.getHandler = { _ in
-            throw AppError(error: .decodeError)
+            throw AppError(apiError: .decode)
         }
 
         // act
@@ -64,7 +64,7 @@ final class SampleListViewModelTest: XCTestCase {
         // assert
         XCTAssertEqual(
             viewModel.appError,
-            .init(error: .decodeError)
+            .init(apiError: .decode)
         )
     }
 }

@@ -37,7 +37,7 @@ extension SampleListViewModel {
 
             modelObjects = try await model.get(userId: nil)
         } catch {
-            appError = error as? AppError
+            appError = AppError.parse(error)
             isShowErrorAlert = true
         }
     }

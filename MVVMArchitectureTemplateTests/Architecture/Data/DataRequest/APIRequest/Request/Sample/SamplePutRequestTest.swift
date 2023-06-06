@@ -88,7 +88,7 @@ final class SamplePutRequestTest: XCTestCase {
                 // assert
                 XCTAssertEqual(
                     error,
-                    .decodeError
+                    .decode
                 )
 
                 self.expectation.fulfill()

@@ -49,21 +49,23 @@ final class SampleModelTest: XCTestCase {
             // assert
             XCTAssertTrue(request is SampleGetRequest)
 
-            throw APIError.decodeError
+            throw APIError.decode
         }
 
         errorConverter.convertHandler = { error in
-            AppErrorBuilder().error(error).build()
+            AppErrorBuilder()
+                .error(error)
+                .build()
         }
 
         // act
         do {
             _ = try await model.get(userId: nil)
-        } catch let appError as AppError {
+        } catch {
             // assert
             XCTAssertEqual(
-                appError,
-                .init(error: .decodeError)
+                AppError.parse(error),
+                .init(apiError: .decode)
             )
         }
     }
@@ -126,7 +128,7 @@ final class SampleModelTest: XCTestCase {
             // assert
             XCTAssertEqual(
                 error as! AppError,
-                .init(error: .invalidStatusCode(400))
+                .init(apiError: .invalidStatusCode(400))
             )
         }
     }
@@ -188,7 +190,7 @@ final class SampleModelTest: XCTestCase {
             // assert
             XCTAssertEqual(
                 error as! AppError,
-                .init(error: .emptyResponse)
+                .init(apiError: .emptyResponse)
             )
         }
     }
@@ -242,7 +244,7 @@ final class SampleModelTest: XCTestCase {
             // assert
             XCTAssertEqual(
                 error as! AppError,
-                .init(error: .invalidRequest)
+                .init(apiError: .invalidRequest)
             )
         }
     }

@@ -73,7 +73,7 @@ final class SampleGetRequestTest: XCTestCase {
                 // assert
                 XCTAssertEqual(
                     error,
-                    .decodeError
+                    .decode
                 )
 
                 self.expectation.fulfill()

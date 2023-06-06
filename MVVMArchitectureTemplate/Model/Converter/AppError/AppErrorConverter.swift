@@ -1,10 +1,10 @@
 /// @mockable
 protocol AppErrorConverterInput {
-    func convert(_ error: APIError) -> AppError
+    func convert(_ apiError: APIError) -> AppError
 }
 
 struct AppErrorConverter: AppErrorConverterInput {
-    func convert(_ error: APIError) -> AppError {
-        .init(error: error)
+    func convert(_ apiError: APIError) -> AppError {
+        .init(apiError: apiError)
     }
 }

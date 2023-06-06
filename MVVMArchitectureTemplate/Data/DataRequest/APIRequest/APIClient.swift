@@ -22,7 +22,7 @@ struct APIClient: APIClientInput {
 
         let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
             guard error == nil else {
-                completion(.failure(.urlSessionError))
+                completion(.failure(.offline))
                 return
             }
 
@@ -82,7 +82,7 @@ struct APIClient: APIClientInput {
 
             return value
         } catch {
-            throw APIError.parseError(error)
+            throw APIError.parse(error)
         }
     }
 }
@@ -131,7 +131,7 @@ private extension APIClient {
             let value = try decoder.decode(T.self, from: data)
             completion(.success(value))
         } catch {
-            completion(.failure(.decodeError))
+            completion(.failure(.decode))
         }
     }
 }

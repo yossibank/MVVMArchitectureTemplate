@@ -206,7 +206,7 @@ final class SampleAddViewModelTest: XCTestCase {
         // arrange
         model.postHandler = { _ in
             Future<SampleModelObject, AppError> { promise in
-                promise(.failure(.init(error: .invalidStatusCode(400))))
+                promise(.failure(.init(apiError: .invalidStatusCode(400))))
             }
             .eraseToAnyPublisher()
         }
@@ -226,7 +226,7 @@ final class SampleAddViewModelTest: XCTestCase {
         // assert
         XCTAssertEqual(
             output,
-            .init(error: .invalidStatusCode(400))
+            .init(apiError: .invalidStatusCode(400))
         )
     }
 }
