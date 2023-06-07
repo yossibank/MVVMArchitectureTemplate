@@ -32,6 +32,10 @@ final class SampleListViewSnapshotTest: FBSnapshotTestCase {
     func testSampleListView_多件数() {
         snapshotVerifyView(mock: .long)
     }
+
+    func testSampleListView_読み込み中() {
+        snapshotVerifyView(mock: .placeholder)
+    }
 }
 
 private extension SampleListViewSnapshotTest {
@@ -39,19 +43,21 @@ private extension SampleListViewSnapshotTest {
         case short
         case medium
         case long
+        case placeholder
 
         var height: CGFloat {
-            let height = UIScreen.main.bounds.height
-
             switch self {
             case .short:
-                return height
+                return 800
 
             case .medium:
-                return height * 2
+                return 1500
 
             case .long:
-                return height * 4
+                return 2800
+
+            case .placeholder:
+                return 1800
             }
         }
     }
