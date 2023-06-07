@@ -2,6 +2,7 @@ import Foundation
 
 enum ViewModels {
     enum Sample {
+        @MainActor
         static func Add() -> SampleAddViewModel {
             .init(
                 model: Models.Sample(),

@@ -1,6 +1,7 @@
 import iOSSnapshotTestCase
 @testable import MVVMArchitectureTemplate
 
+@MainActor
 final class SampleAddViewSnapshotTest: FBSnapshotTestCase {
     private var subject: SampleAddView!
     private var viewModel: SampleAddViewModel!
@@ -32,8 +33,8 @@ private extension SampleAddViewSnapshotTest {
         title: String = "",
         body: String = ""
     ) {
-        viewModel.binding.title = title
-        viewModel.binding.body = body
+        viewModel.title = title
+        viewModel.body = body
         subject = .init(viewModel: viewModel)
         snapshotVerifyView(viewMode: .swiftui(.navigation(subject)))
     }

@@ -8,8 +8,7 @@ final class SampleListViewModelTest: XCTestCase {
     private var router: SampleListRouterInputMock!
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleListViewModel!
-
-    private var faEvent: FAEvent?
+    private var event: FAEvent!
 
     override func setUp() {
         super.setUp()
@@ -19,7 +18,7 @@ final class SampleListViewModelTest: XCTestCase {
         analytics = .init(screenId: .sampleList)
 
         analytics.sendEventFAEventHandler = { event in
-            self.faEvent = event
+            self.event = event
         }
 
         viewModel = .init(
@@ -31,7 +30,7 @@ final class SampleListViewModelTest: XCTestCase {
 
     func test_ViewModel初期化_FA_screenViewイベントを送信できていること() {
         XCTAssertEqual(
-            faEvent,
+            event,
             .screenView
         )
     }

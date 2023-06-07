@@ -2,230 +2,216 @@ import Combine
 @testable import MVVMArchitectureTemplate
 import XCTest
 
+@MainActor
 final class SampleAddViewModelTest: XCTestCase {
     private var model: SampleModelInputMock!
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleAddViewModel!
+    private var event: FAEvent!
 
     override func setUp() {
         super.setUp()
 
         model = .init()
         analytics = .init(screenId: .sampleAdd)
+        
+        analytics.sendEventFAEventHandler = { event in
+            self.event = event
+        }
+        
         viewModel = .init(
             model: model,
             analytics: analytics
         )
     }
 
-    func test_input_onAppear_FA_screenViewイベントを送信できていること() {
-        // arrange
-        let expectation = XCTestExpectation(description: #function)
-
-        analytics.sendEventFAEventHandler = { event in
-            // assert
-            XCTAssertEqual(event, .screenView)
-            expectation.fulfill()
-        }
-
-        // act
-        viewModel.input.onAppear.send(())
-
-        wait(for: [expectation], timeout: 0.1)
+    func test_ViewModel初期化_FA_screenViewイベントを送信できること() {
+        XCTAssertEqual(
+            event,
+            .screenView
+        )
     }
 
-    func test_binding_title_1文字以上20文字以下の場合にoutput_titleErrorがnoneを出力すること() {
+    func test_title_1文字以上20文字以下の場合_titleErrorがnoneを出力すること() {
         // arrange
         let title = String(repeating: "a", count: 10)
 
         // act
-        viewModel.binding.title = title
+        viewModel.title = title
 
         // assert
         XCTAssertEqual(
-            viewModel.output.titleError,
+            viewModel.titleError,
             .none
         )
 
         XCTAssertEqual(
-            viewModel.output.titleError.description,
+            viewModel.titleError.description,
             ""
         )
     }
 
-    func test_binding_title_空文字の場合にoutput_titleErrorがemptyを出力すること() {
+    func test_title_空文字の場合_titleErrorがemptyを出力すること() {
         // arrange
         let title = ""
 
         // act
-        viewModel.binding.title = title
+        viewModel.title = title
 
         // assert
         XCTAssertEqual(
-            viewModel.output.titleError,
+            viewModel.titleError,
             .empty
         )
 
         XCTAssertEqual(
-            viewModel.output.titleError.description,
+            viewModel.titleError.description,
             "文字が入力されていません。"
         )
     }
 
-    func test_binding_title_21文字以上の場合にoutput_titleErrorがlongを出力すること() {
+    func test_title_21文字以上の場合_titleErrorがlongを出力すること() {
         // arrange
         let title = String(repeating: "a", count: 21)
 
         // act
-        viewModel.binding.title = title
+        viewModel.title = title
 
         // assert
         XCTAssertEqual(
-            viewModel.output.titleError,
+            viewModel.titleError,
             .long
         )
 
         XCTAssertEqual(
-            viewModel.output.titleError.description,
+            viewModel.titleError.description,
             "入力された文字が長すぎます。20文字以内でご入力ください。"
         )
     }
 
-    func test_binding_body_1文字以上20文字以下の場合にoutput_bodyErrorがnoneを出力すること() {
+    func test_body_1文字以上20文字以下の場合_bodyErrorがnoneを出力すること() {
         // arrange
         let body = String(repeating: "a", count: 10)
 
         // act
-        viewModel.binding.body = body
+        viewModel.body = body
 
         // assert
         XCTAssertEqual(
-            viewModel.output.bodyError,
+            viewModel.bodyError,
             .none
         )
 
         XCTAssertEqual(
-            viewModel.output.bodyError.description,
+            viewModel.bodyError.description,
             ""
         )
     }
 
-    func test_binding_body_空文字の場合にoutput_bodyErrorがemptyを出力すること() {
+    func test_body_空文字の場合_bodyErrorがemptyを出力すること() {
         // arrange
         let body = ""
 
         // act
-        viewModel.binding.body = body
+        viewModel.body = body
 
         // assert
         XCTAssertEqual(
-            viewModel.output.bodyError,
+            viewModel.bodyError,
             .empty
         )
 
         XCTAssertEqual(
-            viewModel.output.bodyError.description,
+            viewModel.bodyError.description,
             "文字が入力されていません。"
         )
     }
 
-    func test_binding_body_21文字以上の場合にoutput_bodyErrorがlongを出力すること() {
+    func test_body_21文字以上の場合_bodyErrorがlongを出力すること() {
         // arrange
         let body = String(repeating: "a", count: 21)
 
         // act
-        viewModel.binding.body = body
+        viewModel.body = body
 
         // assert
         XCTAssertEqual(
-            viewModel.output.bodyError,
+            viewModel.bodyError,
             .long
         )
 
         XCTAssertEqual(
-            viewModel.output.bodyError.description,
+            viewModel.bodyError.description,
             "入力された文字が長すぎます。20文字以内でご入力ください。"
         )
     }
 
-    func test_titleError_bodyErrorのどちらかがnoneでない場合_output_isEnabledがfalseを出力すること() {
+    func test_titleError_bodyErrorのどちらかがnoneでない場合_isEnabledがfalseを出力すること() {
         // arrange
         let title = ""
         let body = String(repeating: "b", count: 15)
 
         // act
-        viewModel.binding.title = title
-        viewModel.binding.body = body
+        viewModel.title = title
+        viewModel.body = body
 
         // assert
-        XCTAssertFalse(viewModel.output.isEnabled)
+        XCTAssertFalse(viewModel.isEnabled)
     }
 
-    func test_titleError_bodyErrorが共にnoneの場合_output_isEnabledがtrueを出力すること() {
+    func test_titleError_bodyErrorが共にnoneの場合_isEnabledがtrueを出力すること() {
         // arrange
         let title = String(repeating: "a", count: 15)
         let body = String(repeating: "b", count: 15)
 
         // act
-        viewModel.binding.title = title
-        viewModel.binding.body = body
+        viewModel.title = title
+        viewModel.body = body
 
         // assert
-        XCTAssertTrue(viewModel.output.isEnabled)
+        XCTAssertTrue(viewModel.isEnabled)
     }
 
-    func test_input_didTapCreateButton_成功_登録ボタンをタップした際に入力情報を登録できること() throws {
+    func test_post_成功_modelObjectに値が代入されること() async {
         // arrange
         model.postHandler = { _ in
-            Future<SampleModelObject, AppError> { promise in
-                promise(.success(SampleModelObjectBuilder().build()))
-            }
-            .eraseToAnyPublisher()
+            SampleModelObjectBuilder().build()
         }
 
         let title = String(repeating: "a", count: 15)
         let body = String(repeating: "b", count: 15)
 
-        viewModel.binding.title = title
-        viewModel.binding.body = body
+        viewModel.title = title
+        viewModel.body = body
 
         // act
-        viewModel.input.didTapCreateButton.send(())
-
-        let publisher = viewModel.output.$modelObject.dropFirst().collect(1).first()
-        let output = try awaitOutputPublisher(publisher).first
+        await viewModel.post()
 
         // assert
         XCTAssertEqual(
-            output,
+            viewModel.modelObject,
             SampleModelObjectBuilder().build()
         )
     }
 
-    func test_input_didTapCreateButton_失敗_登録ボタンをタップした際にエラー情報を取得できること() throws {
+    func test_post_失敗_appErrorに値が代入されること() async {
         // arrange
         model.postHandler = { _ in
-            Future<SampleModelObject, AppError> { promise in
-                promise(.failure(.init(apiError: .invalidStatusCode(400))))
-            }
-            .eraseToAnyPublisher()
+            throw AppError(apiError: .invalidStatusCode(400))
         }
 
         let title = String(repeating: "a", count: 15)
         let body = String(repeating: "b", count: 15)
 
-        viewModel.binding.title = title
-        viewModel.binding.body = body
+        viewModel.title = title
+        viewModel.body = body
 
         // act
-        viewModel.input.didTapCreateButton.send(())
-
-        let publisher = viewModel.output.$appError.dropFirst().collect(1).first()
-        let output = try awaitOutputPublisher(publisher).first
+        await viewModel.post()
 
         // assert
         XCTAssertEqual(
-            output,
+            viewModel.appError,
             .init(apiError: .invalidStatusCode(400))
         )
     }

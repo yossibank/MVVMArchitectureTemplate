@@ -7,8 +7,9 @@ protocol SampleListRouterInput {
 }
 
 final class SampleListRouter: SampleListRouterInput {
+    @MainActor
     func routeToAdd() -> SampleAddView {
-        SampleAddView()
+        SampleAddView(viewModel: ViewModels.Sample.Add())
     }
 
     func routeToDetail(modelObject: SampleModelObject) -> SampleDetailView {

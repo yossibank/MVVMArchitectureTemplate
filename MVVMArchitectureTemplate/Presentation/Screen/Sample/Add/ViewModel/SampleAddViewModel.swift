@@ -1,31 +1,16 @@
 import Combine
-import Foundation
 
-final class SampleAddViewModel: ViewModel {
-    final class Input: InputObject {
-        let onAppear = PassthroughSubject<Void, Never>()
-        let didTapCreateButton = PassthroughSubject<Void, Never>()
-    }
-
-    final class Output: OutputObject {
-        @Published fileprivate(set) var titleError: ValidationError = .none
-        @Published fileprivate(set) var bodyError: ValidationError = .none
-        @Published fileprivate(set) var isEnabled = false
-        @Published fileprivate(set) var modelObject: SampleModelObject?
-        @Published fileprivate(set) var appError: AppError?
-    }
-
-    final class Binding: BindingObject {
-        @Published var title = ""
-        @Published var body = ""
-        @Published var isShowSuccessAlert = false
-        @Published var isShowErrorAlert = false
-    }
-
-    @BindableObject private(set) var binding: Binding
-
-    let input: Input
-    let output: Output
+@MainActor
+final class SampleAddViewModel: ObservableObject {
+    @Published var title = ""
+    @Published var body = ""
+    @Published var isEnabled = false
+    @Published var isShowSuccessAlert = false
+    @Published var isShowErrorAlert = false
+    @Published private(set) var titleError: ValidationError = .none
+    @Published private(set) var bodyError: ValidationError = .none
+    @Published private(set) var modelObject: SampleModelObject?
+    @Published private(set) var appError: AppError?
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -36,31 +21,23 @@ final class SampleAddViewModel: ViewModel {
         model: SampleModelInput,
         analytics: FirebaseAnalyzable
     ) {
-        let input = Input()
-        let output = Output()
-        let binding = Binding()
-
-        self.input = input
-        self.output = output
-        self.binding = binding
         self.model = model
         self.analytics = analytics
 
-        // 初期表示
-        input.onAppear.sink {
-            analytics.sendEvent(.screenView)
-        }
-        .store(in: &cancellables)
+        // FAイベント
+        analytics.sendEvent(.screenView)
 
-        // 各バリデーション
-        let titleError = binding.$title.dropFirst().compactMap { input in
+        // タイトルバリデーション
+        let titleError = $title.dropFirst().compactMap { input in
             ValidationError.addValidate(input)
         }
 
-        let bodyError = binding.$body.dropFirst().compactMap { input in
+        // 内容バリデーション
+        let bodyError = $body.dropFirst().compactMap { input in
             ValidationError.addValidate(input)
         }
 
+        // ボタン有効化
         let isEnabled = Publishers.CombineLatest(
             titleError,
             bodyError
@@ -68,37 +45,29 @@ final class SampleAddViewModel: ViewModel {
             title.isEnabled && body.isEnabled
         }
 
-        // 作成ボタンタップ
-        input.didTapCreateButton.sink { [weak self] _ in
-            self?.post()
-        }
-        .store(in: &cancellables)
-
+        // バリデーション結合
         cancellables.formUnion([
-            titleError.assignNoRetain(to: \.titleError, on: output),
-            bodyError.assignNoRetain(to: \.bodyError, on: output),
-            isEnabled.assignNoRetain(to: \.isEnabled, on: output)
+            titleError.assignNoRetain(to: \.titleError, on: self),
+            bodyError.assignNoRetain(to: \.bodyError, on: self),
+            isEnabled.assignNoRetain(to: \.isEnabled, on: self)
         ])
     }
 }
 
-private extension SampleAddViewModel {
-    func post() {
-        model.post(parameters: .init(
-            userId: 1,
-            title: binding.title,
-            body: binding.body
-        ))
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] in
-            if case let .failure(appError) = $0 {
-                self?.output.appError = appError
-                self?.binding.isShowErrorAlert = true
-            }
-        } receiveValue: { [weak self] modelObject in
-            self?.output.modelObject = modelObject
-            self?.binding.isShowSuccessAlert = true
+extension SampleAddViewModel {
+    func post() async {
+        do {
+            modelObject = try await model.post(
+                parameters: .init(
+                    userId: 1,
+                    title: title,
+                    body: body
+                )
+            )
+            isShowSuccessAlert = true
+        } catch {
+            appError = AppError.parse(error)
+            isShowErrorAlert = true
         }
-        .store(in: &cancellables)
     }
 }

@@ -24,6 +24,7 @@ final class SampleListViewModel: ObservableObject {
         self.model = model
         self.analytics = analytics
 
+        // FAイベント
         analytics.sendEvent(.screenView)
     }
 }
