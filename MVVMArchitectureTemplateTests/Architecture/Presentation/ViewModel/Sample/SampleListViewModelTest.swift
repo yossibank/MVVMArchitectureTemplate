@@ -29,6 +29,7 @@ final class SampleListViewModelTest: XCTestCase {
     }
 
     func test_ViewModel初期化_FA_screenViewイベントを送信できていること() {
+        // assert
         XCTAssertEqual(
             event,
             .screenView

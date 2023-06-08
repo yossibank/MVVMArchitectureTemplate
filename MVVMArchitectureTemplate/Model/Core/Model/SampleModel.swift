@@ -4,11 +4,7 @@ import Combine
 protocol SampleModelInput: Model {
     func get(userId: Int?) async throws -> [SampleModelObject]
     func post(parameters: SamplePostRequest.Parameters) async throws -> SampleModelObject
-
-    func put(
-        userId: Int,
-        parameters: SamplePutRequest.Parameters
-    ) -> AnyPublisher<SampleModelObject, AppError>
+    func put(userId: Int, parameters: SamplePutRequest.Parameters) async throws -> SampleModelObject
 
     func delete(
         userId: Int
@@ -61,24 +57,19 @@ struct SampleModel: SampleModelInput {
     func put(
         userId: Int,
         parameters: SamplePutRequest.Parameters
-    ) -> AnyPublisher<SampleModelObject, AppError> {
-        toPublisher { promise in
-            apiClient.request(
+    ) async throws -> SampleModelObject {
+        do {
+            let dataObject = try await apiClient.request(
                 item: SamplePutRequest(
                     parameters: parameters,
                     pathComponent: userId
                 )
-            ) {
-                switch $0 {
-                case let .success(dataObject):
-                    let modelObject = sampleConverter.convert(dataObject)
-                    promise(.success(modelObject))
-
-                case let .failure(apiError):
-                    let appError = errorConverter.convert(apiError)
-                    promise(.failure(appError))
-                }
-            }
+            )
+            let modelObject = sampleConverter.convert(dataObject)
+            return modelObject
+        } catch {
+            let appError = errorConverter.convert(APIError.parse(error))
+            throw appError
         }
     }
 

@@ -58,8 +58,8 @@ final class SampleModelTest: XCTestCase {
                 .build()
         }
 
-        // act
         do {
+            // act
             _ = try await model.get(userId: nil)
         } catch {
             // assert
@@ -89,6 +89,7 @@ final class SampleModelTest: XCTestCase {
             title: "title",
             body: "body"
         )
+
         let modelObject = try await model.post(parameters: parameters)
 
         // assert
@@ -113,7 +114,6 @@ final class SampleModelTest: XCTestCase {
                 .build()
         }
 
-        // act
         let parameters = SamplePostRequest.Parameters(
             userId: 1,
             title: "title",
@@ -121,6 +121,7 @@ final class SampleModelTest: XCTestCase {
         )
 
         do {
+            // act
             _ = try await model.post(parameters: parameters)
         } catch {
             // assert
@@ -131,18 +132,13 @@ final class SampleModelTest: XCTestCase {
         }
     }
 
-    func test_put_成功_情報を取得できること() throws {
+    func test_put_成功_情報を取得できること() async throws {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
-
-        apiClient.requestHandler = { request, completion in
+        apiClient.requestItemHandler = { request in
+            // assert
             XCTAssertTrue(request is SamplePutRequest)
 
-            if let completion = completion as? (Result<SampleDataObject, APIError>) -> Void {
-                completion(.success(SampleDataObjectBuilder().build()))
-            }
-
-            expectation.fulfill()
+            return SampleDataObjectBuilder().build()
         }
 
         sampleConverter.convertObjectHandler = { _ in
@@ -150,44 +146,57 @@ final class SampleModelTest: XCTestCase {
         }
 
         // act
-        let parameters = SamplePutRequest.Parameters(userId: 1, id: 1, title: "title", body: "body")
-        let publisher = model.put(userId: 1, parameters: parameters)
-        let output = try awaitOutputPublisher(publisher)
+        let parameters = SamplePutRequest.Parameters(
+            userId: 1,
+            id: 1,
+            title: "title",
+            body: "body"
+        )
+
+        let modelObject = try await model.put(
+            userId: 1,
+            parameters: parameters
+        )
 
         // assert
         XCTAssertEqual(
-            output,
+            modelObject,
             SampleModelObjectBuilder().build()
         )
-
-        wait(for: [expectation], timeout: 0.1)
     }
 
-    func test_put_失敗_エラーを取得できること() throws {
+    func test_put_失敗_エラーを取得できること() async throws {
         // arrange
-        apiClient.requestHandler = { _, completion in
-            if let completion = completion as? (Result<SampleDataObject, APIError>) -> Void {
-                completion(.failure(.emptyResponse))
-            }
+        apiClient.requestItemHandler = { request in
+            // assert
+            XCTAssertTrue(request is SamplePutRequest)
+
+            throw APIError.emptyResponse
         }
 
         errorConverter.convertHandler = { error in
-            AppErrorBuilder().error(error).build()
+            AppErrorBuilder()
+                .error(error)
+                .build()
         }
 
-        // act
-        let parameters = SamplePutRequest.Parameters(userId: 1, id: 1, title: "title", body: "body")
-        let publisher = model.put(userId: 1, parameters: parameters)
-        let result = try awaitResultPublisher(publisher)
+        let parameters = SamplePutRequest.Parameters(
+            userId: 1,
+            id: 1,
+            title: "title",
+            body: "body"
+        )
 
-        switch result {
-        case .success:
-            XCTFail()
-
-        case let .failure(error):
+        do {
+            // act
+            _ = try await model.put(
+                userId: 1,
+                parameters: parameters
+            )
+        } catch {
             // assert
             XCTAssertEqual(
-                error as! AppError,
+                AppError.parse(error),
                 .init(apiError: .emptyResponse)
             )
         }

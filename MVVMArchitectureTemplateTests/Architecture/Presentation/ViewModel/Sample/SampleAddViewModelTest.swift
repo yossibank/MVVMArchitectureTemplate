@@ -14,11 +14,11 @@ final class SampleAddViewModelTest: XCTestCase {
 
         model = .init()
         analytics = .init(screenId: .sampleAdd)
-        
+
         analytics.sendEventFAEventHandler = { event in
             self.event = event
         }
-        
+
         viewModel = .init(
             model: model,
             analytics: analytics
@@ -26,6 +26,7 @@ final class SampleAddViewModelTest: XCTestCase {
     }
 
     func test_ViewModel初期化_FA_screenViewイベントを送信できること() {
+        // assert
         XCTAssertEqual(
             event,
             .screenView
@@ -172,7 +173,7 @@ final class SampleAddViewModelTest: XCTestCase {
         XCTAssertTrue(viewModel.isEnabled)
     }
 
-    func test_post_成功_modelObjectに値が代入されること() async {
+    func test_post_成功_successObjectに値が代入されること() async {
         // arrange
         model.postHandler = { _ in
             SampleModelObjectBuilder().build()
@@ -189,7 +190,7 @@ final class SampleAddViewModelTest: XCTestCase {
 
         // assert
         XCTAssertEqual(
-            viewModel.modelObject,
+            viewModel.successObject,
             SampleModelObjectBuilder().build()
         )
     }

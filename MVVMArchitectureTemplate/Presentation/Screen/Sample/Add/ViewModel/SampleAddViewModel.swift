@@ -9,7 +9,7 @@ final class SampleAddViewModel: ObservableObject {
     @Published var isShowErrorAlert = false
     @Published private(set) var titleError: ValidationError = .none
     @Published private(set) var bodyError: ValidationError = .none
-    @Published private(set) var modelObject: SampleModelObject?
+    @Published private(set) var successObject: SampleModelObject?
     @Published private(set) var appError: AppError?
 
     private var cancellables = Set<AnyCancellable>()
@@ -57,7 +57,7 @@ final class SampleAddViewModel: ObservableObject {
 extension SampleAddViewModel {
     func post() async {
         do {
-            modelObject = try await model.post(
+            successObject = try await model.post(
                 parameters: .init(
                     userId: 1,
                     title: title,
