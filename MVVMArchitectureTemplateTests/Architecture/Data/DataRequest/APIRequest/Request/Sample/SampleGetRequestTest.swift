@@ -20,7 +20,7 @@ final class SampleGetRequestTest: XCTestCase {
         HTTPStubs.removeAllStubs()
     }
 
-    func test_get_成功_正常系のレスポンスを取得できること() {
+    func test_get_成功_正常系のレスポンスを取得できること() async {
         // arrange
         stub(condition: isPath("/posts")) { _ in
             fixture(
@@ -33,27 +33,23 @@ final class SampleGetRequestTest: XCTestCase {
         }
 
         // act
-        apiClient.request(
+        let dataObject = try! await apiClient.request(
             item: SampleGetRequest(parameters: .init(userId: nil))
-        ) {
-            switch $0 {
-            case let .success(dataObject):
-                // assert
-                XCTAssertNotNil(dataObject)
-                XCTAssertEqual(dataObject.count, 100)
-                XCTAssertEqual(dataObject.first!.userId, 1)
+        )
 
-            case let .failure(error):
-                XCTFail(error.localizedDescription)
-            }
+        // assert
+        XCTAssertEqual(
+            dataObject.count,
+            100
+        )
 
-            self.expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 0.1)
+        XCTAssertEqual(
+            dataObject.first!.userId,
+            1
+        )
     }
 
-    func test_get_デコード失敗_エラーを取得できること() {
+    func test_get_デコード失敗_エラーを取得できること() async throws {
         // arrange
         stub(condition: isPath("/posts")) { _ in
             fixture(
@@ -65,21 +61,17 @@ final class SampleGetRequestTest: XCTestCase {
             )
         }
 
-        // act
-        apiClient.request(
-            item: SampleGetRequest(parameters: .init(userId: nil))
-        ) {
-            if case let .failure(error) = $0 {
-                // assert
-                XCTAssertEqual(
-                    error,
-                    .decode
-                )
-
-                self.expectation.fulfill()
-            }
+        do {
+            // act
+            _ = try await apiClient.request(
+                item: SampleGetRequest(parameters: .init(userId: nil))
+            )
+        } catch {
+            // assert
+            XCTAssertEqual(
+                APIError.parse(error),
+                .decode
+            )
         }
-
-        wait(for: [expectation], timeout: 0.1)
     }
 }

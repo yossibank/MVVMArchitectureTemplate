@@ -5,10 +5,7 @@ protocol SampleModelInput: Model {
     func get(userId: Int?) async throws -> [SampleModelObject]
     func post(parameters: SamplePostRequest.Parameters) async throws -> SampleModelObject
     func put(userId: Int, parameters: SamplePutRequest.Parameters) async throws -> SampleModelObject
-
-    func delete(
-        userId: Int
-    ) -> AnyPublisher<Bool, AppError>
+    func delete(userId: Int) async throws -> Bool
 }
 
 struct SampleModel: SampleModelInput {
@@ -73,22 +70,15 @@ struct SampleModel: SampleModelInput {
         }
     }
 
-    func delete(
-        userId: Int
-    ) -> AnyPublisher<Bool, AppError> {
-        toPublisher { promise in
-            apiClient.request(
+    func delete(userId: Int) async throws -> Bool {
+        do {
+            _ = try await apiClient.request(
                 item: SampleDeleteRequest(pathComponent: userId)
-            ) {
-                switch $0 {
-                case .success:
-                    promise(.success(true))
-
-                case let .failure(apiError):
-                    let appError = errorConverter.convert(apiError)
-                    promise(.failure(appError))
-                }
-            }
+            )
+            return true
+        } catch {
+            let appError = errorConverter.convert(APIError.parse(error))
+            throw appError
         }
     }
 }

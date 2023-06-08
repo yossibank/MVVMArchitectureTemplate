@@ -2,54 +2,10 @@ import Foundation
 
 /// @mockable
 protocol APIClientInput {
-    func request<T>(
-        item: some Request<T>,
-        completion: @escaping (Result<T, APIError>) -> Void
-    )
-
     func request<T>(item: some Request<T>) async throws -> T
 }
 
 struct APIClient: APIClientInput {
-    func request<T>(
-        item: some Request<T>,
-        completion: @escaping (Result<T, APIError>) -> Void
-    ) {
-        guard let urlRequest = createURLRequest(item) else {
-            completion(.failure(.invalidRequest))
-            return
-        }
-
-        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-            guard error == nil else {
-                completion(.failure(.offline))
-                return
-            }
-
-            guard let data else {
-                completion(.failure(.emptyData))
-                return
-            }
-
-            guard let response = response as? HTTPURLResponse else {
-                completion(.failure(.emptyResponse))
-                return
-            }
-
-            guard (200 ... 299).contains(response.statusCode) else {
-                completion(.failure(.invalidStatusCode(response.statusCode)))
-                return
-            }
-
-            decode(
-                data: data,
-                completion: completion
-            )
-        }
-
-        task.resume()
-    }
-
     func request<T>(item: some Request<T>) async throws -> T {
         guard let urlRequest = createURLRequest(item) else {
             throw APIError.invalidRequest
@@ -116,22 +72,5 @@ private extension APIClient {
         Logger.debug(message: urlRequest.curlString)
 
         return urlRequest
-    }
-
-    func decode<T: Decodable>(
-        data: Data,
-        completion: @escaping (Result<T, APIError>) -> Void
-    ) {
-        do {
-            let decoder: JSONDecoder = {
-                $0.keyDecodingStrategy = .convertFromSnakeCase
-                return $0
-            }(JSONDecoder())
-
-            let value = try decoder.decode(T.self, from: data)
-            completion(.success(value))
-        } catch {
-            completion(.failure(.decode))
-        }
     }
 }

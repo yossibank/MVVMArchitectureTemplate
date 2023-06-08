@@ -22,7 +22,7 @@ final class SampleModelTest: XCTestCase {
 
     func test_get_成功_情報を取得できること() async throws {
         // arrange
-        apiClient.requestItemHandler = { request in
+        apiClient.requestHandler = { request in
             // assert
             XCTAssertTrue(request is SampleGetRequest)
 
@@ -45,7 +45,7 @@ final class SampleModelTest: XCTestCase {
 
     func test_get_失敗_エラーを取得できること() async throws {
         // arrange
-        apiClient.requestItemHandler = { request in
+        apiClient.requestHandler = { request in
             // assert
             XCTAssertTrue(request is SampleGetRequest)
 
@@ -72,7 +72,7 @@ final class SampleModelTest: XCTestCase {
 
     func test_post_成功_情報を取得できること() async throws {
         // arrange
-        apiClient.requestItemHandler = { request in
+        apiClient.requestHandler = { request in
             // assert
             XCTAssertTrue(request is SamplePostRequest)
 
@@ -101,7 +101,7 @@ final class SampleModelTest: XCTestCase {
 
     func test_post_失敗_エラーを取得できること() async throws {
         // arrange
-        apiClient.requestItemHandler = { request in
+        apiClient.requestHandler = { request in
             // assert
             XCTAssertTrue(request is SamplePostRequest)
 
@@ -134,7 +134,7 @@ final class SampleModelTest: XCTestCase {
 
     func test_put_成功_情報を取得できること() async throws {
         // arrange
-        apiClient.requestItemHandler = { request in
+        apiClient.requestHandler = { request in
             // assert
             XCTAssertTrue(request is SamplePutRequest)
 
@@ -167,7 +167,7 @@ final class SampleModelTest: XCTestCase {
 
     func test_put_失敗_エラーを取得できること() async throws {
         // arrange
-        apiClient.requestItemHandler = { request in
+        apiClient.requestHandler = { request in
             // assert
             XCTAssertTrue(request is SamplePutRequest)
 
@@ -202,55 +202,44 @@ final class SampleModelTest: XCTestCase {
         }
     }
 
-    func test_delete_成功_情報を取得できること() throws {
+    func test_delete_成功_情報を取得できること() async throws {
         // arrange
-        let expectation = XCTestExpectation(description: #function)
-
-        apiClient.requestHandler = { request, completion in
+        apiClient.requestHandler = { request in
             // assert
             XCTAssertTrue(request is SampleDeleteRequest)
 
-            if let completion = completion as? (Result<EmptyResponse, APIError>) -> Void {
-                completion(.success(.init()))
-            }
-
-            expectation.fulfill()
+            return EmptyResponse()
         }
 
         // act
-        let publisher = model.delete(userId: 1)
-        let output = try awaitOutputPublisher(publisher)
+        let bool = try await model.delete(userId: 1)
 
         // assert
-        XCTAssertTrue(output)
-
-        wait(for: [expectation], timeout: 0.1)
+        XCTAssertTrue(bool)
     }
 
-    func test_delete_失敗_エラーを取得できること() throws {
+    func test_delete_失敗_エラーを取得できること() async throws {
         // arrange
-        apiClient.requestHandler = { _, completion in
-            if let completion = completion as? (Result<EmptyResponse, APIError>) -> Void {
-                completion(.failure(.invalidRequest))
-            }
+        apiClient.requestHandler = { request in
+            // assert
+            XCTAssertTrue(request is SampleDeleteRequest)
+
+            throw APIError.invalidRequest
         }
 
         errorConverter.convertHandler = { error in
-            AppErrorBuilder().error(error).build()
+            AppErrorBuilder()
+                .error(error)
+                .build()
         }
 
-        // act
-        let publisher = model.delete(userId: 1)
-        let result = try awaitResultPublisher(publisher)
-
-        switch result {
-        case .success:
-            XCTFail()
-
-        case let .failure(error):
+        do {
+            // act
+            _ = try await model.delete(userId: 1)
+        } catch {
             // assert
             XCTAssertEqual(
-                error as! AppError,
+                AppError.parse(error),
                 .init(apiError: .invalidRequest)
             )
         }
