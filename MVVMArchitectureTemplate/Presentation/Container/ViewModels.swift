@@ -10,10 +10,11 @@ enum ViewModels {
             )
         }
 
+        @MainActor
         static func Detail(modelObject: SampleModelObject) -> SampleDetailViewModel {
             .init(
-                router: SampleDetailRouter(),
                 modelObject: modelObject,
+                router: SampleDetailRouter(),
                 analytics: FirebaseAnalytics(screenId: .sampleDetail)
             )
         }

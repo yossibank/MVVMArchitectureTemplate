@@ -11,18 +11,18 @@ struct SampleDetailView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 28) {
-            Text("ID: \(viewModel.output.modelObject?.id.description ?? "")")
+            Text("ID: \(viewModel.modelObject.id.description)")
                 .font(.system(size: 14, weight: .bold))
                 .foregroundColor(.secondary)
 
-            Text("UserID: \(viewModel.output.modelObject?.userId.description ?? "")")
+            Text("UserID: \(viewModel.modelObject.userId.description)")
                 .font(.system(size: 14))
                 .foregroundColor(.red)
 
-            Text(viewModel.output.modelObject?.title ?? "")
+            Text(viewModel.modelObject.title)
                 .font(.system(size: 18, weight: .heavy))
 
-            Text(viewModel.output.modelObject?.body ?? "")
+            Text(viewModel.modelObject.body)
                 .font(.system(size: 16))
                 .italic()
         }
@@ -38,13 +38,8 @@ struct SampleDetailView: View {
                     .tint(.primary)
             }
         }
-        .onAppear {
-            viewModel.input.onAppear.send(())
-        }
         .sheet(isPresented: $isShowSheet) {
-            if let modelObject = viewModel.output.modelObject {
-                viewModel.router.routeToEdit(modelObject: modelObject)
-            }
+            viewModel.showEditView()
         }
     }
 }

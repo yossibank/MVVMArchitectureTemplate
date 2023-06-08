@@ -10,8 +10,7 @@ final class SampleListViewModel: ObservableObject {
     @Published private(set) var modelObjects = SampleModelObjectBuilder.placeholder
     @Published private(set) var appError: AppError?
 
-    private(set) var router: SampleListRouterInput
-
+    private let router: SampleListRouterInput
     private let model: SampleModelInput
     private let analytics: FirebaseAnalyzable
 
@@ -41,5 +40,13 @@ extension SampleListViewModel {
             appError = AppError.parse(error)
             isShowErrorAlert = true
         }
+    }
+
+    func showAddView() -> SampleAddView {
+        router.routeToAdd()
+    }
+
+    func showDetailView(modelObject: SampleModelObject) -> SampleDetailView {
+        router.routeToDetail(modelObject: modelObject)
     }
 }
