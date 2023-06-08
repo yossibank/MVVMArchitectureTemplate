@@ -43,7 +43,7 @@ extension SampleListViewModel {
     }
 
     func showAddView() -> SampleAddView {
-        router.routeToAdd()
+        router.routeToAdd(viewModel: ViewModels.Sample.Add())
     }
 
     func showDetailView(modelObject: SampleModelObject) -> SampleDetailView {

@@ -94,6 +94,8 @@ extension SampleEditView {
 
 struct SampleEditView_Previews: PreviewProvider {
     static var previews: some View {
-        SampleEditView(modelObject: SampleModelObjectBuilder().build())
+        NavigationView {
+            SampleEditView(modelObject: SampleModelObjectBuilder().build())
+        }
     }
 }
