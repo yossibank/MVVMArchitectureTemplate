@@ -14,7 +14,7 @@ final class SampleEditViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    let modelObject: SampleModelObject
+    private(set) var modelObject: SampleModelObject
 
     private let model: SampleModelInput
     private let analytics: FirebaseAnalyzable

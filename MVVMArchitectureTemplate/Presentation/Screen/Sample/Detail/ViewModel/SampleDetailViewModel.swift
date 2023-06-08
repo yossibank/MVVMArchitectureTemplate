@@ -2,7 +2,7 @@ import SwiftUI
 
 @MainActor
 final class SampleDetailViewModel: ObservableObject {
-    let modelObject: SampleModelObject
+    private(set) var modelObject: SampleModelObject
 
     private let router: SampleDetailRouterInput
     private let analytics: FirebaseAnalyzable
