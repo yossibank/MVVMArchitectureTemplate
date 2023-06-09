@@ -1,134 +1,120 @@
-import Combine
 @testable import MVVMArchitectureTemplate
 import XCTest
 
+@MainActor
 final class SampleEditViewModelTest: XCTestCase {
     private var model: SampleModelInputMock!
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleEditViewModel!
+    private var event: FAEvent!
 
     override func setUp() {
         super.setUp()
 
         model = .init()
         analytics = .init(screenId: .sampleEdit)
+
+        analytics.sendEventFAEventHandler = { event in
+            self.event = event
+        }
+
         viewModel = .init(
-            model: model,
             modelObject: SampleModelObjectBuilder().build(),
+            model: model,
             analytics: analytics
         )
-
-        viewModel.input.onAppear.send(())
     }
 
-    func test_input_onAppear_初期化時のmodelObjectがbindingに注入されていること() {
+    func test_ViewModel初期化_FA_screenViewイベントを送信できること() {
         // assert
         XCTAssertEqual(
-            viewModel.binding.title,
+            event,
+            .screenView
+        )
+    }
+
+    func test_ViewModel初期化_modelObjectがtitle_bodyに初期注入されていること() {
+        // assert
+        XCTAssertEqual(
+            viewModel.title,
             "sample title"
         )
 
         XCTAssertEqual(
-            viewModel.binding.body,
+            viewModel.body,
             "sample body"
         )
     }
 
-    func test_input_onAppear_FA_screenViewイベントを送信できていること() {
-        // arrange
-        let expectation = XCTestExpectation(description: #function)
-
-        analytics.sendEventFAEventHandler = { event in
-            // assert
-            XCTAssertEqual(event, .screenView)
-            expectation.fulfill()
-        }
-
-        // act
-        viewModel.input.onAppear.send(())
-
-        wait(for: [expectation], timeout: 0.1)
-    }
-
-    func test_binding_title_空文字の場合にoutput_titleErrorがemptyを出力すること() {
+    func test_title_空文字の場合_titleErrorがemptyを出力すること() {
         // arrange
         let title = ""
 
         // act
-        viewModel.binding.title = title
+        viewModel.title = title
 
         // assert
         XCTAssertEqual(
-            viewModel.output.titleError,
+            viewModel.titleError,
             .empty
         )
     }
 
-    func test_binding_body_空文字の場合にoutput_bodyErrorがemptyを出力すること() {
+    func test_body_空文字の場合_bodyErrorがemptyを出力すること() {
         // arrange
         let body = ""
 
         // act
-        viewModel.binding.body = body
+        viewModel.body = body
 
         // assert
         XCTAssertEqual(
-            viewModel.output.bodyError,
+            viewModel.bodyError,
             .empty
         )
     }
 
-    func test_titleError_bodyErrorのどちらかがnoneでない場合_output_isEnabledがfalseを出力すること() {
+    func test_titleError_bodyErrorのどちらかがnoneでない場合_isEnabledがfalseを出力すること() {
         // arrange
         let title = ""
         let body = String(repeating: "b", count: 15)
 
         // act
-        viewModel.binding.title = title
-        viewModel.binding.body = body
+        viewModel.title = title
+        viewModel.body = body
 
         // assert
-        XCTAssertFalse(viewModel.output.isEnabled)
+        XCTAssertFalse(viewModel.isEnabled)
     }
 
-    func test_titleError_bodyErrorが共にnoneの場合_output_isEnabledがtrueを出力すること() {
+    func test_titleError_bodyErrorが共にnoneの場合_isEnabledがtrueを出力すること() {
         // arrange
         let title = String(repeating: "a", count: 15)
         let body = String(repeating: "b", count: 15)
 
         // act
-        viewModel.binding.title = title
-        viewModel.binding.body = body
+        viewModel.title = title
+        viewModel.body = body
 
         // assert
-        XCTAssertTrue(viewModel.output.isEnabled)
+        XCTAssertTrue(viewModel.isEnabled)
     }
 
-    func test_input_didTapEditButton_成功_編集ボタンをタップした際に入力情報を更新できること() throws {
+    func test_update_成功_successObjectに値が代入されること() async {
         // arrange
         model.putHandler = { _, _ in
-            Future<SampleModelObject, AppError> { promise in
-                promise(
-                    .success(
-                        SampleModelObjectBuilder()
-                            .title("sample edit title")
-                            .body("sample edit body")
-                            .build()
-                    )
-                )
-            }
-            .eraseToAnyPublisher()
+            SampleModelObjectBuilder()
+                .title("sample edit title")
+                .body("sample edit body")
+                .build()
         }
 
         // act
-        viewModel.input.didTapEditButton.send(())
-
-        let publisher = viewModel.output.$modelObject.dropFirst().collect(1).first()
-        let output = try awaitOutputPublisher(publisher).first
+        await viewModel.update()
 
         // assert
         XCTAssertEqual(
-            output,
+            viewModel.successObject,
             SampleModelObjectBuilder()
                 .title("sample edit title")
                 .body("sample edit body")
@@ -136,25 +122,19 @@ final class SampleEditViewModelTest: XCTestCase {
         )
     }
 
-    func test_input_didTapEditButton_失敗_編集ボタンをタップした際にエラー情報を取得できること() throws {
+    func test_update_失敗_appErrorに値が代入されること() async {
         // arrange
         model.putHandler = { _, _ in
-            Future<SampleModelObject, AppError> { promise in
-                promise(.failure(.init(error: .invalidStatusCode(400))))
-            }
-            .eraseToAnyPublisher()
+            throw AppError(apiError: .invalidStatusCode(400))
         }
 
         // act
-        viewModel.input.didTapEditButton.send(())
-
-        let publisher = viewModel.output.$appError.dropFirst().collect(1).first()
-        let output = try awaitOutputPublisher(publisher).first
+        await viewModel.update()
 
         // assert
         XCTAssertEqual(
-            output,
-            .init(error: .invalidStatusCode(400))
+            viewModel.appError,
+            .init(apiError: .invalidStatusCode(400))
         )
     }
 }

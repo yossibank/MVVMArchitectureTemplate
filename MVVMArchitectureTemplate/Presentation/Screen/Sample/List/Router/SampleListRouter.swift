@@ -2,13 +2,13 @@ import SwiftUI
 
 /// @mockable
 protocol SampleListRouterInput {
-    func routeToAdd() -> SampleAddView
+    func routeToAdd(viewModel: SampleAddViewModel) -> SampleAddView
     func routeToDetail(modelObject: SampleModelObject) -> SampleDetailView
 }
 
 final class SampleListRouter: SampleListRouterInput {
-    func routeToAdd() -> SampleAddView {
-        SampleAddView()
+    func routeToAdd(viewModel: SampleAddViewModel) -> SampleAddView {
+        SampleAddView(viewModel: viewModel)
     }
 
     func routeToDetail(modelObject: SampleModelObject) -> SampleDetailView {

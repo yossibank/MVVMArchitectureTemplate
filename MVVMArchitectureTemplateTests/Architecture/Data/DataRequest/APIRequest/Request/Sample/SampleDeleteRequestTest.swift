@@ -20,7 +20,7 @@ final class SampleDeleteRequestTest: XCTestCase {
         HTTPStubs.removeAllStubs()
     }
 
-    func test_delete_成功_正常系のレスポンスを取得できること() {
+    func test_delete_成功_正常系のレスポンスを取得できること() async {
         // arrange
         stub(condition: isPath("/posts/1")) { _ in
             fixture(
@@ -33,21 +33,11 @@ final class SampleDeleteRequestTest: XCTestCase {
         }
 
         // act
-        apiClient.request(
+        let dataObject = try! await apiClient.request(
             item: SampleDeleteRequest(pathComponent: 1)
-        ) {
-            switch $0 {
-            case let .success(dataObject):
-                // assert
-                XCTAssertNotNil(dataObject)
+        )
 
-            case let .failure(error):
-                XCTFail(error.localizedDescription)
-            }
-
-            self.expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 0.1)
+        // assert
+        XCTAssertNotNil(dataObject)
     }
 }

@@ -1,23 +1,11 @@
 import Combine
 
 /// @mockable
-protocol SampleModelInput: Model {
-    func get(
-        userId: Int?
-    ) -> AnyPublisher<[SampleModelObject], AppError>
-
-    func post(
-        parameters: SamplePostRequest.Parameters
-    ) -> AnyPublisher<SampleModelObject, AppError>
-
-    func put(
-        userId: Int,
-        parameters: SamplePutRequest.Parameters
-    ) -> AnyPublisher<SampleModelObject, AppError>
-
-    func delete(
-        userId: Int
-    ) -> AnyPublisher<Bool, AppError>
+protocol SampleModelInput {
+    func get(userId: Int?) async throws -> [SampleModelObject]
+    func post(parameters: SamplePostRequest.Parameters) async throws -> SampleModelObject
+    func put(userId: Int, parameters: SamplePutRequest.Parameters) async throws -> SampleModelObject
+    func delete(userId: Int) async throws -> Bool
 }
 
 struct SampleModel: SampleModelInput {
@@ -35,86 +23,62 @@ struct SampleModel: SampleModelInput {
         self.errorConverter = errorConverter
     }
 
-    func get(
-        userId: Int? = nil
-    ) -> AnyPublisher<[SampleModelObject], AppError> {
-        toPublisher { promise in
-            apiClient.request(
-                item: SampleGetRequest(parameters: .init(userId: userId))
-            ) {
-                switch $0 {
-                case let .success(dataObject):
-                    let modelObject = sampleConverter.convert(dataObject)
-                    promise(.success(modelObject))
-
-                case let .failure(apiError):
-                    let appError = errorConverter.convert(apiError)
-                    promise(.failure(appError))
-                }
-            }
+    func get(userId: Int? = nil) async throws -> [SampleModelObject] {
+        do {
+            let dataObject = try await apiClient.request(
+                item: SampleGetRequest(
+                    parameters: .init(userId: userId)
+                )
+            )
+            let modelObject = sampleConverter.convert(dataObject)
+            return modelObject
+        } catch {
+            let appError = errorConverter.convert(APIError.parse(error))
+            throw appError
         }
     }
 
-    func post(
-        parameters: SamplePostRequest.Parameters
-    ) -> AnyPublisher<SampleModelObject, AppError> {
-        toPublisher { promise in
-            apiClient.request(
+    func post(parameters: SamplePostRequest.Parameters) async throws -> SampleModelObject {
+        do {
+            let dataObject = try await apiClient.request(
                 item: SamplePostRequest(parameters: parameters)
-            ) {
-                switch $0 {
-                case let .success(dataObject):
-                    let modelObject = sampleConverter.convert(dataObject)
-                    promise(.success(modelObject))
-
-                case let .failure(apiError):
-                    let appError = errorConverter.convert(apiError)
-                    promise(.failure(appError))
-                }
-            }
+            )
+            let modelObject = sampleConverter.convert(dataObject)
+            return modelObject
+        } catch {
+            let appError = errorConverter.convert(APIError.parse(error))
+            throw appError
         }
     }
 
     func put(
         userId: Int,
         parameters: SamplePutRequest.Parameters
-    ) -> AnyPublisher<SampleModelObject, AppError> {
-        toPublisher { promise in
-            apiClient.request(
+    ) async throws -> SampleModelObject {
+        do {
+            let dataObject = try await apiClient.request(
                 item: SamplePutRequest(
                     parameters: parameters,
                     pathComponent: userId
                 )
-            ) {
-                switch $0 {
-                case let .success(dataObject):
-                    let modelObject = sampleConverter.convert(dataObject)
-                    promise(.success(modelObject))
-
-                case let .failure(apiError):
-                    let appError = errorConverter.convert(apiError)
-                    promise(.failure(appError))
-                }
-            }
+            )
+            let modelObject = sampleConverter.convert(dataObject)
+            return modelObject
+        } catch {
+            let appError = errorConverter.convert(APIError.parse(error))
+            throw appError
         }
     }
 
-    func delete(
-        userId: Int
-    ) -> AnyPublisher<Bool, AppError> {
-        toPublisher { promise in
-            apiClient.request(
+    func delete(userId: Int) async throws -> Bool {
+        do {
+            _ = try await apiClient.request(
                 item: SampleDeleteRequest(pathComponent: userId)
-            ) {
-                switch $0 {
-                case .success:
-                    promise(.success(true))
-
-                case let .failure(apiError):
-                    let appError = errorConverter.convert(apiError)
-                    promise(.failure(appError))
-                }
-            }
+            )
+            return true
+        } catch {
+            let appError = errorConverter.convert(APIError.parse(error))
+            throw appError
         }
     }
 }

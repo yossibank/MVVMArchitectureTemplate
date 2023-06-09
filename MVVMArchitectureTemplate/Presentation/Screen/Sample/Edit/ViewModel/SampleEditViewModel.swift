@@ -1,73 +1,51 @@
 import Combine
-import Foundation
 
-final class SampleEditViewModel: ViewModel {
-    final class Input: InputObject {
-        let onAppear = PassthroughSubject<Void, Never>()
-        let didTapEditButton = PassthroughSubject<Void, Never>()
-    }
-
-    final class Output: OutputObject {
-        @Published fileprivate(set) var titleError: ValidationError = .none
-        @Published fileprivate(set) var bodyError: ValidationError = .none
-        @Published fileprivate(set) var isEnabled = false
-        @Published fileprivate(set) var initialModelObject: SampleModelObject?
-        @Published fileprivate(set) var modelObject: SampleModelObject?
-        @Published fileprivate(set) var appError: AppError?
-    }
-
-    final class Binding: BindingObject {
-        @Published var title = ""
-        @Published var body = ""
-        @Published var isShowSuccessAlert = false
-        @Published var isShowErrorAlert = false
-    }
-
-    @BindableObject private(set) var binding: Binding
-
-    let input: Input
-    let output: Output
+@MainActor
+final class SampleEditViewModel: ObservableObject {
+    @Published var title = ""
+    @Published var body = ""
+    @Published var isShowSuccessAlert = false
+    @Published var isShowErrorAlert = false
+    @Published var isEnabled = false
+    @Published private(set) var titleError: ValidationError = .none
+    @Published private(set) var bodyError: ValidationError = .none
+    @Published private(set) var successObject: SampleModelObject?
+    @Published private(set) var appError: AppError?
 
     private var cancellables = Set<AnyCancellable>()
 
+    private(set) var modelObject: SampleModelObject
+
     private let model: SampleModelInput
-    private let modelObject: SampleModelObject
     private let analytics: FirebaseAnalyzable
 
     init(
-        model: SampleModelInput,
         modelObject: SampleModelObject,
+        model: SampleModelInput,
         analytics: FirebaseAnalyzable
     ) {
-        let input = Input()
-        let output = Output()
-        let binding = Binding()
-
-        self.input = input
-        self.output = output
-        self.binding = binding
-        self.model = model
         self.modelObject = modelObject
+        self.model = model
         self.analytics = analytics
 
         // 初期表示
-        input.onAppear.sink {
-            output.initialModelObject = modelObject
-            binding.title = modelObject.title
-            binding.body = modelObject.body
-            analytics.sendEvent(.screenView)
-        }
-        .store(in: &cancellables)
+        analytics.sendEvent(.screenView)
 
-        // 各バリデーション
-        let titleError = binding.$title.compactMap { input in
+        // 初期注入
+        self.title = modelObject.title
+        self.body = modelObject.body
+
+        // タイトルバリデーション
+        let titleError = $title.compactMap { input in
             ValidationError.editValidate(input)
         }
 
-        let bodyError = binding.$body.compactMap { input in
+        // 内容バリデーション
+        let bodyError = $body.compactMap { input in
             ValidationError.editValidate(input)
         }
 
+        // ボタン有効化
         let isEnabled = Publishers.CombineLatest(
             titleError,
             bodyError
@@ -75,41 +53,31 @@ final class SampleEditViewModel: ViewModel {
             title.isEnabled && body.isEnabled
         }
 
-        // 編集ボタンタップ
-        input.didTapEditButton.sink { [weak self] _ in
-            self?.update()
-        }
-        .store(in: &cancellables)
-
+        // バリデーション結合
         cancellables.formUnion([
-            titleError.assignNoRetain(to: \.titleError, on: output),
-            bodyError.assignNoRetain(to: \.bodyError, on: output),
-            isEnabled.assign(to: \.isEnabled, on: output)
+            titleError.assignNoRetain(to: \.titleError, on: self),
+            bodyError.assignNoRetain(to: \.bodyError, on: self),
+            isEnabled.assignNoRetain(to: \.isEnabled, on: self)
         ])
     }
 }
 
-private extension SampleEditViewModel {
-    func update() {
-        model.put(
-            userId: modelObject.userId,
-            parameters: .init(
+extension SampleEditViewModel {
+    func update() async {
+        do {
+            successObject = try await model.put(
                 userId: modelObject.userId,
-                id: modelObject.id,
-                title: binding.title,
-                body: binding.body
+                parameters: .init(
+                    userId: modelObject.userId,
+                    id: modelObject.id,
+                    title: modelObject.title,
+                    body: modelObject.body
+                )
             )
-        )
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] in
-            if case let .failure(appError) = $0 {
-                self?.output.appError = appError
-                self?.binding.isShowErrorAlert = true
-            }
-        } receiveValue: { [weak self] modelObject in
-            self?.output.modelObject = modelObject
-            self?.binding.isShowSuccessAlert = true
+            isShowSuccessAlert = true
+        } catch {
+            appError = AppError.parse(error)
+            isShowErrorAlert = true
         }
-        .store(in: &cancellables)
     }
 }

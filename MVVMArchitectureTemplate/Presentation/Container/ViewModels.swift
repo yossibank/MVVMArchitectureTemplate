@@ -1,6 +1,7 @@
 import Foundation
 
 enum ViewModels {
+    @MainActor
     enum Sample {
         static func Add() -> SampleAddViewModel {
             .init(
@@ -11,16 +12,16 @@ enum ViewModels {
 
         static func Detail(modelObject: SampleModelObject) -> SampleDetailViewModel {
             .init(
-                router: SampleDetailRouter(),
                 modelObject: modelObject,
+                router: SampleDetailRouter(),
                 analytics: FirebaseAnalytics(screenId: .sampleDetail)
             )
         }
 
         static func Edit(modelObject: SampleModelObject) -> SampleEditViewModel {
             .init(
-                model: Models.Sample(),
                 modelObject: modelObject,
+                model: Models.Sample(),
                 analytics: FirebaseAnalytics(screenId: .sampleEdit)
             )
         }

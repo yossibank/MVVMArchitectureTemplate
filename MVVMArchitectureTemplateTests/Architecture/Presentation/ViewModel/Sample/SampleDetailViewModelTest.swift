@@ -1,36 +1,52 @@
 @testable import MVVMArchitectureTemplate
+import SwiftUI
 import XCTest
 
+@MainActor
 final class SampleDetailViewModelTest: XCTestCase {
     private var router: SampleDetailRouterInputMock!
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleDetailViewModel!
+    private var event: FAEvent!
 
     override func setUp() {
         super.setUp()
 
         router = .init()
         analytics = .init(screenId: .sampleDetail)
+
+        analytics.sendEventFAEventHandler = { event in
+            self.event = event
+        }
+
         viewModel = .init(
-            router: router,
             modelObject: SampleModelObjectBuilder().build(),
+            router: router,
             analytics: analytics
         )
     }
 
-    func test_input_onAppear_FA_screenViewイベントを送信できていること() {
-        // arrange
-        let expectation = XCTestExpectation(description: #function)
+    func test_ViewModel初期化_FA_screenViewイベントを送信できること() {
+        XCTAssertEqual(
+            event,
+            .screenView
+        )
+    }
 
-        analytics.sendEventFAEventHandler = { event in
+    func test_showEditView_viewModelが保持しているmodelObjectを参照していること() {
+        router.routeToEditHandler = { modelObject in
             // assert
-            XCTAssertEqual(event, .screenView)
-            expectation.fulfill()
+            XCTAssertEqual(
+                modelObject,
+                self.viewModel.modelObject
+            )
+
+            return NavigationView {
+                SampleEditView(modelObject: modelObject)
+            }
         }
 
         // act
-        viewModel.input.onAppear.send(())
-
-        wait(for: [expectation], timeout: 0.1)
+        _ = viewModel.showEditView()
     }
 }

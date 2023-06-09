@@ -20,7 +20,7 @@ final class APIClientTest: XCTestCase {
         HTTPStubs.removeAllStubs()
     }
 
-    func test_受け取ったステータスコードが300台の際にステータスコードエラーを受け取れること() {
+    func test_受け取ったステータスコードが300台の際にステータスコードエラーを受け取れること() async throws {
         // arrange
         stub(condition: isPath("/posts")) { _ in
             fixture(
@@ -33,25 +33,21 @@ final class APIClientTest: XCTestCase {
             )
         }
 
-        // act
-        apiClient.request(
-            item: SampleGetRequest(parameters: .init(userId: nil))
-        ) {
-            if case let .failure(error) = $0 {
-                // assert
-                XCTAssertEqual(
-                    error,
-                    .invalidStatusCode(302)
-                )
-            }
-
-            self.expectation.fulfill()
+        do {
+            // act
+            _ = try await apiClient.request(
+                item: SampleGetRequest(parameters: .init(userId: nil))
+            )
+        } catch {
+            // assert
+            XCTAssertEqual(
+                APIError.parse(error),
+                .invalidStatusCode(302)
+            )
         }
-
-        wait(for: [expectation], timeout: 0.1)
     }
 
-    func test_受け取ったステータスコードが400台の際にステータスコードエラーを受け取れること() {
+    func test_受け取ったステータスコードが400台の際にステータスコードエラーを受け取れること() async throws {
         // arrange
         stub(condition: isPath("/posts")) { _ in
             fixture(
@@ -64,25 +60,21 @@ final class APIClientTest: XCTestCase {
             )
         }
 
-        // act
-        apiClient.request(
-            item: SampleGetRequest(parameters: .init(userId: nil))
-        ) {
-            if case let .failure(error) = $0 {
-                // assert
-                XCTAssertEqual(
-                    error,
-                    .invalidStatusCode(404)
-                )
-            }
-
-            self.expectation.fulfill()
+        do {
+            // act
+            _ = try await apiClient.request(
+                item: SampleGetRequest(parameters: .init(userId: nil))
+            )
+        } catch {
+            // assert
+            XCTAssertEqual(
+                APIError.parse(error),
+                .invalidStatusCode(404)
+            )
         }
-
-        wait(for: [expectation], timeout: 0.1)
     }
 
-    func test_受け取ったステータスコードが500台の際にステータスコードエラーを受け取れること() {
+    func test_受け取ったステータスコードが500台の際にステータスコードエラーを受け取れること() async throws {
         // arrange
         stub(condition: isPath("/posts")) { _ in
             fixture(
@@ -95,21 +87,17 @@ final class APIClientTest: XCTestCase {
             )
         }
 
-        // act
-        apiClient.request(
-            item: SampleGetRequest(parameters: .init(userId: nil))
-        ) {
-            if case let .failure(error) = $0 {
-                // assert
-                XCTAssertEqual(
-                    error,
-                    .invalidStatusCode(500)
-                )
-            }
-
-            self.expectation.fulfill()
+        do {
+            // act
+            _ = try await apiClient.request(
+                item: SampleGetRequest(parameters: .init(userId: nil))
+            )
+        } catch {
+            // assert
+            XCTAssertEqual(
+                APIError.parse(error),
+                .invalidStatusCode(500)
+            )
         }
-
-        wait(for: [expectation], timeout: 0.1)
     }
 }

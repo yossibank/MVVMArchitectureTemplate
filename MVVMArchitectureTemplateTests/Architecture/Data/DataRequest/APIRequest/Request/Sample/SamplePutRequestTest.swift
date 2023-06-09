@@ -20,7 +20,7 @@ final class SamplePutRequestTest: XCTestCase {
         HTTPStubs.removeAllStubs()
     }
 
-    func test_put_成功_正常系のレスポンスを取得できること() {
+    func test_put_成功_正常系のレスポンスを取得できること() async {
         // arrange
         stub(condition: isPath("/posts/1")) { _ in
             fixture(
@@ -33,7 +33,7 @@ final class SamplePutRequestTest: XCTestCase {
         }
 
         // act
-        apiClient.request(
+        let dataObject = try! await apiClient.request(
             item: SamplePutRequest(
                 parameters: .init(
                     userId: 1,
@@ -43,24 +43,16 @@ final class SamplePutRequestTest: XCTestCase {
                 ),
                 pathComponent: 1
             )
-        ) {
-            switch $0 {
-            case let .success(dataObject):
-                // assert
-                XCTAssertNotNil(dataObject)
-                XCTAssertEqual(dataObject, SampleDataObjectBuilder().build())
+        )
 
-            case let .failure(error):
-                XCTFail(error.localizedDescription)
-            }
-
-            self.expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 0.1)
+        // assert
+        XCTAssertEqual(
+            dataObject,
+            SampleDataObjectBuilder().build()
+        )
     }
 
-    func test_put_デコード失敗_エラーを取得できること() {
+    func test_put_デコード失敗_エラーを取得できること() async throws {
         // arrange
         stub(condition: isPath("/posts/1")) { _ in
             fixture(
@@ -72,29 +64,24 @@ final class SamplePutRequestTest: XCTestCase {
             )
         }
 
-        // act
-        apiClient.request(
-            item: SamplePutRequest(
-                parameters: .init(
-                    userId: 1,
-                    id: 1,
-                    title: "sample title",
-                    body: "sample body"
-                ),
-                pathComponent: 1
-            )
-        ) {
-            if case let .failure(error) = $0 {
-                // assert
-                XCTAssertEqual(
-                    error,
-                    .decodeError
+        do {
+            _ = try await apiClient.request(
+                item: SamplePutRequest(
+                    parameters: .init(
+                        userId: 1,
+                        id: 1,
+                        title: "sample title",
+                        body: "sample body"
+                    ),
+                    pathComponent: 1
                 )
-
-                self.expectation.fulfill()
-            }
+            )
+        } catch {
+            // assert
+            XCTAssertEqual(
+                APIError.parse(error),
+                .decode
+            )
         }
-
-        wait(for: [expectation], timeout: 0.1)
     }
 }

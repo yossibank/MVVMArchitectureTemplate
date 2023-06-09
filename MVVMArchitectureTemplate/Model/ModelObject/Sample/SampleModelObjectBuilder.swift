@@ -1,6 +1,6 @@
 #if DEBUG
     final class SampleModelObjectBuilder {
-        static let placeholder: [SampleModelObject] = (1 ... 20).map {
+        static let placeholder: [SampleModelObject] = (0 ... 19).map {
             SampleModelObjectBuilder()
                 .userId($0 + 1)
                 .id($0 + 1)

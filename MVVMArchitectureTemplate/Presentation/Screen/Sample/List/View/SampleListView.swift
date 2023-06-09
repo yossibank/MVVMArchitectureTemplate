@@ -3,20 +3,15 @@ import SwiftUI
 struct SampleListView: View {
     @StateObject var viewModel = ViewModels.Sample.List()
 
-    init(viewModel: SampleListViewModel = ViewModels.Sample.List()) {
+    init(viewModel: SampleListViewModel) {
         _viewModel = .init(wrappedValue: viewModel)
     }
 
     var body: some View {
         NavigationView {
-            List(
-                viewModel.output.isLoading
-                    ? viewModel.output.placeholder
-                    : viewModel.output.modelObjects,
-                id: \.self
-            ) { modelObject in
+            List(viewModel.modelObjects, id: \.self) { modelObject in
                 ZStack {
-                    NavigationLink(destination: viewModel.router.routeToDetail(modelObject: modelObject)) {
+                    NavigationLink(destination: viewModel.showDetailView(modelObject: modelObject)) {
                         EmptyView()
                     }
                     .opacity(0)
@@ -27,31 +22,33 @@ struct SampleListView: View {
                 .listRowInsets(.init())
             }
             .listStyle(.plain)
-            .animation(.default, value: viewModel.output.modelObjects)
-            .redacted(showPlaceholder: viewModel.output.isLoading)
+            .animation(.default, value: viewModel.modelObjects)
+            .redacted(showPlaceholder: viewModel.showPlaceholder)
             .navigationTitle("サンプル一覧")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                NavigationLink(destination: viewModel.router.routeToAdd()) {
+                NavigationLink(destination: viewModel.showAddView()) {
                     Image(systemName: "plus.square")
                         .tint(.primary)
                 }
             }
         }
-        .onAppear {
-            viewModel.input.onAppear.send(())
+        .task {
+            await viewModel.fetch()
         }
         .refreshable {
-            viewModel.input.viewRefresh.send(())
+            await viewModel.fetch(pullToRefresh: true)
         }
         .alert(
-            isPresented: viewModel.$binding.isShowErrorAlert,
-            error: viewModel.output.appError
+            isPresented: $viewModel.isShowErrorAlert,
+            error: viewModel.appError
         ) {
             Button("閉じる") {}
 
             Button("再読み込み") {
-                viewModel.input.viewRefresh.send(())
+                Task {
+                    await viewModel.fetch()
+                }
             }
         }
     }
@@ -59,6 +56,6 @@ struct SampleListView: View {
 
 struct SampleListView_Previews: PreviewProvider {
     static var previews: some View {
-        SampleListView()
+        SampleListView(viewModel: ViewModels.Sample.List())
     }
 }

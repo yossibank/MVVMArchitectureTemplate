@@ -2,50 +2,44 @@ import Foundation
 
 /// @mockable
 protocol APIClientInput {
-    func request<T>(
-        item: some Request<T>,
-        completion: @escaping (Result<T, APIError>) -> Void
-    )
+    func request<T>(item: some Request<T>) async throws -> T
 }
 
 struct APIClient: APIClientInput {
-    func request<T>(
-        item: some Request<T>,
-        completion: @escaping (Result<T, APIError>) -> Void
-    ) {
+    func request<T>(item: some Request<T>) async throws -> T {
         guard let urlRequest = createURLRequest(item) else {
-            completion(.failure(.invalidRequest))
-            return
+            throw APIError.invalidRequest
         }
 
-        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-            guard error == nil else {
-                completion(.failure(.urlSessionError))
-                return
-            }
+        do {
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
 
-            guard let data else {
-                completion(.failure(.emptyData))
-                return
+            guard !data.isEmpty else {
+                throw APIError.emptyData
             }
 
             guard let response = response as? HTTPURLResponse else {
-                completion(.failure(.emptyResponse))
-                return
+                throw APIError.emptyResponse
             }
 
             guard (200 ... 299).contains(response.statusCode) else {
-                completion(.failure(.invalidStatusCode(response.statusCode)))
-                return
+                throw APIError.invalidStatusCode(response.statusCode)
             }
 
-            decode(
-                data: data,
-                completion: completion
-            )
-        }
+            let decoder: JSONDecoder = {
+                $0.keyDecodingStrategy = .convertFromSnakeCase
+                return $0
+            }(JSONDecoder())
 
-        task.resume()
+            let value = try decoder.decode(
+                T.self,
+                from: data
+            )
+
+            return value
+        } catch {
+            throw APIError.parse(error)
+        }
     }
 }
 
@@ -78,22 +72,5 @@ private extension APIClient {
         Logger.debug(message: urlRequest.curlString)
 
         return urlRequest
-    }
-
-    func decode<T: Decodable>(
-        data: Data,
-        completion: @escaping (Result<T, APIError>) -> Void
-    ) {
-        do {
-            let decoder: JSONDecoder = {
-                $0.keyDecodingStrategy = .convertFromSnakeCase
-                return $0
-            }(JSONDecoder())
-
-            let value = try decoder.decode(T.self, from: data)
-            completion(.success(value))
-        } catch {
-            completion(.failure(.decodeError))
-        }
     }
 }

@@ -18,3 +18,9 @@
 |iPhone14|iPhone14|
 |<img src='../TestSnapshot/ReferenceImages_64/Sample一覧画面/testSampleListView_少件数_ダークモード_iPhone_16_0_390x844@3x.png' width='200' style='border: 1px solid #999' />|<img src='../TestSnapshot/ReferenceImages_64/Sample一覧画面/testSampleListView_少件数_ライトモード_iPhone_16_0_390x844@3x.png' width='200' style='border: 1px solid #999' />|
 
+|読み込み中ダークモード|読み込み中ライトモード|
+|:---:|:---:|
+|16.0|16.0|
+|iPhone14|iPhone14|
+|<img src='../TestSnapshot/ReferenceImages_64/Sample一覧画面/testSampleListView_読み込み中_ダークモード_iPhone_16_0_390x844@3x.png' width='200' style='border: 1px solid #999' />|<img src='../TestSnapshot/ReferenceImages_64/Sample一覧画面/testSampleListView_読み込み中_ライトモード_iPhone_16_0_390x844@3x.png' width='200' style='border: 1px solid #999' />|
+
