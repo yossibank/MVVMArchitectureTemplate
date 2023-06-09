@@ -1,4 +1,5 @@
 @testable import MVVMArchitectureTemplate
+import SwiftUI
 import XCTest
 
 @MainActor
@@ -30,5 +31,22 @@ final class SampleDetailViewModelTest: XCTestCase {
             event,
             .screenView
         )
+    }
+
+    func test_showEditView_viewModelが保持しているmodelObjectを参照していること() {
+        router.routeToEditHandler = { modelObject in
+            // assert
+            XCTAssertEqual(
+                modelObject,
+                self.viewModel.modelObject
+            )
+
+            return NavigationView {
+                SampleEditView(modelObject: modelObject)
+            }
+        }
+
+        // act
+        _ = viewModel.showEditView()
     }
 }
