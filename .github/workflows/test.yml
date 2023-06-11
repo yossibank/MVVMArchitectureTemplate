@@ -9,13 +9,13 @@ on:
       - '*'
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_14.0.1.app
+  DEVELOPER_DIR: /Applications/Xcode_14.3.app
 
 jobs:
   ci:
     name: Run Test
 
-    runs-on: macos-12
+    runs-on: macos-13
 
     env:
       MINT_PATH: mint/lib
@@ -85,10 +85,11 @@ jobs:
           -sdk iphonesimulator
           -configuration Debug
           -scheme MVVMArchitectureTemplate
-          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.0'
-          -only-testing MVVMArchitectureTemplateTests
+          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          -testPlan 'MVVMArchitectureTemplate'
           -clonedSourcePackagesDirPath SourcePackages
           -resultBundlePath MVVMArchitectureTemplate.xcresult
+          -derivedDataPath DerivedData
           clean test
           | bundle exec xcpretty --report html
 
