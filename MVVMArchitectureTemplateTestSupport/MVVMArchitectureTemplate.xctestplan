@@ -25,11 +25,11 @@
     "environmentVariableEntries" : [
       {
         "key" : "IMAGE_DIFF_DIR",
-        "value" : "$(SOURCE_ROOT)\/$(PROJECT_NAME)Tests\/TestSnapshot\/FailureDiffs"
+        "value" : "$(SOURCE_ROOT)\/$(PROJECT_NAME)SnapshotTests\/FailureDiffs"
       },
       {
         "key" : "FB_REFERENCE_IMAGE_DIR",
-        "value" : "$(SOURCE_ROOT)\/$(PROJECT_NAME)Tests\/TestSnapshot\/ReferenceImages"
+        "value" : "$(SOURCE_ROOT)\/$(PROJECT_NAME)SnapshotTests\/ReferenceImages"
       }
     ],
     "language" : "ja",
@@ -50,8 +50,15 @@
     {
       "target" : {
         "containerPath" : "container:MVVMArchitectureTemplate.xcodeproj",
-        "identifier" : "CCBBF89A09E432CD23954CA0",
-        "name" : "MVVMArchitectureTemplateTests"
+        "identifier" : "53942AB4B7922CF4D7CDB367",
+        "name" : "MVVMArchitectureTemplateUnitTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:MVVMArchitectureTemplate.xcodeproj",
+        "identifier" : "CF7A4C89306EF2371C639C6F",
+        "name" : "MVVMArchitectureTemplateSnapshotTests"
       }
     }
   ],

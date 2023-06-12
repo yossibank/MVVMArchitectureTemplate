@@ -62,7 +62,7 @@ targets:
         name: Generate Mock
         basedOnDependencyAnalysis: false
         outputFiles:
-          - MVVMArchitectureTemplateTests/TestMock/MockResults.swift
+          - MVVMArchitectureTemplateTestSupport/TestMock/MockResults.swift
       - path: ./Scripts/XcodeGen/swiftformat.sh
         name: Run SwiftFormat
         basedOnDependencyAnalysis: false
@@ -81,20 +81,35 @@ targets:
           - ${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}
           - $(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)
 
-  MVVMArchitectureTemplateTests:
+  MVVMArchitectureTemplateSnapshotTests:
     type: bundle.unit-test
     platform: iOS
     sources:
-      - MVVMArchitectureTemplateTests
+      - MVVMArchitectureTemplateSnapshotTests
+      - MVVMArchitectureTemplateTestSupport
     settings:
       base:
-        INFOPLIST_FILE: MVVMArchitectureTemplateTests/Info.plist
+        INFOPLIST_FILE: MVVMArchitectureTemplateTestSupport/Info.plist
     dependencies:
       - target: MVVMArchitectureTemplate
       - package: OHHTTPStubs
         product: OHHTTPStubsSwift
       - package: ios-snapshot-test-case
         product: iOSSnapshotTestCase
+
+  MVVMArchitectureTemplateUnitTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - MVVMArchitectureTemplateUnitTests
+      - MVVMArchitectureTemplateTestSupport
+    settings:
+      base:
+        INFOPLIST_FILE: MVVMArchitectureTemplateTestSupport/Info.plist
+    dependencies:
+      - target: MVVMArchitectureTemplate
+      - package: OHHTTPStubs
+        product: OHHTTPStubsSwift
 
   MVVMArchitectureTemplateUITests:
     type: bundle.ui-testing
@@ -112,8 +127,6 @@ schemes:
     build:
       targets:
         MVVMArchitectureTemplate: all
-        MVVMArchitectureTemplateTests: [test]
-        MVVMArchitectureTemplateUITests: [test]
     run:
       config: Debug
       commandLineArguments:
@@ -123,17 +136,12 @@ schemes:
     test:
       config: Debug
       gatherCoverageData: true
-      targets:
-        - name: MVVMArchitectureTemplateTests
-          parallelizable: false
-          randomExecutionOrder: true
-      environmentVariables:
-        FB_REFERENCE_IMAGE_DIR: $(SOURCE_ROOT)/$(PROJECT_NAME)Tests/TestSnapshot/ReferenceImages
-        IMAGE_DIFF_DIR: $(SOURCE_ROOT)/$(PROJECT_NAME)Tests/TestSnapshot/FailureDiffs
       language: ja
       region: JP
       testPlans:
-        - path: MVVMArchitectureTemplateTests/MVVMArchitectureTemplate.xctestplan
+        - path: MVVMArchitectureTemplateTestSupport/MVVMArchitectureTemplate.xctestplan
+        - path: MVVMArchitectureTemplateSnapshotTests/SnapshotTest.xctestplan
+        - path: MVVMArchitectureTemplateUnitTests/UnitTest.xctestplan
     profile:
       config: Release
     analyze:

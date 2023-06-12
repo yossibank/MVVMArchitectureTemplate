@@ -1,0 +1,36 @@
+{
+  "configurations" : [
+    {
+      "id" : "56358A93-2ADA-48E3-AA63-B106ADA572C5",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "language" : "ja",
+    "locationScenario" : {
+      "identifier" : "Tokyo, Japan",
+      "referenceType" : "built-in"
+    },
+    "region" : "JP",
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:MVVMArchitectureTemplate.xcodeproj",
+      "identifier" : "53942AB4B7922CF4D7CDB367",
+      "name" : "MVVMArchitectureTemplateUnitTests"
+    },
+    "testExecutionOrdering" : "random",
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:MVVMArchitectureTemplate.xcodeproj",
+        "identifier" : "53942AB4B7922CF4D7CDB367",
+        "name" : "MVVMArchitectureTemplateUnitTests"
+      }
+    }
+  ],
+  "version" : 1
+}
