@@ -12,10 +12,10 @@ IMAGE_WIDTH = 390
 
 def createMarkdown
     # スキーム名
-    scheme = 'MVVMArchitectureTemplateTests'
+    scheme = 'MVVMArchitectureTemplateSnapshotTests'
 
     # ReferenceImages_64のパス
-    reference_image_dir = "./#{scheme}/TestSnapshot/ReferenceImages_64/*"
+    reference_image_dir = "./#{scheme}/ReferenceImages_64/*"
 
     Dir.glob(reference_image_dir).sort.each do |test_file_path|
         # マークダウンで表示するための準備
