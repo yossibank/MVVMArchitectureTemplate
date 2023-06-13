@@ -48,7 +48,7 @@ private extension SampleListViewSnapshotTest {
         var height: CGFloat {
             switch self {
             case .short:
-                return 800
+                return UIWindow.windowFrame.height
 
             case .medium:
                 return 1500
