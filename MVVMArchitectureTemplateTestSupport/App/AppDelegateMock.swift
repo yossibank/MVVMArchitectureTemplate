@@ -14,10 +14,15 @@ final class AppDelegateMock: UIResponder, UIApplicationDelegate {
     }
 }
 
+// MARK: - private methods
+
 private extension AppDelegateMock {
     func removeSessions(application: UIApplication) {
         application.openSessions.forEach {
-            application.perform(Selector(("_removeSessionFromSessionSet:")), with: $0)
+            application.perform(
+                Selector(("_removeSessionFromSessionSet:")),
+                with: $0
+            )
         }
     }
 }

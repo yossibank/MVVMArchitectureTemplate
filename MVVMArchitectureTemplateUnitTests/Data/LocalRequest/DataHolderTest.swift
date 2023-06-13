@@ -16,7 +16,10 @@ final class DataHolderTest: XCTestCase {
 
     func test_DataHolder_sample_デフォルト値にsample1が保存されていること() {
         // assert
-        XCTAssertEqual(DataHolder.sample, .sample1)
+        XCTAssertEqual(
+            DataHolder.sample,
+            .sample1
+        )
     }
 
     func test_DataHolder_sample_正しい値が保存されていること() {
@@ -24,19 +27,28 @@ final class DataHolderTest: XCTestCase {
         DataHolder.sample = .sample1
 
         // assert
-        XCTAssertEqual(DataHolder.sample, .sample1)
+        XCTAssertEqual(
+            DataHolder.sample,
+            .sample1
+        )
 
         // act
         DataHolder.sample = .sample2
 
         // assert
-        XCTAssertEqual(DataHolder.sample, .sample2)
+        XCTAssertEqual(
+            DataHolder.sample,
+            .sample2
+        )
 
         // act
         DataHolder.sample = .sample3
 
         // assert
-        XCTAssertEqual(DataHolder.sample, .sample3)
+        XCTAssertEqual(
+            DataHolder.sample,
+            .sample3
+        )
     }
 
     func test_DataHolder_sample_publisherで値を受け取れること() throws {
@@ -49,6 +61,9 @@ final class DataHolderTest: XCTestCase {
         let output = try awaitOutputPublisher(samplePublisher).first
 
         // assert
-        XCTAssertEqual(output, .sample3)
+        XCTAssertEqual(
+            output,
+            .sample3
+        )
     }
 }

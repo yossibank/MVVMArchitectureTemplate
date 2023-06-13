@@ -5,13 +5,11 @@ import XCTest
 
 final class APIClientTest: XCTestCase {
     private var apiClient: APIClient!
-    private var expectation: XCTestExpectation!
 
     override func setUp() {
         super.setUp()
 
         apiClient = .init()
-        expectation = .init(description: #function)
     }
 
     override func tearDown() {
