@@ -80,7 +80,7 @@ private extension SampleListViewSnapshotTest {
             viewFrame: .init(
                 x: .zero,
                 y: .zero,
-                width: UIScreen.main.bounds.width,
+                width: UIWindow.windowFrame.width,
                 height: mock.height
             ),
             viewAfter: 0.5

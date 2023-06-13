@@ -44,7 +44,7 @@ extension FBSnapshotTestCase {
 
     func snapshotVerifyView(
         viewMode: SnapshotViewMode,
-        viewFrame: CGRect = UIScreen.main.bounds,
+        viewFrame: CGRect = UIWindow.windowFrame,
         viewAfter: CGFloat = .zero,
         viewAction: VoidBlock? = nil,
         file: StaticString = #file,
@@ -68,7 +68,7 @@ private extension FBSnapshotTestCase {
     func snapshotVerifyView(
         colorMode: SnapshotColorMode,
         viewMode: SnapshotViewMode,
-        viewFrame: CGRect = UIScreen.main.bounds,
+        viewFrame: CGRect = UIWindow.windowFrame,
         viewAfter: CGFloat = .zero,
         viewAction: VoidBlock? = nil,
         file: StaticString = #file,
@@ -77,7 +77,8 @@ private extension FBSnapshotTestCase {
         fileNameOptions = [.device, .OS, .screenSize, .screenScale]
 
         let expectation = XCTestExpectation(description: #function)
-        let window = UIWindow(frame: viewFrame)
+        let window = UIWindow(windowScene: UIWindow.connectedWindowScene!)
+        window.frame = viewFrame
 
         switch viewMode {
         case let .uikit(screenMode):
@@ -101,8 +102,6 @@ private extension FBSnapshotTestCase {
             }
         }
 
-        window.rootViewController?.view.frame = viewFrame
-        window.rootViewController?.view.layoutIfNeeded()
         window.overrideUserInterfaceStyle = colorMode == .light ? .light : .dark
         window.makeKeyAndVisible()
 
