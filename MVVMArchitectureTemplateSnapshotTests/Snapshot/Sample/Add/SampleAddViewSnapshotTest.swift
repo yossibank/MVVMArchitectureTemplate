@@ -36,6 +36,6 @@ private extension SampleAddViewSnapshotTest {
         viewModel.title = title
         viewModel.body = body
         subject = .init(viewModel: viewModel)
-        snapshotVerifyView(viewMode: .swiftui(.navigation(subject)))
+        snapshotVerifyView(viewMode: .navigation(subject))
     }
 }

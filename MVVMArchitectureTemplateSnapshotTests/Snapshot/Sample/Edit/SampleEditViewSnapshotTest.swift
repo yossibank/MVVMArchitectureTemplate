@@ -31,7 +31,7 @@ private extension SampleEditViewSnapshotTest {
         subject = .init(modelObject: modelObject)
 
         snapshotVerifyView(
-            viewMode: .swiftui(.navigation(subject)),
+            viewMode: .navigation(subject),
             viewAfter: 0.2
         )
     }

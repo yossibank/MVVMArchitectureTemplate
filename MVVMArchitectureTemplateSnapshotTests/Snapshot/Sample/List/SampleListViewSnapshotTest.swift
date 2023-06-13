@@ -76,7 +76,7 @@ private extension SampleListViewSnapshotTest {
         subject = SampleListView(viewModel: ViewModels.Sample.List())
 
         snapshotVerifyView(
-            viewMode: .swiftui(.normal(subject)),
+            viewMode: .normal(subject),
             viewFrame: .init(
                 x: .zero,
                 y: .zero,
