@@ -114,4 +114,4 @@ jobs:
         if: success() || failure()
         with:
           name: test-snapshot
-          path: MVVMArchitectureTemplateTests/TestSnapshot/FailureDiffs
+          path: MVVMArchitectureTemplateSnapshotTests/FailureDiffs
