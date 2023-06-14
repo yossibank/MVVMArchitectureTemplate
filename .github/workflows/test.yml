@@ -91,7 +91,7 @@ jobs:
           -resultBundlePath MVVMArchitectureTemplate.xcresult
           -derivedDataPath DerivedData
           clean test
-          # | bundle exec xcpretty --report html
+          | bundle exec xcpretty --report html
 
       # Danger実行
       - uses: MeilCli/danger-action@v5
