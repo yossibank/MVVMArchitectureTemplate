@@ -66,7 +66,7 @@ private extension FBSnapshotTestCase {
     ) {
         fileNameOptions = [.device, .OS, .screenSize, .screenScale]
 
-        let window = UIWindow(windowScene: UIWindow.connectedWindowScene!)
+        let window = UIWindow(windowScene: UIWindow.connectedWindowScene ?? Shared.shared.windowScene!)
         window.frame = viewFrame
 
         switch viewMode {
