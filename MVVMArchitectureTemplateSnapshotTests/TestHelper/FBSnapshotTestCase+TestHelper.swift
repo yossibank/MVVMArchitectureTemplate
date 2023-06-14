@@ -7,18 +7,8 @@ enum SnapshotTest {
 }
 
 enum SnapshotViewMode {
-    case uikit(ScreenUIKitMode)
-    case swiftui(ScreenSwiftUIMode)
-
-    enum ScreenUIKitMode {
-        case normal(UIViewController)
-        case navigation(UIViewController)
-    }
-
-    enum ScreenSwiftUIMode {
-        case normal(any View)
-        case navigation(any View)
-    }
+    case normal(any View)
+    case navigation(any View)
 }
 
 enum SnapshotColorMode: Int, CaseIterable {
@@ -44,7 +34,7 @@ extension FBSnapshotTestCase {
 
     func snapshotVerifyView(
         viewMode: SnapshotViewMode,
-        viewFrame: CGRect = UIScreen.main.bounds,
+        viewFrame: CGRect = UIWindow.windowFrame,
         viewAfter: CGFloat = .zero,
         viewAction: VoidBlock? = nil,
         file: StaticString = #file,
@@ -68,7 +58,7 @@ private extension FBSnapshotTestCase {
     func snapshotVerifyView(
         colorMode: SnapshotColorMode,
         viewMode: SnapshotViewMode,
-        viewFrame: CGRect = UIScreen.main.bounds,
+        viewFrame: CGRect = UIWindow.windowFrame,
         viewAfter: CGFloat = .zero,
         viewAction: VoidBlock? = nil,
         file: StaticString = #file,
@@ -76,50 +66,40 @@ private extension FBSnapshotTestCase {
     ) {
         fileNameOptions = [.device, .OS, .screenSize, .screenScale]
 
-        let expectation = XCTestExpectation(description: #function)
-        let window = UIWindow(frame: viewFrame)
+        let window = UIWindow(windowScene: UIWindow.connectedWindowScene!)
+        window.frame = viewFrame
 
         switch viewMode {
-        case let .uikit(screenMode):
-            switch screenMode {
-            case let .normal(viewController):
-                window.rootViewController = viewController
+        case let .normal(view):
+            window.rootViewController = UIHostingController(rootView: AnyView(view))
 
-            case let .navigation(viewController):
-                window.rootViewController = UINavigationController(rootViewController: viewController)
-            }
-
-        case let .swiftui(screenMode):
-            switch screenMode {
-            case let .normal(view):
-                window.rootViewController = UIHostingController(rootView: AnyView(view))
-
-            case let .navigation(view):
-                window.rootViewController = UIHostingController(rootView: NavigationView {
-                    AnyView(view)
-                })
-            }
+        case let .navigation(view):
+            window.rootViewController = UIHostingController(rootView: NavigationView {
+                AnyView(view)
+            })
         }
 
-        window.rootViewController?.view.frame = viewFrame
-        window.rootViewController?.view.layoutIfNeeded()
         window.overrideUserInterfaceStyle = colorMode == .light ? .light : .dark
         window.makeKeyAndVisible()
 
         viewAction?()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + viewAfter) {
-            self.FBSnapshotVerifyView(
-                window,
-                identifier: colorMode.identifier,
-                overallTolerance: 0.03,
-                file: file,
-                line: line
-            )
+        callViewControllerAppear(vc: window.rootViewController!)
 
-            expectation.fulfill()
+        wait(timeout: viewAfter + 3.0) { expectation in
+            Task { @MainActor in
+                try await Task.sleep(seconds: viewAfter)
+
+                FBSnapshotVerifyView(
+                    window,
+                    identifier: colorMode.identifier,
+                    overallTolerance: 0.03,
+                    file: file,
+                    line: line
+                )
+
+                expectation.fulfill()
+            }
         }
-
-        wait(for: [expectation], timeout: 3.0 + viewAfter)
     }
 }

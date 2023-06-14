@@ -44,6 +44,7 @@
       "name" : "MVVMArchitectureTemplate"
     },
     "testExecutionOrdering" : "random",
+    "testRepetitionMode" : "retryOnFailure",
     "testTimeoutsEnabled" : true
   },
   "testTargets" : [
@@ -59,6 +60,14 @@
         "containerPath" : "container:MVVMArchitectureTemplate.xcodeproj",
         "identifier" : "CF7A4C89306EF2371C639C6F",
         "name" : "MVVMArchitectureTemplateSnapshotTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "target" : {
+        "containerPath" : "container:MVVMArchitectureTemplate.xcodeproj",
+        "identifier" : "A7425D7CBBF19CCB42A7CDA5",
+        "name" : "MVVMArchitectureTemplateUITests"
       }
     }
   ],

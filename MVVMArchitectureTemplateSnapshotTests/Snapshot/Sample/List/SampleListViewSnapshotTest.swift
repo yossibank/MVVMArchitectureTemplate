@@ -48,7 +48,7 @@ private extension SampleListViewSnapshotTest {
         var height: CGFloat {
             switch self {
             case .short:
-                return 800
+                return UIWindow.windowFrame.height
 
             case .medium:
                 return 1500
@@ -76,11 +76,11 @@ private extension SampleListViewSnapshotTest {
         subject = SampleListView(viewModel: ViewModels.Sample.List())
 
         snapshotVerifyView(
-            viewMode: .swiftui(.normal(subject)),
+            viewMode: .normal(subject),
             viewFrame: .init(
                 x: .zero,
                 y: .zero,
-                width: UIScreen.main.bounds.width,
+                width: UIWindow.windowFrame.width,
                 height: mock.height
             ),
             viewAfter: 0.5

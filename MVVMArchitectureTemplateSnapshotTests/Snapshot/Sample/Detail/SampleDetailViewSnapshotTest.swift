@@ -50,7 +50,7 @@ private extension SampleDetailViewSnapshotTest {
         subject = SampleDetailView(modelObject: modelObject)
 
         snapshotVerifyView(
-            viewMode: .swiftui(.navigation(subject)),
+            viewMode: .navigation(subject),
             viewAfter: 0.2
         )
     }

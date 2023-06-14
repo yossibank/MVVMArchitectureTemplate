@@ -3,6 +3,7 @@ import XCTest
 
 final class FAEventTest: XCTestCase {
     func test_FAEvent_nameの値が返却できていること() {
+        // assert
         XCTAssertEqual(
             FAEvent.screenView.name,
             "画面表示"
@@ -15,6 +16,7 @@ final class FAEventTest: XCTestCase {
     }
 
     func test_FAEvent_parameterの値が返却できてること() {
+        // assert
         XCTAssertTrue(FAEvent.screenView.parameter.isEmpty)
 
         XCTAssertEqual(
