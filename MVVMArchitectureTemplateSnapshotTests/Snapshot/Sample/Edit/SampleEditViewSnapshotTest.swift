@@ -12,6 +12,12 @@ final class SampleEditViewSnapshotTest: FBSnapshotTestCase {
         recordMode = SnapshotTest.recordMode
     }
 
+    override func tearDown() {
+        super.tearDown()
+
+        subject = nil
+    }
+
     func testSampleEditView_編集_有効() {
         snapshotVerifyView()
     }
