@@ -1,14 +1,6 @@
 @testable import MVVMArchitectureTemplate
 import UIKit
 
-final class Shared {
-    var windowScene: UIWindowScene?
-
-    private init() {}
-
-    static let shared = Shared()
-}
-
 final class SceneDelegateMock: UIResponder, UIWindowSceneDelegate, UIAppearanceProtocol {
     var window: UIWindow?
 
@@ -20,8 +12,6 @@ final class SceneDelegateMock: UIResponder, UIWindowSceneDelegate, UIAppearanceP
         guard let windowScene = scene as? UIWindowScene else {
             return
         }
-
-        Shared.shared.windowScene = windowScene
 
         if let userDefaults = UserDefaults(suiteName: "test") {
             UserDefaults.inject(userDefaults)
