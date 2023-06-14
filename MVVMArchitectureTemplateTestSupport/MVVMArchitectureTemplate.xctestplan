@@ -43,7 +43,6 @@
       "identifier" : "2B4112F94CFC69141D840B29",
       "name" : "MVVMArchitectureTemplate"
     },
-    "testExecutionOrdering" : "random",
     "testRepetitionMode" : "retryOnFailure",
     "testTimeoutsEnabled" : true
   },
