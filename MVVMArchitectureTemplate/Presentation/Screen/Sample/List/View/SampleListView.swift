@@ -30,6 +30,7 @@ struct SampleListView: View {
                 NavigationLink(destination: viewModel.showAddView()) {
                     Image(systemName: "plus.square")
                         .tint(.primary)
+                        .ally("add_button")
                 }
             }
         }

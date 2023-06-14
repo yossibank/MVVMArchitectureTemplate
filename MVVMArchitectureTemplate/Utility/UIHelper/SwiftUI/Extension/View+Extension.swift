@@ -43,4 +43,12 @@ extension View {
             return self
         }
     }
+
+    func ally(_ identifier: String) -> some View {
+        #if DEBUG
+            return accessibilityIdentifier(identifier)
+        #else
+            return self
+        #endif
+    }
 }
