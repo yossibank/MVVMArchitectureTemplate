@@ -12,6 +12,12 @@ final class SampleDetailViewSnapshotTest: FBSnapshotTestCase {
         recordMode = SnapshotTest.recordMode
     }
 
+    override func tearDown() {
+        super.tearDown()
+
+        subject = nil
+    }
+
     func testSampleDetail_標準() {
         snapshotVerifyView(
             modelObject: SampleModelObjectBuilder()

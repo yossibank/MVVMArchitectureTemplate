@@ -13,12 +13,16 @@ final class SampleListViewSnapshotTest: FBSnapshotTestCase {
         folderName = "Sample一覧画面"
 
         recordMode = SnapshotTest.recordMode
+
+        subject = SampleListView(viewModel: ViewModels.Sample.List())
     }
 
     override func tearDown() {
         super.tearDown()
 
         HTTPStubs.removeAllStubs()
+
+        subject = nil
     }
 
     func testSampleListView_少件数() {
@@ -72,8 +76,6 @@ private extension SampleListViewSnapshotTest {
                 headers: ["Content-Type": "application/json"]
             )
         }
-
-        subject = SampleListView(viewModel: ViewModels.Sample.List())
 
         snapshotVerifyView(
             viewMode: .normal(subject),

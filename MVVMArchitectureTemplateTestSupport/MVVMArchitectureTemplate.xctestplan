@@ -43,7 +43,6 @@
       "identifier" : "2B4112F94CFC69141D840B29",
       "name" : "MVVMArchitectureTemplate"
     },
-    "testExecutionOrdering" : "random",
     "testRepetitionMode" : "retryOnFailure",
     "testTimeoutsEnabled" : true
   },
@@ -51,15 +50,15 @@
     {
       "target" : {
         "containerPath" : "container:MVVMArchitectureTemplate.xcodeproj",
-        "identifier" : "53942AB4B7922CF4D7CDB367",
-        "name" : "MVVMArchitectureTemplateUnitTests"
+        "identifier" : "CF7A4C89306EF2371C639C6F",
+        "name" : "MVVMArchitectureTemplateSnapshotTests"
       }
     },
     {
       "target" : {
         "containerPath" : "container:MVVMArchitectureTemplate.xcodeproj",
-        "identifier" : "CF7A4C89306EF2371C639C6F",
-        "name" : "MVVMArchitectureTemplateSnapshotTests"
+        "identifier" : "53942AB4B7922CF4D7CDB367",
+        "name" : "MVVMArchitectureTemplateUnitTests"
       }
     },
     {

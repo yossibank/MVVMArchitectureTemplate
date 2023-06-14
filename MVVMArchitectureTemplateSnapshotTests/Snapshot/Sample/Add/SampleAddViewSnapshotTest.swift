@@ -16,6 +16,13 @@ final class SampleAddViewSnapshotTest: FBSnapshotTestCase {
         viewModel = ViewModels.Sample.Add()
     }
 
+    override func tearDown() {
+        super.tearDown()
+
+        subject = nil
+        viewModel = nil
+    }
+
     func testSampleAddView_作成_有効() {
         snapshotVerifyView(
             title: "title",
