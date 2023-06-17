@@ -78,20 +78,24 @@ jobs:
           make generate-test-mock
           make generate-xcodeproj
 
-      # テスト
+      # テスト(xcodebuild)
+      # - name: Xcode Test
+      #   run: set -o pipefail &&
+      #     xcodebuild
+      #     -sdk iphonesimulator
+      #     -configuration Debug
+      #     -scheme MVVMArchitectureTemplate
+      #     -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+      #     -testPlan 'MVVMArchitectureTemplate'
+      #     -clonedSourcePackagesDirPath SourcePackages
+      #     -resultBundlePath Test/MVVMArchitectureTemplate.xcresult
+      #     -derivedDataPath DerivedData
+      #     clean test
+      #     | bundle exec xcpretty --report html
+
+      # テスト(fastlane)
       - name: Xcode Test
-        run: set -o pipefail &&
-          xcodebuild
-          -sdk iphonesimulator
-          -configuration Debug
-          -scheme MVVMArchitectureTemplate
-          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          -testPlan 'MVVMArchitectureTemplate'
-          -clonedSourcePackagesDirPath SourcePackages
-          -resultBundlePath MVVMArchitectureTemplate.xcresult
-          -derivedDataPath DerivedData
-          clean test
-          | bundle exec xcpretty --report html
+        run: bundle exec fastlane unit_test
 
       # Danger実行
       - uses: MeilCli/danger-action@v5

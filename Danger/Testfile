@@ -2,7 +2,7 @@
 github.dismiss_out_of_range_messages
 
 ### コードカバレッジ ###
-system("mint run xcparse codecov MVVMArchitectureTemplate.xcresult ./")
+system("mint run xcparse codecov Test/MVVMArchitectureTemplate.xcresult ./")
 
 xcov.report(
     project: "MVVMArchitectureTemplate.xcodeproj",
