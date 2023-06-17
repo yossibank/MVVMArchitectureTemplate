@@ -24,6 +24,10 @@ platform :ios do
       testplan: "MVVMArchitectureTemplate",
       configuration: "Debug",
       devices: "iPhone 14",
+      result_bundle: true,
+      output_directory: "Test",
+      derived_data_path: "DerivedData",
+      cloned_source_packages_path: "SourcePackages",
       clean: true
     )
   end
