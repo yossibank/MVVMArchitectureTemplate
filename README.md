@@ -38,7 +38,7 @@
 **MVVM**
 
 * **Model**(Target UnitTest)
-  - *Converter*
+  - **Converter**
 
 * **ViewModel**(Target UnitTest)
   - **Router**
