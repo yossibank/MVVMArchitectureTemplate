@@ -1,7 +1,7 @@
 import Combine
 
 /// @mockable
-protocol SampleModelInput {
+protocol SampleModelInput: Sendable {
     func get(userId: Int?) async throws -> [SampleModelObject]
     func post(parameters: SamplePostRequest.Parameters) async throws -> SampleModelObject
     func put(userId: Int, parameters: SamplePutRequest.Parameters) async throws -> SampleModelObject

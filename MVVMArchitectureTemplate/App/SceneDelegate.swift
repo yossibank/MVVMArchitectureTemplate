@@ -17,7 +17,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate, UIAppearanceProto
 
         window = .init(windowScene: windowScene)
         window?.rootViewController = UIHostingController(
-            rootView: SampleListView(
+            rootView: SampleListScreenView(
                 viewModel: ViewModels.Sample.List()
             )
         )

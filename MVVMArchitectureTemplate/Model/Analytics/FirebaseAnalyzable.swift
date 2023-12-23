@@ -1,5 +1,5 @@
 /// @mockable
-protocol FirebaseAnalyzable {
+protocol FirebaseAnalyzable: Sendable {
     var screenId: FAScreenId { get }
 
     func sendEvent(_ name: String, parameters: [String: Any])

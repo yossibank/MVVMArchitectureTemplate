@@ -28,9 +28,11 @@ enum ViewModels {
 
         static func List() -> SampleListViewModel {
             .init(
-                router: SampleListRouter(),
-                model: Models.Sample(),
-                analytics: FirebaseAnalytics(screenId: .sampleList)
+                state: .init(),
+                dependency: .init(
+                    model: Models.Sample(),
+                    analytics: FirebaseAnalytics(screenId: .sampleList)
+                )
             )
         }
     }

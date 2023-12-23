@@ -1,7 +1,7 @@
 import Foundation
 
 /// @mockable
-protocol APIClientInput {
+protocol APIClientInput: Sendable {
     func request<T>(item: some Request<T>) async throws -> T
 }
 
