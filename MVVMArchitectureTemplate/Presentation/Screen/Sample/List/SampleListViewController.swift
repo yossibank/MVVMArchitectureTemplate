@@ -41,7 +41,7 @@ final class SampleListViewController: UIHostingController<SampleListScreenView> 
                     print("追加画面遷移")
 
                 case let .detail(modelObject):
-                    print("詳細画面遷移")
+                    print("詳細画面遷移: \(modelObject.id)")
                 }
             }
             .store(in: &cancellables)

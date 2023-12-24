@@ -82,3 +82,23 @@ struct SampleModel: SampleModelInput {
         }
     }
 }
+
+#if DEBUG
+    struct SampleModelMock: SampleModelInput {
+        func get(userId: Int?) async throws -> [SampleModelObject] {
+            throw AppError(apiError: .offline)
+        }
+
+        func post(parameters: SamplePostRequest.Parameters) async throws -> SampleModelObject {
+            fatalError()
+        }
+
+        func put(userId: Int, parameters: SamplePutRequest.Parameters) async throws -> SampleModelObject {
+            fatalError()
+        }
+
+        func delete(userId: Int) async throws -> Bool {
+            fatalError()
+        }
+    }
+#endif

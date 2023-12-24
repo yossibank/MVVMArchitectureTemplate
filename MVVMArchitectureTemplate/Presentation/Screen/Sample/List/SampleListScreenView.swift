@@ -8,15 +8,18 @@ struct SampleListScreenView: View {
     }
 
     var body: some View {
-        List(viewModel.state.modelObjects, id: \.self) { modelObject in
-            ZStack {
-                SampleRow(modelObject: modelObject)
+        ScrollView {
+            ForEach(viewModel.state.modelObjects, id: \.self) { modelObject in
+                LazyVStack {
+                    SampleRow(
+                        modelObject: modelObject,
+                        listRowTapped: {
+                            viewModel.listRowTapped(modelObject: $0)
+                        }
+                    )
+                }
             }
-            .listRowBackground(Color.clear)
-            .listRowInsets(.init())
         }
-        .listStyle(.plain)
-        .animation(.default, value: viewModel.state.modelObjects)
         .redacted(showPlaceholder: viewModel.state.showPlaceholder)
         .toolbar {
             Image(systemName: "plus.square")
@@ -49,29 +52,40 @@ struct SampleListScreenView: View {
 
 struct SampleRow: View {
     var modelObject: SampleModelObject
+    var listRowTapped: (SampleModelObject) -> Void
 
     var body: some View {
-        HStack(spacing: 16) {
-            Text("ID: \(modelObject.id.description)")
-                .font(.system(size: 10))
-                .frame(width: 40)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text("UserID: \(modelObject.userId.description)")
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 16) {
+                Text("ID: \(modelObject.id.description)")
                     .font(.system(size: 10))
-                    .lineLimit(1)
+                    .frame(width: 40)
 
-                Text(modelObject.title)
-                    .font(.system(size: 14, weight: .bold))
-                    .lineLimit(2)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("UserID: \(modelObject.userId.description)")
+                        .font(.system(size: 10))
+                        .lineLimit(1)
 
-                Text(modelObject.body)
-                    .font(.system(size: 11, weight: .bold))
-                    .lineLimit(1)
+                    Text(modelObject.title)
+                        .font(.system(size: 14, weight: .bold))
+                        .lineLimit(2)
+
+                    Text(modelObject.body)
+                        .font(.system(size: 11, weight: .bold))
+                        .lineLimit(1)
+                }
+
+                Spacer()
             }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+
+            Divider()
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity)
+        .onTapGesture {
+            listRowTapped(modelObject)
+        }
     }
 }
 
@@ -80,11 +94,7 @@ struct SampleRow: View {
         viewModel: SampleListViewModel(
             state: .init(),
             dependency: .init(
-                model: SampleModel(
-                    apiClient: APIClient(),
-                    sampleConverter: SampleConverter(),
-                    errorConverter: AppErrorConverter()
-                ),
+                model: SampleModelMock(),
                 analytics: FirebaseAnalytics(screenId: .sampleList)
             )
         )
@@ -92,5 +102,8 @@ struct SampleRow: View {
 }
 
 #Preview("Row") {
-    SampleRow(modelObject: SampleModelObjectBuilder().build())
+    SampleRow(
+        modelObject: SampleModelObjectBuilder().build(),
+        listRowTapped: { _ in }
+    )
 }
