@@ -1,8 +1,9 @@
 import iOSSnapshotTestCase
 @testable import MVVMArchitectureTemplate
 
+@MainActor
 final class SampleDetailViewSnapshotTest: FBSnapshotTestCase {
-    private var subject: SampleDetailView!
+    private var subject: SampleDetailViewController!
 
     override func setUp() {
         super.setUp()
@@ -53,10 +54,12 @@ final class SampleDetailViewSnapshotTest: FBSnapshotTestCase {
 
 private extension SampleDetailViewSnapshotTest {
     func snapshotVerifyView(modelObject: SampleModelObject) {
-        subject = SampleDetailView(modelObject: modelObject)
+        let request = SampleDetailScreenRequest(modelObject: modelObject)
+        let vc = RouterService().buildViewController(request: request)
+        subject = vc
 
         snapshotVerifyView(
-            viewMode: .navigation(subject),
+            viewMode: .viewController(subject),
             viewAfter: 0.2
         )
     }

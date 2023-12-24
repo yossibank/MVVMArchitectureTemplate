@@ -13,10 +13,6 @@ final class SampleListViewSnapshotTest: FBSnapshotTestCase {
         folderName = "Sample一覧画面"
 
         recordMode = SnapshotTest.recordMode
-
-        let request = SampleListScreenRequest()
-        let vc = RouterService().buildViewController(request: request)
-        subject = vc
     }
 
     override func tearDown() {
@@ -78,6 +74,10 @@ private extension SampleListViewSnapshotTest {
                 headers: ["Content-Type": "application/json"]
             )
         }
+
+        let request = SampleListScreenRequest()
+        let vc = RouterService().buildViewController(request: request)
+        subject = vc
 
         snapshotVerifyView(
             viewMode: .viewController(subject),

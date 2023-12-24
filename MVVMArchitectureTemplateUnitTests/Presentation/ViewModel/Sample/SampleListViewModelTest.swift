@@ -24,7 +24,10 @@ final class SampleListViewModelTest: XCTestCase {
 
     func test_initialize() {
         // assert
-        XCTAssertEqual(analytics.sendEventFAEventCallCount, 1)
+        XCTAssertEqual(
+            analytics.sendEventFAEventCallCount,
+            1
+        )
     }
 
     func test_fetch_success() async {

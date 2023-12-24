@@ -12,14 +12,6 @@ final class SampleAddViewSnapshotTest: FBSnapshotTestCase {
         folderName = "Sample追加画面"
 
         recordMode = SnapshotTest.recordMode
-
-        viewModel = .init(
-            state: .init(),
-            dependency: .init(
-                model: SampleModelInputMock(),
-                analytics: FirebaseAnalytics(screenId: .sampleAdd)
-            )
-        )
     }
 
     override func tearDown() {
@@ -46,12 +38,22 @@ private extension SampleAddViewSnapshotTest {
         title: String = "",
         body: String = ""
     ) {
-        viewModel.state.title = title
-        viewModel.state.body = body
+        viewModel = .init(
+            state: .init(),
+            dependency: .init(
+                model: SampleModelInputMock(),
+                analytics: FirebaseAnalytics(screenId: .sampleAdd)
+            )
+        )
+
         subject = .init(
             rootView: .init(viewModel: viewModel),
             viewModel: viewModel
         )
+
+        viewModel.state.title = title
+        viewModel.state.body = body
+
         snapshotVerifyView(viewMode: .viewController(subject))
     }
 }

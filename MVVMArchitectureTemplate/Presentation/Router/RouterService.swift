@@ -17,6 +17,8 @@ final class RouterService: RouterServiceProtocol {
             return build(request) as! ScreenRequest.ViewController
         case let request as SampleAddScreenRequest:
             return build(request) as! ScreenRequest.ViewController
+        case let request as SampleDetailScreenRequest:
+            return build(request) as! ScreenRequest.ViewController
         default:
             fatalError("should not reach here")
         }
@@ -24,6 +26,29 @@ final class RouterService: RouterServiceProtocol {
 }
 
 private extension RouterService {
+    func build(_ request: SampleAddScreenRequest) -> SampleAddScreenRequest.ViewController {
+        let builder = SampleAddScreenBuilder(
+            model: SampleModel(
+                apiClient: APIClient(),
+                sampleConverter: SampleConverter(),
+                errorConverter: AppErrorConverter()
+            ),
+            analytics: FirebaseAnalytics(screenId: .sampleAdd)
+        )
+
+        return builder.buildViewController(request: request)
+    }
+
+    func build(_ request: SampleDetailScreenRequest) -> SampleDetailScreenRequest.ViewController {
+        let builder = SampleDetailScreenBuilder(
+            modelObject: request.modelObject,
+            analytics: FirebaseAnalytics(screenId: .sampleDetail),
+            routerService: self
+        )
+
+        return builder.buildViewController(request: request)
+    }
+
     func build(_ request: SampleListScreenRequest) -> SampleListScreenRequest.ViewController {
         let builder = SampleListScreenBuilder(
             model: SampleModel(
@@ -33,19 +58,6 @@ private extension RouterService {
             ),
             analytics: FirebaseAnalytics(screenId: .sampleList),
             routerService: self
-        )
-
-        return builder.buildViewController(request: request)
-    }
-
-    func build(_ request: SampleAddScreenRequest) -> SampleAddScreenRequest.ViewController {
-        let builder = SampleAddScreenBuilder(
-            model: SampleModel(
-                apiClient: APIClient(),
-                sampleConverter: SampleConverter(),
-                errorConverter: AppErrorConverter()
-            ),
-            analytics: FirebaseAnalytics(screenId: .sampleAdd)
         )
 
         return builder.buildViewController(request: request)

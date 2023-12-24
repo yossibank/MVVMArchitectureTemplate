@@ -1,14 +1,14 @@
 import Combine
 import SwiftUI
 
-final class SampleListViewController: UIHostingController<SampleListScreenView> {
+final class SampleDetailViewController: UIHostingController<SampleDetailScreenView> {
     private var cancellables = Set<AnyCancellable>()
-    private let viewModel: SampleListViewModel
+    private let viewModel: SampleDetailViewModel
     private let routerService: RouterServiceProtocol
 
     init(
-        rootView: SampleListScreenView,
-        viewModel: SampleListViewModel,
+        rootView: SampleDetailScreenView,
+        viewModel: SampleDetailViewModel,
         routerService: RouterServiceProtocol
     ) {
         self.viewModel = viewModel
@@ -29,7 +29,7 @@ final class SampleListViewController: UIHostingController<SampleListScreenView> 
     }
 
     private func setupView() {
-        title = "サンプル一覧"
+        title = "サンプル詳細"
     }
 
     private func setupBinding() {
@@ -41,15 +41,8 @@ final class SampleListViewController: UIHostingController<SampleListScreenView> 
                 }
 
                 switch output {
-                case .add:
-                    let vc = routerService.buildViewController(request: SampleAddScreenRequest())
-                    navigationController?.pushViewController(vc, animated: true)
-
-                case let .detail(modelObject):
-                    let vc = routerService.buildViewController(
-                        request: SampleDetailScreenRequest(modelObject: modelObject)
-                    )
-                    navigationController?.pushViewController(vc, animated: true)
+                case let .edit(modelObject):
+                    print(modelObject)
                 }
             }
             .store(in: &cancellables)

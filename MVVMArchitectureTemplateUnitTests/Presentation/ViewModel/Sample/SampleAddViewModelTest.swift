@@ -23,7 +23,10 @@ final class SampleAddViewModelTest: XCTestCase {
 
     func test_initialize() {
         // assert
-        XCTAssertEqual(analytics.sendEventFAEventCallCount, 1)
+        XCTAssertEqual(
+            analytics.sendEventFAEventCallCount,
+            1
+        )
     }
 
     func test_title_validation_none() {
