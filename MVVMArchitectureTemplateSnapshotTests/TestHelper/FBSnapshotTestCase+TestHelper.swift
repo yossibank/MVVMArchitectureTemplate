@@ -19,10 +19,10 @@ enum SnapshotColorMode: Int, CaseIterable {
     var identifier: String {
         switch self {
         case .light:
-            return "ライトモード"
+            "ライトモード"
 
         case .dark:
-            return "ダークモード"
+            "ダークモード"
         }
     }
 }
