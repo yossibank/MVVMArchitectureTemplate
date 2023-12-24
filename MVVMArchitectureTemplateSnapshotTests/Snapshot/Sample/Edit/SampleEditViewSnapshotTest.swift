@@ -1,8 +1,10 @@
 import iOSSnapshotTestCase
 @testable import MVVMArchitectureTemplate
 
+@MainActor
 final class SampleEditViewSnapshotTest: FBSnapshotTestCase {
-    private var subject: SampleEditView!
+    private var viewModel: SampleEditViewModel!
+    private var subject: SampleEditViewController!
 
     override func setUp() {
         super.setUp()
@@ -15,6 +17,7 @@ final class SampleEditViewSnapshotTest: FBSnapshotTestCase {
     override func tearDown() {
         super.tearDown()
 
+        viewModel = nil
         subject = nil
     }
 
@@ -34,10 +37,21 @@ final class SampleEditViewSnapshotTest: FBSnapshotTestCase {
 
 private extension SampleEditViewSnapshotTest {
     func snapshotVerifyView(modelObject: SampleModelObject = SampleModelObjectBuilder().build()) {
-        subject = .init(modelObject: modelObject)
+        viewModel = .init(
+            state: .init(modelObject: modelObject),
+            dependency: .init(
+                model: SampleModelInputMock(),
+                analytics: FirebaseAnalytics(screenId: .sampleEdit)
+            )
+        )
+
+        subject = .init(
+            rootView: .init(viewModel: viewModel),
+            viewModel: viewModel
+        )
 
         snapshotVerifyView(
-            viewMode: .navigation(subject),
+            viewMode: .viewController(subject),
             viewAfter: 0.2
         )
     }

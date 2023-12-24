@@ -1,5 +1,5 @@
 /// @mockable
-protocol AppErrorConverterInput {
+protocol AppErrorConverterInput: Sendable {
     func convert(_ apiError: APIError) -> AppError
 }
 

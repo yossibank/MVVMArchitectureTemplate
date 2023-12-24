@@ -1,5 +1,5 @@
 /// @mockable
-protocol SampleConverterInput {
+protocol SampleConverterInput: Sendable {
     func convert(_ objects: [SampleDataObject]) -> [SampleModelObject]
     func convert(_ object: SampleDataObject) -> SampleModelObject
 }

@@ -23,7 +23,7 @@ platform :ios do
       scheme: "MVVMArchitectureTemplate",
       testplan: "MVVMArchitectureTemplate",
       configuration: "Debug",
-      devices: "iPhone 14",
+      device: "iPhone 15 (17.2)",
       result_bundle: true,
       output_directory: "Test",
       derived_data_path: "DerivedData",

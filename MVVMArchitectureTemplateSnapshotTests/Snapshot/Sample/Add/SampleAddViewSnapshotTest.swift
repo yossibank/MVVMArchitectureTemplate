@@ -3,8 +3,8 @@ import iOSSnapshotTestCase
 
 @MainActor
 final class SampleAddViewSnapshotTest: FBSnapshotTestCase {
-    private var subject: SampleAddView!
     private var viewModel: SampleAddViewModel!
+    private var subject: SampleAddViewController!
 
     override func setUp() {
         super.setUp()
@@ -12,15 +12,13 @@ final class SampleAddViewSnapshotTest: FBSnapshotTestCase {
         folderName = "Sample追加画面"
 
         recordMode = SnapshotTest.recordMode
-
-        viewModel = ViewModels.Sample.Add()
     }
 
     override func tearDown() {
         super.tearDown()
 
-        subject = nil
         viewModel = nil
+        subject = nil
     }
 
     func testSampleAddView_作成_有効() {
@@ -40,9 +38,22 @@ private extension SampleAddViewSnapshotTest {
         title: String = "",
         body: String = ""
     ) {
-        viewModel.title = title
-        viewModel.body = body
-        subject = .init(viewModel: viewModel)
-        snapshotVerifyView(viewMode: .navigation(subject))
+        viewModel = .init(
+            state: .init(),
+            dependency: .init(
+                model: SampleModelInputMock(),
+                analytics: FirebaseAnalytics(screenId: .sampleAdd)
+            )
+        )
+
+        subject = .init(
+            rootView: .init(viewModel: viewModel),
+            viewModel: viewModel
+        )
+
+        viewModel.state.title = title
+        viewModel.state.body = body
+
+        snapshotVerifyView(viewMode: .viewController(subject))
     }
 }
