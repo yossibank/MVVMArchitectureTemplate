@@ -5,7 +5,7 @@ import OHHTTPStubsSwift
 
 @MainActor
 final class SampleListViewSnapshotTest: FBSnapshotTestCase {
-    private var subject: SampleListView!
+    private var subject: SampleListViewController!
 
     override func setUp() {
         super.setUp()
@@ -14,7 +14,9 @@ final class SampleListViewSnapshotTest: FBSnapshotTestCase {
 
         recordMode = SnapshotTest.recordMode
 
-        subject = SampleListView(viewModel: ViewModels.Sample.List())
+        let request = SampleListScreenRequest()
+        let vc = RouterService().buildViewController(request: request)
+        subject = vc
     }
 
     override func tearDown() {
@@ -78,7 +80,7 @@ private extension SampleListViewSnapshotTest {
         }
 
         snapshotVerifyView(
-            viewMode: .normal(subject),
+            viewMode: .viewController(subject),
             viewFrame: .init(
                 x: .zero,
                 y: .zero,

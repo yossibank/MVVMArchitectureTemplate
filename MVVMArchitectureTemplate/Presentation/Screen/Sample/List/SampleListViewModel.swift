@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class SampleListViewModel: BaseViewModel<SampleListViewModel> {
     required init(state: State, dependency: Dependency) {
         super.init(state: state, dependency: dependency)

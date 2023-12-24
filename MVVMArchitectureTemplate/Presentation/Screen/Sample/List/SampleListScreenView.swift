@@ -22,6 +22,9 @@ struct SampleListScreenView: View {
             Image(systemName: "plus.square")
                 .tint(.primary)
                 .ally("add_button")
+                .onTapGesture {
+                    viewModel.addButtonTapped()
+                }
         }
         .task {
             await viewModel.fetch()
@@ -73,7 +76,19 @@ struct SampleRow: View {
 }
 
 #Preview("List") {
-    SampleListScreenView(viewModel: ViewModels.Sample.List())
+    SampleListScreenView(
+        viewModel: SampleListViewModel(
+            state: .init(),
+            dependency: .init(
+                model: SampleModel(
+                    apiClient: APIClient(),
+                    sampleConverter: SampleConverter(),
+                    errorConverter: AppErrorConverter()
+                ),
+                analytics: FirebaseAnalytics(screenId: .sampleList)
+            )
+        )
+    )
 }
 
 #Preview("Row") {

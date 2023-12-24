@@ -4,7 +4,6 @@ import XCTest
 @MainActor
 final class SampleListViewModelTest: XCTestCase {
     private var model: SampleModelInputMock!
-    private var router: SampleListRouterInputMock!
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleListViewModel!
     private var event: FAEvent!
@@ -13,25 +12,13 @@ final class SampleListViewModelTest: XCTestCase {
         super.setUp()
 
         model = .init()
-        router = .init()
         analytics = .init(screenId: .sampleList)
-
-        analytics.sendEventFAEventHandler = { event in
-            self.event = event
-        }
-
         viewModel = .init(
-            router: router,
-            model: model,
-            analytics: analytics
-        )
-    }
-
-    func test_ViewModel初期化_FA_screenViewイベントを送信できていること() {
-        // assert
-        XCTAssertEqual(
-            event,
-            .screenView
+            state: .init(),
+            dependency: .init(
+                model: model,
+                analytics: analytics
+            )
         )
     }
 
@@ -46,7 +33,7 @@ final class SampleListViewModelTest: XCTestCase {
 
         // assert
         XCTAssertEqual(
-            viewModel.modelObjects,
+            viewModel.state.modelObjects,
             [SampleModelObjectBuilder().build()]
         )
     }
@@ -62,7 +49,7 @@ final class SampleListViewModelTest: XCTestCase {
 
         // assert
         XCTAssertEqual(
-            viewModel.appError,
+            viewModel.state.appError,
             .init(apiError: .decode)
         )
     }

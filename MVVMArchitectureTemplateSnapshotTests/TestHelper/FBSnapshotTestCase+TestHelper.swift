@@ -9,6 +9,7 @@ enum SnapshotTest {
 enum SnapshotViewMode {
     case normal(any View)
     case navigation(any View)
+    case viewController(UIViewController)
 }
 
 enum SnapshotColorMode: Int, CaseIterable {
@@ -77,6 +78,9 @@ private extension FBSnapshotTestCase {
             window.rootViewController = UIHostingController(rootView: NavigationView {
                 AnyView(view)
             })
+
+        case let .viewController(vc):
+            window.rootViewController = UINavigationController(rootViewController: vc)
         }
 
         window.overrideUserInterfaceStyle = colorMode == .light ? .light : .dark

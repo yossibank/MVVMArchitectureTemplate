@@ -25,15 +25,5 @@ enum ViewModels {
                 analytics: FirebaseAnalytics(screenId: .sampleEdit)
             )
         }
-
-        static func List() -> SampleListViewModel {
-            .init(
-                state: .init(),
-                dependency: .init(
-                    model: Models.Sample(),
-                    analytics: FirebaseAnalytics(screenId: .sampleList)
-                )
-            )
-        }
     }
 }

@@ -15,12 +15,12 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate, UIAppearanceProto
 
         configureAppearance()
 
+        let request = SampleListScreenRequest()
+        let vc = RouterService().buildViewController(request: request)
+        let rootView = UINavigationController(rootViewController: vc)
+
         window = .init(windowScene: windowScene)
-        window?.rootViewController = UIHostingController(
-            rootView: SampleListScreenView(
-                viewModel: ViewModels.Sample.List()
-            )
-        )
+        window?.rootViewController = rootView
         window?.makeKeyAndVisible()
     }
 }
