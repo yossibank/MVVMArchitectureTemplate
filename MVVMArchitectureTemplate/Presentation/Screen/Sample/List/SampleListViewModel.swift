@@ -4,6 +4,7 @@ import Foundation
 final class SampleListViewModel: BaseViewModel<SampleListViewModel> {
     required init(state: State, dependency: Dependency) {
         super.init(state: state, dependency: dependency)
+
         dependency.analytics.sendEvent(.screenView)
     }
 
@@ -30,9 +31,9 @@ final class SampleListViewModel: BaseViewModel<SampleListViewModel> {
 
 extension SampleListViewModel {
     struct State {
+        var isShowErrorAlert = false
         fileprivate(set) var modelObjects = SampleModelObjectBuilder.placeholder
         fileprivate(set) var appError: AppError?
-        var isShowErrorAlert = false
 
         var showPlaceholder: Bool {
             modelObjects == SampleModelObjectBuilder.placeholder

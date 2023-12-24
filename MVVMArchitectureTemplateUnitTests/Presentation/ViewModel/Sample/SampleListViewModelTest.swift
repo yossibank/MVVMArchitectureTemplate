@@ -22,7 +22,12 @@ final class SampleListViewModelTest: XCTestCase {
         )
     }
 
-    func test_fetch_成功_modelObjectsに値が代入されること() async {
+    func test_initialize() {
+        // assert
+        XCTAssertEqual(analytics.sendEventFAEventCallCount, 1)
+    }
+
+    func test_fetch_success() async {
         // arrange
         model.getHandler = { _ in
             [SampleModelObjectBuilder().build()]
@@ -38,7 +43,7 @@ final class SampleListViewModelTest: XCTestCase {
         )
     }
 
-    func test_fetch_失敗_appErrorに値が代入されること() async {
+    func test_fetch_failure() async {
         // arrange
         model.getHandler = { _ in
             throw AppError(apiError: .decode)

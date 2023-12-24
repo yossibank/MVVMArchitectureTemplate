@@ -35,10 +35,15 @@ final class SampleListViewController: UIHostingController<SampleListScreenView> 
     private func setupBinding() {
         viewModel.output
             .receive(on: DispatchQueue.main)
-            .sink { output in
+            .sink { [weak self] output in
+                guard let self else {
+                    return
+                }
+
                 switch output {
                 case .add:
-                    print("追加画面遷移")
+                    let vc = routerService.buildViewController(request: SampleAddScreenRequest())
+                    navigationController?.pushViewController(vc, animated: true)
 
                 case let .detail(modelObject):
                     print("詳細画面遷移: \(modelObject.id)")

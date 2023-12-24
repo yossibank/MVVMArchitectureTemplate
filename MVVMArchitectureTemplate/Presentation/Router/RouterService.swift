@@ -15,6 +15,8 @@ final class RouterService: RouterServiceProtocol {
         switch request {
         case let request as SampleListScreenRequest:
             return build(request) as! ScreenRequest.ViewController
+        case let request as SampleAddScreenRequest:
+            return build(request) as! ScreenRequest.ViewController
         default:
             fatalError("should not reach here")
         }
@@ -31,6 +33,19 @@ private extension RouterService {
             ),
             analytics: FirebaseAnalytics(screenId: .sampleList),
             routerService: self
+        )
+
+        return builder.buildViewController(request: request)
+    }
+
+    func build(_ request: SampleAddScreenRequest) -> SampleAddScreenRequest.ViewController {
+        let builder = SampleAddScreenBuilder(
+            model: SampleModel(
+                apiClient: APIClient(),
+                sampleConverter: SampleConverter(),
+                errorConverter: AppErrorConverter()
+            ),
+            analytics: FirebaseAnalytics(screenId: .sampleAdd)
         )
 
         return builder.buildViewController(request: request)

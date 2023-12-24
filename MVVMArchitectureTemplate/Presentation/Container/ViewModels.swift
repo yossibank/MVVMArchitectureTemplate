@@ -3,13 +3,6 @@ import Foundation
 enum ViewModels {
     @MainActor
     enum Sample {
-        static func Add() -> SampleAddViewModel {
-            .init(
-                model: Models.Sample(),
-                analytics: FirebaseAnalytics(screenId: .sampleAdd)
-            )
-        }
-
         static func Detail(modelObject: SampleModelObject) -> SampleDetailViewModel {
             .init(
                 modelObject: modelObject,
