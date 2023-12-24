@@ -1,10 +1,9 @@
 - MVVMArchitectureTemplate/Resources
-- MVVMArchitectureTemplate/Presentation/Container
 - MVVMArchitectureTemplate/Presentation/Core
 - MVVMArchitectureTemplate/Utility/UIHelper
 
 - .*View.swift
-- .*Router.swift
+- .*ViewController.swift
 - .*Builder.swift
 - .*AppDelegate.swift
 - .*SceneDelegate.swift
