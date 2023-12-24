@@ -42,7 +42,10 @@ final class SampleDetailViewController: UIHostingController<SampleDetailScreenVi
 
                 switch output {
                 case let .edit(modelObject):
-                    print(modelObject)
+                    let vc = routerService.buildViewController(
+                        request: SampleEditScreenRequest(modelObject: modelObject)
+                    )
+                    present(UINavigationController(rootViewController: vc), animated: true)
                 }
             }
             .store(in: &cancellables)

@@ -1,20 +1,22 @@
 import Foundation
 
 @MainActor
-final class SampleAddViewModel: BaseViewModel<SampleAddViewModel> {
+final class SampleEditViewModel: BaseViewModel<SampleEditViewModel> {
     required init(state: State, dependency: Dependency) {
         super.init(state: state, dependency: dependency)
 
         dependency.analytics.sendEvent(.screenView)
     }
 
-    func post() async {
+    func update() async {
         do {
-            state.successObject = try await dependency.model.post(
+            state.successObject = try await dependency.model.put(
+                userId: state.modelObject.userId,
                 parameters: .init(
-                    userId: 1,
-                    title: state.title,
-                    body: state.body
+                    userId: state.modelObject.userId,
+                    id: state.modelObject.id,
+                    title: state.modelObject.title,
+                    body: state.modelObject.body
                 )
             )
             state.isShowSuccessAlert = true
@@ -29,21 +31,20 @@ final class SampleAddViewModel: BaseViewModel<SampleAddViewModel> {
     }
 }
 
-extension SampleAddViewModel {
+extension SampleEditViewModel {
     struct State {
-        var title = ""
-        var body = ""
         var isShowSuccessAlert = false
         var isShowErrorAlert = false
+        var modelObject: SampleModelObject
         fileprivate(set) var successObject: SampleModelObject?
         fileprivate(set) var appError: AppError?
 
         var titleError: ValidationError {
-            .addValidate(title)
+            .editValidate(modelObject.title)
         }
 
         var bodyError: ValidationError {
-            .addValidate(body)
+            .editValidate(modelObject.body)
         }
 
         var isEnabled: Bool {

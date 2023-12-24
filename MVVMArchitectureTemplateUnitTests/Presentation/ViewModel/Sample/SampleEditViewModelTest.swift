@@ -6,101 +6,97 @@ final class SampleEditViewModelTest: XCTestCase {
     private var model: SampleModelInputMock!
     private var analytics: FirebaseAnalyzableMock!
     private var viewModel: SampleEditViewModel!
-    private var event: FAEvent!
 
     override func setUp() {
         super.setUp()
 
         model = .init()
         analytics = .init(screenId: .sampleEdit)
-
-        analytics.sendEventFAEventHandler = { event in
-            self.event = event
-        }
-
         viewModel = .init(
-            modelObject: SampleModelObjectBuilder().build(),
-            model: model,
-            analytics: analytics
+            state: .init(modelObject: SampleModelObjectBuilder().build()),
+            dependency: .init(
+                model: model,
+                analytics: analytics
+            )
         )
     }
 
-    func test_ViewModel初期化_FA_screenViewイベントを送信できること() {
+    func test_initialize() {
         // assert
         XCTAssertEqual(
-            event,
-            .screenView
+            analytics.sendEventFAEventCallCount,
+            1
         )
     }
 
-    func test_ViewModel初期化_modelObjectがtitle_bodyに初期注入されていること() {
+    func test_initialize_modelObject() {
         // assert
         XCTAssertEqual(
-            viewModel.title,
+            viewModel.state.modelObject.title,
             "sample title"
         )
 
         XCTAssertEqual(
-            viewModel.body,
+            viewModel.state.modelObject.body,
             "sample body"
         )
     }
 
-    func test_title_空文字の場合_titleErrorがemptyを出力すること() {
+    func test_title_validation_empty() {
         // arrange
         let title = ""
 
         // act
-        viewModel.title = title
+        viewModel.state.modelObject.title = title
 
         // assert
         XCTAssertEqual(
-            viewModel.titleError,
+            viewModel.state.titleError,
             .empty
         )
     }
 
-    func test_body_空文字の場合_bodyErrorがemptyを出力すること() {
+    func test_body_validation_empty() {
         // arrange
         let body = ""
 
         // act
-        viewModel.body = body
+        viewModel.state.modelObject.body = body
 
         // assert
         XCTAssertEqual(
-            viewModel.bodyError,
+            viewModel.state.bodyError,
             .empty
         )
     }
 
-    func test_titleError_bodyErrorのどちらかがnoneでない場合_isEnabledがfalseを出力すること() {
+    func test_title_body_isEnabled_validation_false() {
         // arrange
         let title = ""
         let body = String(repeating: "b", count: 15)
 
         // act
-        viewModel.title = title
-        viewModel.body = body
+        viewModel.state.modelObject.title = title
+        viewModel.state.modelObject.body = body
 
         // assert
-        XCTAssertFalse(viewModel.isEnabled)
+        XCTAssertFalse(viewModel.state.isEnabled)
     }
 
-    func test_titleError_bodyErrorが共にnoneの場合_isEnabledがtrueを出力すること() {
+    func test_title_body_isEnabled_validation_true() {
         // arrange
         let title = String(repeating: "a", count: 15)
         let body = String(repeating: "b", count: 15)
 
         // act
-        viewModel.title = title
-        viewModel.body = body
+        viewModel.state.modelObject.title = title
+        viewModel.state.modelObject.body = body
 
         // assert
-        XCTAssertTrue(viewModel.isEnabled)
+        XCTAssertTrue(viewModel.state.isEnabled)
     }
 
-    func test_update_成功_successObjectに値が代入されること() async {
+    func test_update_success() async {
         // arrange
         model.putHandler = { _, _ in
             SampleModelObjectBuilder()
@@ -114,7 +110,7 @@ final class SampleEditViewModelTest: XCTestCase {
 
         // assert
         XCTAssertEqual(
-            viewModel.successObject,
+            viewModel.state.successObject,
             SampleModelObjectBuilder()
                 .title("sample edit title")
                 .body("sample edit body")
@@ -122,7 +118,7 @@ final class SampleEditViewModelTest: XCTestCase {
         )
     }
 
-    func test_update_失敗_appErrorに値が代入されること() async {
+    func test_update_failure() async {
         // arrange
         model.putHandler = { _, _ in
             throw AppError(apiError: .invalidStatusCode(400))
@@ -133,7 +129,7 @@ final class SampleEditViewModelTest: XCTestCase {
 
         // assert
         XCTAssertEqual(
-            viewModel.appError,
+            viewModel.state.appError,
             .init(apiError: .invalidStatusCode(400))
         )
     }
