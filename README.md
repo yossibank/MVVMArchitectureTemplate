@@ -15,7 +15,7 @@
 |:---:|:---:|
 |16.4|16.4|
 |iPhone14|iPhone14|
-|<img src='MVVMArchitectureTemplateSnapshotTests/ReferenceImages_64/Sample詳細画面/testSampleDetailView_タイトル_長文_ダークモード_iPhone_16_4_390x844@3x.png' width='250' style='border: 1px solid #999' />|<img src='MVVMArchitectureTemplateSnapshotTests/ReferenceImages_64/Sample詳細画面/testSampleDetailView_タイトル_長文_ライトモード_iPhone_16_4_390x844@3x.png' width='250' style='border: 1px solid #999' />|
+|<img src='MVVMArchitectureTemplateSnapshotTests/ReferenceImages_64/Sample詳細画面/testSampleDetailView_タイトル_長文_ダークモード_iPhone_17_2_393x852@3x.png' width='250' style='border: 1px solid #999' />|<img src='MVVMArchitectureTemplateSnapshotTests/ReferenceImages_64/Sample詳細画面/testSampleDetailView_タイトル_長文_ライトモード_iPhone_17_2_393x852@3x.png' width='250' style='border: 1px solid #999' />|
 
 ## Target OS
 
