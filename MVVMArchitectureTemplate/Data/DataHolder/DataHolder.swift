@@ -1,10 +1,5 @@
-import Foundation
-
 enum DataHolder {
-    @UserDefaultsStorage(
-        .sample,
-        defaultValue: .sample1
-    )
+    @UserDefaultsStorage(.sample, defaultValue: .sample1)
     static var sample: DataHolder.Sample
 }
 

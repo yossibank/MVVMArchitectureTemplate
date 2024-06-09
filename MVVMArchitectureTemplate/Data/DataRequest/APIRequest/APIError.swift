@@ -31,26 +31,13 @@ extension APIError {
 extension APIError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .emptyData:
-            return "データエラー"
-
-        case .emptyResponse:
-            return "レスポンスエラー"
-
-        case .invalidRequest:
-            return "無効リクエスト"
-
-        case let .invalidStatusCode(code):
-            return "無効ステータスコード【\(code.description)】"
-
-        case .offline:
-            return "ネットワークエラー"
-
-        case .decode:
-            return "デコードエラー"
-
-        case .unknown:
-            return "不明エラー"
+        case .emptyData: "データエラー"
+        case .emptyResponse: "レスポンスエラー"
+        case .invalidRequest: "無効リクエスト"
+        case let .invalidStatusCode(code): "無効ステータスコード【\(code.description)】"
+        case .offline: "ネットワークエラー"
+        case .decode: "デコードエラー"
+        case .unknown: "不明エラー"
         }
     }
 }

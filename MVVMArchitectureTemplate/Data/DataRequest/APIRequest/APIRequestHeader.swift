@@ -3,8 +3,7 @@ enum APIRequestHeader: String, CaseIterable {
 
     var value: String {
         switch self {
-        case .contentType:
-            return "application/json"
+        case .contentType: "application/json"
         }
     }
 }

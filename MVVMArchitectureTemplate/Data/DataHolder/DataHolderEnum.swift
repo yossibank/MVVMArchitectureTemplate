@@ -1,5 +1,3 @@
-import Foundation
-
 extension DataHolder {
     enum Sample: Int, UserDefaultsCompatible {
         case sample1
