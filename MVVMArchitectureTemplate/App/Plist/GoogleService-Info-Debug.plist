@@ -2,22 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CLIENT_ID</key>
-	<string>906020491656-mvlnd0saump55uptv0c7h707udsv8jqq.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.906020491656-mvlnd0saump55uptv0c7h707udsv8jqq</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBtY31RttFtiwSfErq-nEHl4FIuOwqqJjw</string>
+	<string>AIzaSyAmVsqwJRysQjmBCk7AQEy6yIJR6refDH0</string>
 	<key>GCM_SENDER_ID</key>
-	<string>906020491656</string>
+	<string>481581177973</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.yossibank.mvvmarchitecturetemplate.devevelopment</string>
+	<string>com.yossibank.mvvmarchitecturetemplate.debug</string>
 	<key>PROJECT_ID</key>
-	<string>mvvmarchitecturetemplate-debug</string>
+	<string>mvvmarchitecture-debug</string>
 	<key>STORAGE_BUCKET</key>
-	<string>mvvmarchitecturetemplate-debug.appspot.com</string>
+	<string>mvvmarchitecture-debug.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:906020491656:ios:3b174d821912513e3f6a3d</string>
+	<string>1:481581177973:ios:83e84ec3af941dbd932c3c</string>
 </dict>
 </plist>
