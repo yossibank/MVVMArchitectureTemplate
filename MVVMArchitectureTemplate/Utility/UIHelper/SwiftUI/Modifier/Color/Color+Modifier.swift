@@ -8,14 +8,9 @@ struct AdaptiveForegroundColorModifier: ViewModifier {
 
     private var resolvedColor: Color {
         switch colorScheme {
-        case .light:
-            return lightColor
-
-        case .dark:
-            return darkColor
-
-        @unknown default:
-            return lightColor
+        case .light: lightColor
+        case .dark: darkColor
+        @unknown default: lightColor
         }
     }
 
@@ -32,14 +27,9 @@ struct AdaptiveBackgroundColorModifier: ViewModifier {
 
     private var resolvedColor: Color {
         switch colorScheme {
-        case .light:
-            return lightColor
-
-        case .dark:
-            return darkColor
-
-        @unknown default:
-            return lightColor
+        case .light: lightColor
+        case .dark: darkColor
+        @unknown default: lightColor
         }
     }
 
