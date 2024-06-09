@@ -4,11 +4,8 @@ enum FAParameter: String {
 
     var rawValue: String {
         switch self {
-        case .screenId:
-            return L10n.Fa.Parameter.screenId
-
-        case .userId:
-            return L10n.Fa.Parameter.userId
+        case .screenId: L10n.Fa.Parameter.screenId
+        case .userId: L10n.Fa.Parameter.userId
         }
     }
 }
