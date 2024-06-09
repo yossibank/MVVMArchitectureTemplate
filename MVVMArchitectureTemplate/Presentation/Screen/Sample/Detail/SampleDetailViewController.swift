@@ -35,19 +35,18 @@ final class SampleDetailViewController: UIHostingController<SampleDetailScreenVi
     private func setupBinding() {
         viewModel.output
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] output in
-                guard let self else {
-                    return
-                }
-
-                switch output {
+            .weakSink(with: self, cancellables: &cancellables) {
+                switch $1 {
                 case let .edit(modelObject):
-                    let vc = routerService.buildViewController(
+                    let vc = $0.routerService.buildViewController(
                         request: SampleEditScreenRequest(modelObject: modelObject)
                     )
-                    present(UINavigationController(rootViewController: vc), animated: true)
+
+                    $0.present(
+                        UINavigationController(rootViewController: vc),
+                        animated: true
+                    )
                 }
             }
-            .store(in: &cancellables)
     }
 }

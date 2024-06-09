@@ -35,23 +35,18 @@ final class SampleListViewController: UIHostingController<SampleListScreenView> 
     private func setupBinding() {
         viewModel.output
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] output in
-                guard let self else {
-                    return
-                }
-
-                switch output {
+            .weakSink(with: self, cancellables: &cancellables) {
+                switch $1 {
                 case .add:
-                    let vc = routerService.buildViewController(request: SampleAddScreenRequest())
-                    navigationController?.pushViewController(vc, animated: true)
+                    let vc = $0.routerService.buildViewController(request: SampleAddScreenRequest())
+                    $0.navigationController?.pushViewController(vc, animated: true)
 
                 case let .detail(modelObject):
-                    let vc = routerService.buildViewController(
+                    let vc = $0.routerService.buildViewController(
                         request: SampleDetailScreenRequest(modelObject: modelObject)
                     )
-                    navigationController?.pushViewController(vc, animated: true)
+                    $0.navigationController?.pushViewController(vc, animated: true)
                 }
             }
-            .store(in: &cancellables)
     }
 }

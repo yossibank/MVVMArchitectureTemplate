@@ -32,12 +32,11 @@ final class SampleEditViewController: UIHostingController<SampleEditScreenView> 
     private func setupBinding() {
         viewModel.output
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] output in
-                switch output {
+            .weakSink(with: self, cancellables: &cancellables) {
+                switch $1 {
                 case .dismiss:
-                    self?.dismiss(animated: true)
+                    $0.dismiss(animated: true)
                 }
             }
-            .store(in: &cancellables)
     }
 }

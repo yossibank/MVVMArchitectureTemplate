@@ -32,12 +32,11 @@ final class SampleAddViewController: UIHostingController<SampleAddScreenView> {
     private func setupBinding() {
         viewModel.output
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] output in
-                switch output {
+            .weakSink(with: self, cancellables: &cancellables) {
+                switch $1 {
                 case .dismiss:
-                    self?.navigationController?.popViewController(animated: true)
+                    $0.navigationController?.popViewController(animated: true)
                 }
             }
-            .store(in: &cancellables)
     }
 }
